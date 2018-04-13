@@ -1,4 +1,5 @@
 import * as React from 'react';
+import bind from 'bind-decorator';
 import Accessor from '../accessor';
 import TypeaheadSelector, { Props as TypelistProps } from './selector';
 import KeyEvent from '../keyevent';
@@ -9,7 +10,7 @@ import { Input, InputProps } from 'reactstrap';
 
 export interface Props extends InputProps {
   name?: string;
-  customClasses: CustomClasses;
+  customClasses?: CustomClasses;
   maxVisible?: number;
   resultsTruncatedMessage?: string;
   options: string[];
@@ -19,7 +20,7 @@ export interface Props extends InputProps {
   placeholder?: string;
   disabled?: boolean;
   textarea?: boolean;
-  inputProps: object;
+  inputProps?: object;
   onOptionSelected?: Function;
   filterOption?: string | Function;
   searchOptions?: Function;
@@ -47,8 +48,8 @@ export interface State {
 
   // Keep track of the focus state of the input element, to determine
   // whether to show options when empty (if showOptionsWhenEmpty is true)
-  isFocused: boolean;
 
+  isFocused: boolean;
   // true when focused, false onOptionSelected
   showResults: boolean;
 }
@@ -87,16 +88,21 @@ class Typeahead extends React.Component<Props, State>{
 
   public inputElement?: HTMLInputElement;
 
-  getDefaultProps() {
+  // Hack due to buggy defaultprops handling in typescript
+  private getProps() {
+    const customClasses: CustomClasses = {};
     return {
-      allowCustomValues: 0,
-      initialValue: '',
-      value: '',
-      disabled: false,
-      textarea: false,
-      customListComponent: TypeaheadSelector,
-      showOptionsWhenEmpty: false,
-      resultsTruncatedMessage: null,
+      ...{
+        customClasses,
+        allowCustomValues: 0,
+        initialValue: '',
+        value: '',
+        disabled: false,
+        textarea: false,
+        customListComponent: TypeaheadSelector,
+        showOptionsWhenEmpty: false,
+      },
+      ...this.props,
     };
   }
 
@@ -122,13 +128,14 @@ class Typeahead extends React.Component<Props, State>{
     this.onTextEntryUpdated( );
   }
 
+  @bind
   focus() {
     if (!this.inputElement) return;
     this.inputElement.focus();
   }
 
   private hasCustomValue() {
-    const { allowCustomValues } = { ...this.getDefaultProps, ...this.props };
+    const { allowCustomValues } = this.getProps();
     const { entryValue, searchResults } = this.state;
     
     return (
@@ -142,7 +149,7 @@ class Typeahead extends React.Component<Props, State>{
     if (this.hasCustomValue()) {
       return this.state.entryValue;
     }
-    return null;
+    return undefined;
   }
 
   selectElement?: HTMLElement;
@@ -152,10 +159,7 @@ class Typeahead extends React.Component<Props, State>{
       // @ts-ignore
       maxVisible, resultsTruncatedMessage, customListComponent, 
       allowCustomValues, customClasses, defaultClassNames,
-    } = {
-      ...this.getDefaultProps(),
-      ...this.props,
-    };
+    } = this.getProps();
 
     // Nothing has been entered into the textbox
     if (this.shouldSkipSearch(entryValue)) {
@@ -167,12 +171,13 @@ class Typeahead extends React.Component<Props, State>{
       return '';
     }
 
+    const truncated: boolean = Boolean(maxVisible && searchResults.length > maxVisible);
     return (
       // @ts-ignore
-      <customListComponent
+      <TypeaheadSelector
         innerRef={(c: HTMLElement) => this.selectElement = c}
         options={maxVisible ? searchResults.slice(0, maxVisible) : searchResults}
-        areResultsTruncated={maxVisible && searchResults.length > maxVisible}
+        areResultsTruncated={truncated}
         resultsTruncatedMessage={resultsTruncatedMessage}
         onOptionSelected={this.onOptionSelected}
         allowCustomValues={allowCustomValues}
@@ -197,11 +202,12 @@ class Typeahead extends React.Component<Props, State>{
     return this.state.searchResults[index];
   }
 
+  @bind
   private onOptionSelected(option: string, event: React.SyntheticEvent<any>) {
     if (!this.inputElement) throw new Error('No input element');
     this.inputElement.focus();
 
-    let { displayOption, formInputOption } = this.props;
+    let { displayOption, formInputOption } = this.getProps();
     displayOption = Accessor
       .generateOptionToStringFor(this.props.inputDisplayOption || displayOption);
     const optionString = displayOption(option, 0);
@@ -219,6 +225,7 @@ class Typeahead extends React.Component<Props, State>{
     return this.props.onOptionSelected && this.props.onOptionSelected(option, event);
   }
 
+  @bind
   private onTextEntryUpdated() {
     if (!this.inputElement) throw new Error('No input element');
     const value = this.inputElement.value;
@@ -229,6 +236,7 @@ class Typeahead extends React.Component<Props, State>{
     });
   }
 
+  @bind
   private onEnter(event: React.KeyboardEvent<HTMLInputElement>) {
     const selection = this.getSelection();
     if (!selection) {
@@ -237,22 +245,24 @@ class Typeahead extends React.Component<Props, State>{
     return this.onOptionSelected(selection, event);
   }
 
+  @bind
   private onEscape() {
     this.setState({
       selectionIndex: undefined,
     });
   }
 
+  @bind
   private onTab(event: React.KeyboardEvent<HTMLInputElement>) {
     const selection = this.getSelection();
     let option = selection ?
-      selection : (this.state.searchResults.length > 0 ? this.state.searchResults[0] : null);
+      selection : (this.state.searchResults.length > 0 ? this.state.searchResults[0] : undefined);
 
-    if (option === null && this.hasCustomValue()) {
+    if (option === undefined && this.hasCustomValue()) {
       option = this.getCustomValue();
     }
 
-    if (option !== null) {
+    if (option !== undefined) {
       return this.onOptionSelected(option, event);
     }
   }
@@ -274,7 +284,7 @@ class Typeahead extends React.Component<Props, State>{
       return;
     }
     const { selectionIndex, searchResults } = this.state;
-    const { maxVisible } = this.props;
+    const { maxVisible } = this.getProps();
     let newIndex = selectionIndex === undefined ? 
       (delta === 1 ? 0 : delta) : selectionIndex + delta;
     let length = maxVisible ? searchResults.slice(0, maxVisible).length : searchResults.length;
@@ -299,8 +309,9 @@ class Typeahead extends React.Component<Props, State>{
     this.nav(-1);
   }
 
+  @bind
   private onChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { onChange } = this.props;
+    const { onChange } = this.getProps();
     if (onChange) {
       onChange(event);
     }
@@ -308,6 +319,7 @@ class Typeahead extends React.Component<Props, State>{
     this.onTextEntryUpdated();
   }
 
+  @bind
   private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     // If there are no visible elements, don't perform selector navigation.
     // Just pass this up to the upstream onKeydown handler.
@@ -335,7 +347,7 @@ class Typeahead extends React.Component<Props, State>{
   }
 
   render() {
-    const { customClasses: { input }, className } = { ...this.getDefaultProps(), ...this.props };
+    const { customClasses: { input }, className } = this.getProps();
     const inputClasses: any = {};
     if (input) {
       inputClasses[input] = true;
@@ -376,6 +388,7 @@ class Typeahead extends React.Component<Props, State>{
     );
   }
 
+  @bind
   private onFocus(event: React.FocusEvent<HTMLInputElement>) {
     this.setState({ isFocused: true, showResults: true }, () => {
       this.onTextEntryUpdated();
@@ -385,6 +398,7 @@ class Typeahead extends React.Component<Props, State>{
     }
   }
 
+  @bind
   private onBlur(event: React.FocusEvent<HTMLInputElement>) {
     this.setState({ isFocused: false }, () => {
       this.onTextEntryUpdated();
@@ -395,7 +409,7 @@ class Typeahead extends React.Component<Props, State>{
   }
 
   private renderHiddenInput() {
-    const { name } = this.props;
+    const { name } = this.getProps();
     if (!name) {
       return null;
     }
@@ -410,7 +424,7 @@ class Typeahead extends React.Component<Props, State>{
   }
 
   private generateSearchFunction() {
-    const { searchOptions, filterOption } = this.props;
+    const { searchOptions, filterOption } = this.getProps();
     if (typeof searchOptions === 'function') {
       if (filterOption !== null) {
         console.warn('searchOptions prop is being used, filterOption prop will be ignored');

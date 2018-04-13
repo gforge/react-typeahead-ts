@@ -14,6 +14,7 @@ export interface Props {
   defaultClassNames?: boolean;
   areResultsTruncated?: boolean;
   resultsTruncatedMessage?: string;
+  innerRef?: ((c: HTMLElement) => void);
 }
 
 /**
@@ -21,13 +22,17 @@ export interface Props {
  * of the typeahead
  */
 class TypeaheadSelector extends React.Component<Props> {
-  private getDefaultProps() {
+  // Hack to handle the buggy typescript defaultProps
+  private getProps() {
     const customClasses: CustomClasses = {};
     return {
-      customClasses,
-      allowCustomValues: 0,
-      onOptionSelected: () => {},
-      defaultClassNames: true,
+      ...{
+        customClasses,
+        allowCustomValues: 0,
+        onOptionSelected: () => {},
+        defaultClassNames: true,
+      },
+      ...this.props,
     };
   }
 
@@ -36,8 +41,7 @@ class TypeaheadSelector extends React.Component<Props> {
       options, customClasses, customValue, displayOption,
       defaultClassNames, allowCustomValues, selectionIndex,
       areResultsTruncated, resultsTruncatedMessage,
-    } = 
-      { ...this.getDefaultProps(), ...this.props };
+    } = this.getProps();
     // Don't render if there are no options to display
     if (!options.length && allowCustomValues <= 0) {
       return false;
@@ -57,9 +61,9 @@ class TypeaheadSelector extends React.Component<Props> {
     let customValueOffset = 0;
     if (customValue) {
       customValueOffset += 1;
+      // TODO: needed ref? ref={customValue} 
       customValueComponent = (
         <TypeaheadOption 
-          ref={customValue} 
           key={customValue}
           hover={selectionIndex === 0}
           customClasses={customClasses}
@@ -74,9 +78,9 @@ class TypeaheadSelector extends React.Component<Props> {
     const results = options.map((result, i) => {
       const displayString = displayOption(result, i);
       const uniqueKey = displayString + '_' + i;
+      // TODO: needed ref? ref={uniqueKey} 
       return (
         <TypeaheadOption 
-          ref={uniqueKey} 
           key={uniqueKey}
           hover={selectionIndex === i + customValueOffset}
           customClasses={customClasses}

@@ -1,19 +1,20 @@
 import * as React from 'react';
+import { Typeahead } from 'reactstrap-typeahead';
 import './App.css';
-
-const logo = require('./logo.svg');
 
 class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
+        <h1 className="App-title">A simple typeahead (e.g. autocomplete) component</h1>
         <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
+          This is an update to the react-typeahead component that seems to have been
+          a little stale lately.
         </p>
+        <Typeahead
+          options={['John', 'Paul', 'George', 'Ringo']}
+          maxVisible={2}
+        />
       </div>
     );
   }

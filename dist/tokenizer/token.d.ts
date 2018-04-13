@@ -12,6 +12,6 @@ export interface Props {
 declare class Token extends React.Component<Props> {
     render(): JSX.Element;
     private renderHiddenInput();
-    renderCloseButton(): JSX.Element | "";
+    renderCloseButton(): "" | JSX.Element;
 }
 export default Token;

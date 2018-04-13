@@ -1,11 +1,11 @@
 /// <reference types="react" />
 import * as React from 'react';
-import TypeaheadSelector, { Props as TypelistProps } from './selector';
+import { Props as TypelistProps } from './selector';
 import { CustomClasses } from '../types';
 import { InputProps } from 'reactstrap';
 export interface Props extends InputProps {
     name?: string;
-    customClasses: CustomClasses;
+    customClasses?: CustomClasses;
     maxVisible?: number;
     resultsTruncatedMessage?: string;
     options: string[];
@@ -15,7 +15,7 @@ export interface Props extends InputProps {
     placeholder?: string;
     disabled?: boolean;
     textarea?: boolean;
-    inputProps: object;
+    inputProps?: object;
     onOptionSelected?: Function;
     filterOption?: string | Function;
     searchOptions?: Function;
@@ -38,16 +38,7 @@ export interface State {
 declare class Typeahead extends React.Component<Props, State> {
     constructor(props: Props);
     inputElement?: HTMLInputElement;
-    getDefaultProps(): {
-        allowCustomValues: number;
-        initialValue: string;
-        value: string;
-        disabled: boolean;
-        textarea: boolean;
-        customListComponent: typeof TypeaheadSelector;
-        showOptionsWhenEmpty: boolean;
-        resultsTruncatedMessage: null;
-    };
+    private getProps();
     private shouldSkipSearch(input?);
     getOptionsForValue(value?: string, options?: string[]): any;
     setEntryText(value: string): void;

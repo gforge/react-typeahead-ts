@@ -26,14 +26,17 @@ class TypeaheadOption extends React.Component<Props> {
     this.onClick = this.onClick.bind(this);
   }
 
-  private getDefaultProps() {
+  private getProps() {
     const customClasses: CustomClasses = { hover: 'hover' };
     return {
-      customClasses,
-      onClick: (event: React.MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
+      ...{
+        customClasses,
+        onClick: (event: React.MouseEvent<HTMLDivElement>) => {
+          event.preventDefault();
+        },
+        hover: false,
       },
-      hover: false,
+      ...this.props,
     };
   }
 
@@ -41,7 +44,7 @@ class TypeaheadOption extends React.Component<Props> {
     const { 
       customClasses, hover,
       children, customValue,
-     } = { ...this.getDefaultProps(), ...this.props };
+     } = this.getProps();
 
     const classes: any = {};
     const { listItem, hover: hoverClass = 'hover', customAdd } = customClasses;
@@ -64,8 +67,6 @@ class TypeaheadOption extends React.Component<Props> {
         <a 
           href="javascript: void 0;" 
           className={this.getClasses()} 
-          // tslint:disable-next-line:jsx-no-string-ref
-          ref="anchor"
         >
           {children}
         </a>
@@ -74,7 +75,7 @@ class TypeaheadOption extends React.Component<Props> {
   }
 
   getClasses() {
-    const { customClasses } = { ...this.getDefaultProps(), ...this.props };
+    const { customClasses } = this.getProps();
     const classes: any = {
       'typeahead-option': true,
     };

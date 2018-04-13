@@ -63,16 +63,19 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
     };
   }
 
-  getDefaultProps() {
+  private getProps() {
     const customClasses: TokenCustomClasses = {};
     return {
-      customClasses,
-      allowCustomValues: 0,
-      disabled: false,
-      inputProps: {},
-      defaultClassNames: true,
-      displayOption: (token: any) => token,
-      showOptionsWhenEmpty: false,
+      ...{
+        customClasses,
+        allowCustomValues: 0,
+        disabled: false,
+        inputProps: {},
+        defaultClassNames: true,
+        displayOption: (token: any) => token,
+        showOptionsWhenEmpty: false,
+      },
+      ...this.props,
     };
   }
 
@@ -98,7 +101,7 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
   private renderTokens() {
     const { 
       customClasses: { token }, displayOption, formInputOption, name,
-    } = { ...this.getDefaultProps(), ...this.props };
+    } = this.getProps();
     const tokenClasses: any = {};
     if (token) tokenClasses[token] = true;
     const classList: string = classNames(tokenClasses);
@@ -190,7 +193,7 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
       onKeyPress, onKeyUp, onFocus, onBlur,
       displayOption, defaultClassNames, filterOption, searchOptions,
       showOptionsWhenEmpty,
-    } = { ...this.getDefaultProps(), ...this.props };
+    } = this.getProps();
     const classes: any = {};
     const { typeahead } = customClasses;
     if (typeahead) {

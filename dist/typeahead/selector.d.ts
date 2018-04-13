@@ -12,9 +12,10 @@ export interface Props {
     defaultClassNames?: boolean;
     areResultsTruncated?: boolean;
     resultsTruncatedMessage?: string;
+    innerRef?: ((c: HTMLElement) => void);
 }
 declare class TypeaheadSelector extends React.Component<Props> {
-    private getDefaultProps();
+    private getProps();
     render(): false | JSX.Element;
     private onClick(result, event);
 }

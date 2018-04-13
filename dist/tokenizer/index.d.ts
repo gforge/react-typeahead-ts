@@ -28,15 +28,7 @@ export interface State {
 }
 declare class TypeaheadTokenizer extends React.Component<Props, State> {
     constructor(props: Props);
-    getDefaultProps(): {
-        customClasses: TokenCustomClasses;
-        allowCustomValues: number;
-        disabled: boolean;
-        inputProps: {};
-        defaultClassNames: boolean;
-        displayOption: (token: any) => any;
-        showOptionsWhenEmpty: boolean;
-    };
+    private getProps();
     componentWillReceiveProps(nextProps: Props): void;
     typeaheadElement?: HTMLInputElement;
     focus(): void;

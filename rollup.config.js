@@ -52,8 +52,8 @@ export default [
       sourcemap: true,
       file:
         process.env.NODE_ENV === 'production'
-          ? './dist/textarea.umd.min.js'
-          : './dist/textarea.umd.js',
+          ? './dist/typeahead.umd.min.js'
+          : './dist/typeahead.umd.js',
       exports: 'named',
       globals: {
         react: 'React',
@@ -91,12 +91,12 @@ export default [
     external: shared.external.concat(Object.keys(pkg.dependencies)),
     output: [
       {
-        file: 'dist/textarea.es6.js',
+        file: 'dist/typeahead.es6.js',
         format: 'es',
         sourcemap: true,
       },
       {
-        file: 'dist/textarea.js',
+        file: 'dist/typeahead.js',
         format: 'cjs',
         sourcemap: true,
       },

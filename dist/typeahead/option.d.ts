@@ -15,7 +15,7 @@ export interface Props {
 }
 declare class TypeaheadOption extends React.Component<Props> {
     constructor(props: Props);
-    private getDefaultProps();
+    private getProps();
     render(): JSX.Element;
     getClasses(): string;
     onClick(event: React.MouseEvent<HTMLLIElement>): any;
