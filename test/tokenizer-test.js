@@ -9,7 +9,7 @@ import TypeaheadSelector from '../src/typeahead/selector';
 import Tokenizer from '../src/tokenizer';
 import Token from '../src/tokenizer/token';
 import Keyevent from '../src/keyevent';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 function simulateTextInput(component, value) {
   var node = component.refs.entry;

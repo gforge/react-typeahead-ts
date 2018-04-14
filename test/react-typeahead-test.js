@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { assert } from 'chai';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { Typeahead as ReactTypeahead, Tokenizer as ReactTokenizer } from '../src';
 
-describe('Main entry point', function() {
-
+describe('Main entry point', () => {
   it('exports a Typeahead component', function() {
-    var typeahead = TestUtils.renderIntoDocument(<ReactTypeahead />);
+    let typeahead = TestUtils.renderIntoDocument(<ReactTypeahead />);
     assert.ok(TestUtils.isCompositeComponent(typeahead));
   });
 
@@ -14,5 +13,4 @@ describe('Main entry point', function() {
     var tokenizer = TestUtils.renderIntoDocument(<ReactTokenizer />);
     assert.ok(TestUtils.isCompositeComponent(tokenizer));
   });
-
 });

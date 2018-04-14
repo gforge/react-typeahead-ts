@@ -7,7 +7,7 @@ import Typeahead from '../src/typeahead';
 import TypeaheadOption from '../src/typeahead/option';
 import TypeaheadSelector from '../src/typeahead/selector';
 import Keyevent from '../src/keyevent';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import createReactClass from 'create-react-class';
 
 function simulateTextInput(component, value) {
