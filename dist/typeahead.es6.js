@@ -526,8 +526,9 @@ var TypeaheadTokenizer = (function (_super) {
     __extends(TypeaheadTokenizer, _super);
     function TypeaheadTokenizer(props) {
         var _this = _super.call(this, props) || this;
+        var _a = props.defaultSelected, defaultSelected = _a === void 0 ? [] : _a;
         _this.state = {
-            selected: _this.props.defaultSelected.slice(0),
+            selected: defaultSelected.slice(0),
         };
         return _this;
     }

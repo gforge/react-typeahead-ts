@@ -56,10 +56,11 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const { defaultSelected = [] } = props;
     this.state = {
       // We need to copy this to avoid incorrect sharing
       // of state across instances (e.g., via getDefaultProps())
-      selected: this.props.defaultSelected.slice(0),
+      selected: defaultSelected.slice(0),
     };
   }
 
