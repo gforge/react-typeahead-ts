@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { assert } from 'chai';
 import sinon from 'sinon';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
@@ -39,16 +38,21 @@ var BEATLES_COMPLEX = [
   }
 ];
 
-describe('Typeahead Component', function() {
+describe('Typeahead Component', () => {
+  let testContext;
 
-  describe('sanity', function() {
-    beforeEach(function() {
-      this.component = TestUtils.renderIntoDocument(<Typeahead options={
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  describe('sanity', () => {
+    beforeEach(() => {
+      testContext.component = TestUtils.renderIntoDocument(<Typeahead options={
         BEATLES
       } />);
     });
 
-    it('should fuzzy search and render matching results', function() {
+    test('should fuzzy search and render matching results', () => {
       // input value: num of expected results
       var testplan = {
         'o': 3,
@@ -59,87 +63,87 @@ describe('Typeahead Component', function() {
       };
 
       _.each(testplan, function(expected, value) {
-        var results = simulateTextInput(this.component, value);
-        assert.equal(results.length, expected, 'Text input: ' + value);
+        var results = simulateTextInput(testContext.component, value);
+        expect(results.length).toEqual(expected);
       }, this);
     });
 
-    it('does not change the url hash when clicking on options', function() {
-      var results = simulateTextInput(this.component, 'o');
+    test('does not change the url hash when clicking on options', () => {
+      var results = simulateTextInput(testContext.component, 'o');
       var firstResult = results[0];
       var anchor = TestUtils.findRenderedDOMComponentWithTag(firstResult, 'a');
       var href = ReactDOM.findDOMNode(anchor).getAttribute('href');
-      assert.notEqual(href, '#');
+      expect(href).not.toEqual('#');
     });
 
-    describe('keyboard controls', function() {
-      it('down arrow + return selects an option', function() {
-        var results = simulateTextInput(this.component, 'o');
+    describe('keyboard controls', () => {
+      test('down arrow + return selects an option', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var secondItem = ReactDOM.findDOMNode(results[1]).innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
-        assert.equal(node.value, secondItem); // Poor Ringo
+        expect(node.value).toEqual(secondItem); // Poor Ringo
       });
 
-      it('up arrow + return navigates and selects an option', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('up arrow + return navigates and selects an option', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var firstItem = ReactDOM.findDOMNode(results[0]).innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_UP });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
-        assert.equal(node.value, firstItem);
+        expect(node.value).toEqual(firstItem);
       });
 
-      it('escape clears selection', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('escape clears selection', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var firstItem = ReactDOM.findDOMNode(results[0]);
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
-        assert.ok(firstItem.classList.contains('hover'));
+        expect(firstItem.classList.contains('hover')).toBeTruthy();
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_ESCAPE });
-        assert.notOk(firstItem.classList.contains('hover'));
+        expect(firstItem.classList.contains('hover')).toBeFalsy();
       });
 
-      it('tab to choose first item', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('tab to choose first item', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var itemText = ReactDOM.findDOMNode(results[0]).innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
-        assert.equal(node.value, itemText);
+        expect(node.value).toEqual(itemText);
       });
 
-      it('tab to selected current item', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('tab to selected current item', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var itemText = ReactDOM.findDOMNode(results[1]).innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
-        assert.equal(node.value, itemText);
+        expect(node.value).toEqual(itemText);
       });
 
-      it('tab on no selection should not be undefined', function() {
-        var results = simulateTextInput(this.component, 'oz');
-        assert(results.length == 0);
-        var node = this.component.refs.entry;
+      test('tab on no selection should not be undefined', () => {
+        var results = simulateTextInput(testContext.component, 'oz');
+        expect(results.length == 0).toBeTruthy();
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
-        assert.equal("oz", node.value);
+        expect("oz").toEqual(node.value);
       });
 
-      it('should set hover', function() {
-        var results = simulateTextInput(this.component, 'o');
-        var node = this.component.refs.entry;
+      test('should set hover', () => {
+        var results = simulateTextInput(testContext.component, 'o');
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
-        assert.equal(true, results[1].props.hover);
+        expect(true).toEqual(results[1].props.hover);
       });
     });
 
-    describe('mouse controls', function() {
+    describe('mouse controls', () => {
       // as of React 15.5.4 this does not work
       xit('mouse click selects an option (click event)', function() {
         var results = simulateTextInput(this.component, 'o');
@@ -147,89 +151,94 @@ describe('Typeahead Component', function() {
         var secondItemValue = secondItem.innerText;
         var node = this.component.refs.entry;
         TestUtils.Simulate.click(secondItem);
-        assert.equal(node.value, secondItemValue);
+        expect(node.value).toEqual(secondItemValue);
       });
       // but this one works
-      it('mouse click selects an option (mouseDown event)', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('mouse click selects an option (mouseDown event)', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var secondItem = ReactDOM.findDOMNode(results[1]);
         var secondItemValue = secondItem.innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.mouseDown(secondItem);
-        assert.equal(node.value, secondItemValue);
+        expect(node.value).toEqual(secondItemValue);
       });
     });
 
-    describe('component functions', function() {
-      beforeEach(function() {
-        this.sinon = sinon.sandbox.create();
+    describe('component functions', () => {
+      beforeEach(() => {
+        testContext.sinon = sinon.sandbox.create();
       });
-      afterEach(function() {
-        this.sinon.restore();
+      afterEach(() => {
+        testContext.sinon.restore();
       });
-      it('focuses the typeahead', function() {
-        var node = ReactDOM.findDOMNode(this.component.refs.entry);
-        this.sinon.spy(node, 'focus');
-        this.component.focus();
-        assert.equal(node.focus.calledOnce, true);
+      test('focuses the typeahead', () => {
+        var node = ReactDOM.findDOMNode(testContext.component.refs.entry);
+        testContext.sinon.spy(node, 'focus');
+        testContext.component.focus();
+        expect(node.focus.calledOnce).toEqual(true);
       });
     });
   });
 
-  describe('props', function() {
-    context('maxVisible', function() {
-      it('limits the result set based on the maxVisible option', function() {
+  describe('props', () => {
+    describe('maxVisible', () => {
+      test('limits the result set based on the maxVisible option', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           maxVisible={ 1 }
           ></Typeahead>);
         var results = simulateTextInput(component, 'o');
-        assert.equal(results.length, 1);
+        expect(results.length).toEqual(1);
       });
 
-      it('limits the result set based on the maxVisible option, and shows resultsTruncatedMessage when specified', function() {
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES }
-          maxVisible={ 1 }
-          resultsTruncatedMessage='Results truncated'
-          ></Typeahead>);
-        var results = simulateTextInput(component, 'o');
-        assert.equal(TestUtils.findRenderedDOMComponentWithClass(component, 'results-truncated').textContent, 'Results truncated');
-      });
+      test(
+        'limits the result set based on the maxVisible option, and shows resultsTruncatedMessage when specified',
+        () => {
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES }
+            maxVisible={ 1 }
+            resultsTruncatedMessage='Results truncated'
+            ></Typeahead>);
+          var results = simulateTextInput(component, 'o');
+          expect(
+            TestUtils.findRenderedDOMComponentWithClass(component, 'results-truncated').textContent
+          ).toEqual('Results truncated');
+        }
+      );
     });
 
-    context('displayOption', function() {
-      it('renders simple options verbatim when not specified', function() {
+    describe('displayOption', () => {
+      test('renders simple options verbatim when not specified', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
         />);
         var results = simulateTextInput(component, 'john');
-        assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'John');
+        expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('John');
       });
 
-      it('renders custom options when specified as a string', function() {
+      test('renders custom options when specified as a string', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES_COMPLEX }
           filterOption='firstName'
           displayOption='nameWithTitle'
         />);
         var results = simulateTextInput(component, 'john');
-        assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'John Winston Ono Lennon MBE');
+        expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('John Winston Ono Lennon MBE');
       });
 
-      it('renders custom options when specified as a function', function() {
+      test('renders custom options when specified as a function', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES_COMPLEX }
           filterOption='firstName'
           displayOption={ function(o, i) { return i + ' ' + o.firstName + ' ' + o.lastName; } }
         />);
         var results = simulateTextInput(component, 'john');
-        assert.equal(ReactDOM.findDOMNode(results[0]).textContent, '0 John Lennon');
+        expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('0 John Lennon');
       });
     });
 
-    context('searchOptions', function() {
-      it('maps correctly when specified with map function', function() {
+    describe('searchOptions', () => {
+      test('maps correctly when specified with map function', () => {
         var createObject = function(o) {
           return { len: o.length, orig: o };
         };
@@ -242,119 +251,131 @@ describe('Typeahead Component', function() {
         />);
 
         var results = simulateTextInput(component, 'john');
-        assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'Score: 4 John');
+        expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('Score: 4 John');
       });
 
-      it('can sort displayed items when specified with map function wrapped with sort', function() {
-        var createObject = function(o) {
-          return { len: o.length, orig: o };
-        };
+      test(
+        'can sort displayed items when specified with map function wrapped with sort',
+        () => {
+          var createObject = function(o) {
+            return { len: o.length, orig: o };
+          };
 
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES }
-          searchOptions={ function(inp, opts) { return opts.map(function(o) { return o; }).sort().map(createObject); } }
-          displayOption={ function(o, i) { return 'Score: ' + o.len + ' ' + o.orig; } }
-          inputDisplayOption={ function(o, i) { return o.orig; } }
-        />);
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES }
+            searchOptions={ function(inp, opts) { return opts.map(function(o) { return o; }).sort().map(createObject); } }
+            displayOption={ function(o, i) { return 'Score: ' + o.len + ' ' + o.orig; } }
+            inputDisplayOption={ function(o, i) { return o.orig; } }
+          />);
 
-        var results = simulateTextInput(component, 'john');
-        assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'Score: 6 George');
-      });
+          var results = simulateTextInput(component, 'john');
+          expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('Score: 6 George');
+        }
+      );
     });
 
-    context('inputDisplayOption', function() {
-      it('displays a different value in input field and in list display', function() {
-        var createObject = function(o) {
-          return { len: o.length, orig: o };
-        };
+    describe('inputDisplayOption', () => {
+      test(
+        'displays a different value in input field and in list display',
+        () => {
+          var createObject = function(o) {
+            return { len: o.length, orig: o };
+          };
 
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES }
-          searchOptions={ function(inp, opts) { return opts.map(function(o) { return o; }).sort().map(createObject); } }
-          displayOption={ function(o, i) { return 'Score: ' + o.len + ' ' + o.orig; } }
-          inputDisplayOption={ function(o, i) { return o.orig; } }
-        />);
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES }
+            searchOptions={ function(inp, opts) { return opts.map(function(o) { return o; }).sort().map(createObject); } }
+            displayOption={ function(o, i) { return 'Score: ' + o.len + ' ' + o.orig; } }
+            inputDisplayOption={ function(o, i) { return o.orig; } }
+          />);
 
-        var results = simulateTextInput(component, 'john');
-        var node = component.refs.entry;
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
+          var results = simulateTextInput(component, 'john');
+          var node = component.refs.entry;
+          TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
 
-        assert.equal(node.value, 'George');
-      });
+          expect(node.value).toEqual('George');
+        }
+      );
     });
 
-    context('allowCustomValues', function() {
+    describe('allowCustomValues', () => {
 
-      beforeEach(function() {
-        this.sinon = sinon.sandbox.create()
-        this.selectSpy = this.sinon.spy();
-        this.component = TestUtils.renderIntoDocument(<Typeahead
+      beforeEach(() => {
+        testContext.sinon = sinon.sandbox.create()
+        testContext.selectSpy = testContext.sinon.spy();
+        testContext.component = TestUtils.renderIntoDocument(<Typeahead
           options={BEATLES}
           allowCustomValues={3}
-          onOptionSelected={this.selectSpy}
+          onOptionSelected={testContext.selectSpy}
           ></Typeahead>);
       });
 
-      afterEach(function() {
-        this.sinon.restore();
+      afterEach(() => {
+        testContext.sinon.restore();
       })
 
-      it('should not display custom value if input length is less than entered', function() {
-        var input = this.component.refs.entry;
-        input.value = "zz";
-        TestUtils.Simulate.change(input);
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
-        assert.equal(0, results.length);
-        assert.equal(false, this.selectSpy.called);
-      });
+      test(
+        'should not display custom value if input length is less than entered',
+        () => {
+          var input = testContext.component.refs.entry;
+          input.value = "zz";
+          TestUtils.Simulate.change(input);
+          var results = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
+          expect(0).toEqual(results.length);
+          expect(false).toEqual(testContext.selectSpy.called);
+        }
+      );
 
-      it('should display custom value if input exceeds props.allowCustomValues', function() {
-        var input = this.component.refs.entry;
-        input.value = "ZZZ";
-        TestUtils.Simulate.change(input);
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
-        assert.equal(1, results.length);
-        assert.equal(false, this.selectSpy.called);
-      });
+      test(
+        'should display custom value if input exceeds props.allowCustomValues',
+        () => {
+          var input = testContext.component.refs.entry;
+          input.value = "ZZZ";
+          TestUtils.Simulate.change(input);
+          var results = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
+          expect(1).toEqual(results.length);
+          expect(false).toEqual(testContext.selectSpy.called);
+        }
+      );
 
-      it('should call onOptionSelected when selecting from options', function() {
-        var results = simulateTextInput(this.component, 'o');
+      test('should call onOptionSelected when selecting from options', () => {
+        var results = simulateTextInput(testContext.component, 'o');
         var firstItem = ReactDOM.findDOMNode(results[0]).innerText;
-        var node = this.component.refs.entry;
+        var node = testContext.component.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_UP });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
 
-        assert.equal(true, this.selectSpy.called);
-        assert(this.selectSpy.calledWith(firstItem));
+        expect(true).toEqual(testContext.selectSpy.called);
+        expect(testContext.selectSpy.calledWith(firstItem)).toBeTruthy();
       })
 
-      it('should call onOptionSelected when custom value is selected', function() {
-        var input = this.component.refs.entry;
+      test('should call onOptionSelected when custom value is selected', () => {
+        var input = testContext.component.refs.entry;
         input.value = "ZZZ";
         TestUtils.Simulate.change(input);
         TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_RETURN });
-        assert.equal(true, this.selectSpy.called);
-        assert(this.selectSpy.calledWith(input.value));
+        expect(true).toEqual(testContext.selectSpy.called);
+        expect(testContext.selectSpy.calledWith(input.value)).toBeTruthy();
       })
 
-      it('should add hover prop to customValue', function() {
-        var input = this.component.refs.entry;
+      test('should add hover prop to customValue', () => {
+        var input = testContext.component.refs.entry;
         input.value = "ZZZ";
         TestUtils.Simulate.change(input);
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
+        var results = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
         TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_DOWN });
-        assert.equal(true, results[0].props.hover)
+        expect(true).toEqual(results[0].props.hover)
       })
 
 
     });
 
-    context('customClasses', function() {
+    describe('customClasses', () => {
 
-      before(function() {
+      beforeAll(function() {
         var customClasses = {
           input: 'topcoat-text-input',
           results: 'topcoat-list__container',
@@ -371,71 +392,74 @@ describe('Typeahead Component', function() {
         simulateTextInput(this.component, 'o');
       });
 
-      it('adds a custom class to the typeahead input', function() {
-        var input = this.component.refs.entry;
-        assert.isTrue(input.classList.contains('topcoat-text-input'));
+      test('adds a custom class to the typeahead input', () => {
+        var input = testContext.component.refs.entry;
+        expect(input.classList.contains('topcoat-text-input')).toBe(true);
       });
 
-      it('adds a custom class to the results component', function() {
-        var results = ReactDOM.findDOMNode(TestUtils.findRenderedComponentWithType(this.component, TypeaheadSelector));
-        assert.isTrue(results.classList.contains('topcoat-list__container'));
+      test('adds a custom class to the results component', () => {
+        var results = ReactDOM.findDOMNode(TestUtils.findRenderedComponentWithType(testContext.component, TypeaheadSelector));
+        expect(results.classList.contains('topcoat-list__container')).toBe(true);
       });
 
-      it('adds a custom class to the list items', function() {
-        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
+      test('adds a custom class to the list items', () => {
+        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
         var listItem = ReactDOM.findDOMNode(typeaheadOptions[1]);
-        assert.isTrue(listItem.classList.contains('topcoat-list__item'));
+        expect(listItem.classList.contains('topcoat-list__item')).toBe(true);
       });
 
-      it('adds a custom class to the option anchor tags', function() {
-        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
+      test('adds a custom class to the option anchor tags', () => {
+        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
         var listAnchor = typeaheadOptions[1].refs.anchor;
-        assert.isTrue(listAnchor.classList.contains('topcoat-list__link'));
+        expect(listAnchor.classList.contains('topcoat-list__link')).toBe(true);
       });
 
-      it('adds a custom class to the list items when active', function() {
-        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(this.component, TypeaheadOption);
-        var node = this.component.refs.entry;
+      test('adds a custom class to the list items when active', () => {
+        var typeaheadOptions = TestUtils.scryRenderedComponentsWithType(testContext.component, TypeaheadOption);
+        var node = testContext.component.refs.entry;
 
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
 
         var listItem = typeaheadOptions[0];
         var domListItem = ReactDOM.findDOMNode(listItem);
 
-        assert.isTrue(domListItem.classList.contains('topcoat-list__item-active'));
+        expect(domListItem.classList.contains('topcoat-list__item-active')).toBe(true);
       });
     });
 
-    context('initialValue', function() {
-      it('should perform an initial search if a default value is provided', function() {
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES }
-          initialValue={ 'o' }
-        />);
+    describe('initialValue', () => {
+      test(
+        'should perform an initial search if a default value is provided',
+        () => {
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES }
+            initialValue={ 'o' }
+          />);
 
-        var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
-        assert.equal(results.length, 3);
-      });
+          var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
+          expect(results.length).toEqual(3);
+        }
+      );
     });
 
-    context('value', function() {
-      it('should set input value', function() {
+    describe('value', () => {
+      test('should set input value', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           value={ 'John' }
         />);
 
         var input = component.refs.entry;
-        assert.equal(input.value, 'John');
+        expect(input.value).toEqual('John');
       });
     });
 
-    context('onKeyDown', function() {
-      it('should bind to key events on the input', function() {
+    describe('onKeyDown', () => {
+      test('should bind to key events on the input', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           onKeyDown={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
             }
           }
         />);
@@ -445,12 +469,12 @@ describe('Typeahead Component', function() {
       });
     });
 
-    context('onKeyPress', function() {
-      it('should bind to key events on the input', function() {
+    describe('onKeyPress', () => {
+      test('should bind to key events on the input', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           onKeyPress={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
             }
           }
         />);
@@ -460,12 +484,12 @@ describe('Typeahead Component', function() {
       });
     });
 
-    context('onKeyUp', function() {
-      it('should bind to key events on the input', function() {
+    describe('onKeyUp', () => {
+      test('should bind to key events on the input', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           onKeyUp={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
             }
           }
         />);
@@ -475,32 +499,37 @@ describe('Typeahead Component', function() {
       });
     });
 
-    context('inputProps', function() {
-      it('should forward props to the input element', function() {
+    describe('inputProps', () => {
+      test('should forward props to the input element', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           inputProps={{ autoCorrect: 'off' }}
         />);
 
         var input = component.refs.entry;
-        assert.equal(input.getAttribute('autoCorrect'), 'off');
+        expect(input.getAttribute('autoCorrect')).toEqual('off');
       });
     });
 
-    context('defaultClassNames', function() {
-      it('should remove default classNames when this prop is specified and false', function() {
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES }
-          defaultClassNames={false}
-        />);
-        simulateTextInput(component, 'o');
+    describe('defaultClassNames', () => {
+      test(
+        'should remove default classNames when this prop is specified and false',
+        () => {
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES }
+            defaultClassNames={false}
+          />);
+          simulateTextInput(component, 'o');
 
-        assert.notOk(ReactDOM.findDOMNode(component).classList.contains("typeahead"));
-        assert.notOk(ReactDOM.findDOMNode(component.refs.sel).classList.contains("typeahead-selector"));
-      });
+          expect(ReactDOM.findDOMNode(component).classList.contains("typeahead")).toBeFalsy();
+          expect(
+            ReactDOM.findDOMNode(component.refs.sel).classList.contains("typeahead-selector")
+          ).toBeFalsy();
+        }
+      );
     });
 
-    context('filterOption', function() {
+    describe('filterOption', () => {
       var FN_TEST_PLANS = [
         {
           name: 'accepts everything',
@@ -516,14 +545,14 @@ describe('Typeahead Component', function() {
       ];
 
       _.each(FN_TEST_PLANS, function(testplan) {
-        it('should filter with a custom function that ' + testplan.name, function() {
+        test('should filter with a custom function that ' + testplan.name, () => {
           var component = TestUtils.renderIntoDocument(<Typeahead
             options={ BEATLES }
             filterOption={ testplan.fn }
           />);
 
           var results = simulateTextInput(component, testplan.input);
-          assert.equal(results.length, testplan.output);
+          expect(results.length).toEqual(testplan.output);
         });
       });
 
@@ -535,21 +564,24 @@ describe('Typeahead Component', function() {
         'xxx': 0
       };
 
-      it('should filter using fuzzy matching on the provided field name', function() {
-        var component = TestUtils.renderIntoDocument(<Typeahead
-          options={ BEATLES_COMPLEX }
-          filterOption='firstName'
-          displayOption='firstName'
-        />);
+      test(
+        'should filter using fuzzy matching on the provided field name',
+        () => {
+          var component = TestUtils.renderIntoDocument(<Typeahead
+            options={ BEATLES_COMPLEX }
+            filterOption='firstName'
+            displayOption='firstName'
+          />);
 
-        _.each(STRING_TEST_PLANS, function(expected, value) {
-          var results = simulateTextInput(component, value);
-          assert.equal(results.length, expected, 'Text input: ' + value);
-        }, this);
-      });
+          _.each(STRING_TEST_PLANS, function(expected, value) {
+            var results = simulateTextInput(component, value);
+            expect(results.length).toEqual(expected);
+          }, this);
+        }
+      );
     });
 
-    context('formInputOption', function() {
+    describe('formInputOption', () => {
       var FORM_INPUT_TEST_PLANS = [
         {
           name: 'uses simple options verbatim when not specified',
@@ -587,7 +619,7 @@ describe('Typeahead Component', function() {
       ];
 
       _.each(FORM_INPUT_TEST_PLANS, function(testplan) {
-        it(testplan.name, function() {
+        test(testplan.name, () => {
           var component = TestUtils.renderIntoDocument(<Typeahead
             {...testplan.props}
             name='beatles'
@@ -598,13 +630,13 @@ describe('Typeahead Component', function() {
           TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
           TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
 
-          assert.equal(component.state.selection, testplan.output);
+          expect(component.state.selection).toEqual(testplan.output);
         });
       });
     });
 
-    context('customListComponent', function() {
-      before(function() {
+    describe('customListComponent', () => {
+      beforeAll(function() {
         ListComponent = createReactClass({
           render: function() {
             return <div></div>;
@@ -614,61 +646,70 @@ describe('Typeahead Component', function() {
         this.ListComponent = ListComponent;
       })
 
-      beforeEach(function() {
+      beforeEach(() => {
 
-        this.component = TestUtils.renderIntoDocument(
+        testContext.component = TestUtils.renderIntoDocument(
           <Typeahead
             options={ BEATLES }
-            customListComponent={this.ListComponent}/>
+            customListComponent={testContext.ListComponent}/>
         );
       });
 
-      it('should not show the customListComponent when the input is empty', function() {
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, this.ListComponent);
-        assert.equal(0, results.length);
-      });
+      test(
+        'should not show the customListComponent when the input is empty',
+        () => {
+          var results = TestUtils.scryRenderedComponentsWithType(testContext.component, testContext.ListComponent);
+          expect(0).toEqual(results.length);
+        }
+      );
 
-      it('should show the customListComponent when the input is not empty', function() {
-        var input = this.component.refs.entry;
-        input.value = "o";
-        TestUtils.Simulate.change(input);
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, this.ListComponent);
-        assert.equal(1, results.length);
-      });
+      test(
+        'should show the customListComponent when the input is not empty',
+        () => {
+          var input = testContext.component.refs.entry;
+          input.value = "o";
+          TestUtils.Simulate.change(input);
+          var results = TestUtils.scryRenderedComponentsWithType(testContext.component, testContext.ListComponent);
+          expect(1).toEqual(results.length);
+        }
+      );
 
-      it('should no longer show the customListComponent after an option has been selected', function() {
-        var input = this.component.refs.entry;
-        input.value = "o";
-        TestUtils.Simulate.change(input);
-        TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_TAB });
-        var results = TestUtils.scryRenderedComponentsWithType(this.component, this.ListComponent);
-        assert.equal(0, results.length);
-      });
+      test(
+        'should no longer show the customListComponent after an option has been selected',
+        () => {
+          var input = testContext.component.refs.entry;
+          input.value = "o";
+          TestUtils.Simulate.change(input);
+          TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_TAB });
+          var results = TestUtils.scryRenderedComponentsWithType(testContext.component, testContext.ListComponent);
+          expect(0).toEqual(results.length);
+        }
+      );
     });
 
-    context('textarea', function() {
-      it('should render a <textarea> input', function() {
+    describe('textarea', () => {
+      test('should render a <textarea> input', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
           textarea={ true }
         />);
 
         var input = component.refs.entry;
-        assert.equal(input.tagName.toLowerCase(), 'textarea');
+        expect(input.tagName.toLowerCase()).toEqual('textarea');
       });
 
-      it('should render a <input> input', function() {
+      test('should render a <input> input', () => {
         var component = TestUtils.renderIntoDocument(<Typeahead
           options={ BEATLES }
         />);
 
         var input = component.refs.entry;
-        assert.equal(input.tagName.toLowerCase(), 'input');
+        expect(input.tagName.toLowerCase()).toEqual('input');
       });
     });
 
-    context('showOptionsWhenEmpty', function() {
-      it('do not render options when value is empty by default', function() {
+    describe('showOptionsWhenEmpty', () => {
+      test('do not render options when value is empty by default', () => {
         var component = TestUtils.renderIntoDocument(
           <Typeahead
             options={ BEATLES }
@@ -676,33 +717,39 @@ describe('Typeahead Component', function() {
         );
 
         var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
-        assert.equal(0, results.length);
+        expect(0).toEqual(results.length);
       });
 
-      it('do not render options when value is empty when set to true and not focused', function() {
-        var component = TestUtils.renderIntoDocument(
-          <Typeahead
-            options={ BEATLES }
-            showOptionsWhenEmpty={ true }
-          />
-        );
+      test(
+        'do not render options when value is empty when set to true and not focused',
+        () => {
+          var component = TestUtils.renderIntoDocument(
+            <Typeahead
+              options={ BEATLES }
+              showOptionsWhenEmpty={ true }
+            />
+          );
 
-        var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
-        assert.equal(0, results.length);
-      });
+          var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
+          expect(0).toEqual(results.length);
+        }
+      );
 
-      it('render options when value is empty when set to true and focused', function() {
-        var component = TestUtils.renderIntoDocument(
-          <Typeahead
-            options={ BEATLES }
-            showOptionsWhenEmpty={ true }
-          />
-        );
+      test(
+        'render options when value is empty when set to true and focused',
+        () => {
+          var component = TestUtils.renderIntoDocument(
+            <Typeahead
+              options={ BEATLES }
+              showOptionsWhenEmpty={ true }
+            />
+          );
 
-        TestUtils.Simulate.focus(component.refs.entry);
-        var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
-        assert.equal(4, results.length);
-      });
+          TestUtils.Simulate.focus(component.refs.entry);
+          var results = TestUtils.scryRenderedComponentsWithType(component, TypeaheadOption);
+          expect(4).toEqual(results.length);
+        }
+      );
     });
   });
 });

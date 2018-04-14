@@ -1,6 +1,5 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { assert } from 'chai';
 import sinon from 'sinon';
 import ReactDOM from 'react-dom';
 import Typeahead from '../src/typeahead';
@@ -50,11 +49,16 @@ var BEATLES_COMPLEX = [
   }
 ];
 
-describe('TypeaheadTokenizer Component', function() {
+describe('TypeaheadTokenizer Component', () => {
+  let testContext;
 
-  describe('basic tokenizer', function() {
-    beforeEach(function() {
-      this.component = TestUtils.renderIntoDocument(
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  describe('basic tokenizer', () => {
+    beforeEach(() => {
+      testContext.component = TestUtils.renderIntoDocument(
         <Tokenizer
           options={BEATLES}
           customClasses={{
@@ -64,7 +68,7 @@ describe('TypeaheadTokenizer Component', function() {
       );
     });
 
-    it('should fuzzy search and render matching results', function() {
+    test('should fuzzy search and render matching results', () => {
       // input value: num of expected results
       var testplan = {
         'o': 3,
@@ -75,31 +79,31 @@ describe('TypeaheadTokenizer Component', function() {
       };
 
       _.each(testplan, function(expected, value) {
-        var results = simulateTokenInput(this.component, value);
-        assert.equal(results.length, expected, 'Text input: ' + value);
+        var results = simulateTokenInput(testContext.component, value);
+        expect(results.length).toEqual(expected);
       }, this);
     });
 
-    it('should have custom and default token classes', function() {
-      simulateTokenInput(this.component, 'o');
-      var entry = this.component.refs.typeahead.refs.entry;
+    test('should have custom and default token classes', () => {
+      simulateTokenInput(testContext.component, 'o');
+      var entry = testContext.component.refs.typeahead.refs.entry;
       TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
       TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
-      var tokens = getTokens(this.component);
-      assert.equal(tokens.length, 1);
-      assert.isDefined(tokens[0]);
+      var tokens = getTokens(testContext.component);
+      expect(tokens.length).toEqual(1);
+      expect(tokens[0]).toBeDefined();
 
       TestUtils.findRenderedDOMComponentWithClass(tokens[0], 'typeahead-token');
       TestUtils.findRenderedDOMComponentWithClass(tokens[0], 'custom-token');
     });
 
-    context('onKeyDown', function() {
-      it('should bind to key events on the input', function(done) {
+    describe('onKeyDown', () => {
+      test('should bind to key events on the input', done => {
         var component = TestUtils.renderIntoDocument(<Tokenizer
           options={ BEATLES }
           onKeyDown={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
               done();
             }
           }
@@ -109,12 +113,12 @@ describe('TypeaheadTokenizer Component', function() {
       });
     });
 
-    context('onKeyPress', function() {
-      it('should bind to key events on the input', function(done) {
+    describe('onKeyPress', () => {
+      test('should bind to key events on the input', done => {
         var component = TestUtils.renderIntoDocument(<Tokenizer
           options={ BEATLES }
           onKeyPress={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
               done();
             }
           }
@@ -125,12 +129,12 @@ describe('TypeaheadTokenizer Component', function() {
       });
     });
 
-    context('onKeyUp', function() {
-      it('should bind to key events on the input', function(done) {
+    describe('onKeyUp', () => {
+      test('should bind to key events on the input', done => {
         var component = TestUtils.renderIntoDocument(<Tokenizer
           options={ BEATLES }
           onKeyUp={ function(e) {
-              assert.equal(e.keyCode, 87);
+              expect(e.keyCode).toEqual(87);
               done();
             }
           }
@@ -141,39 +145,39 @@ describe('TypeaheadTokenizer Component', function() {
       });
     });
 
-    describe('props', function(){
-      context('displayOption', function() {
-        it('renders simple options verbatim when not specified', function() {
+    describe('props', () => {
+      describe('displayOption', () => {
+        test('renders simple options verbatim when not specified', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES }
           />);
           var results = simulateTokenInput(component, 'john');
-          assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'John');
+          expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('John');
         });
 
-        it('renders custom options when specified as a string', function() {
+        test('renders custom options when specified as a string', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES_COMPLEX }
             filterOption='firstName'
             displayOption='nameWithTitle'
           />);
           var results = simulateTokenInput(component, 'john');
-          assert.equal(ReactDOM.findDOMNode(results[0]).textContent, 'John Winston Ono Lennon MBE');
+          expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('John Winston Ono Lennon MBE');
         });
 
-        it('renders custom options when specified as a function', function() {
+        test('renders custom options when specified as a function', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES_COMPLEX }
             filterOption='firstName'
             displayOption={ function(o, i) { return i + ' ' + o.firstName + ' ' + o.lastName; } }
           />);
           var results = simulateTokenInput(component, 'john');
-          assert.equal(ReactDOM.findDOMNode(results[0]).textContent, '0 John Lennon');
+          expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('0 John Lennon');
         });
       });
 
-      context('formInputOption', function() {
-        it('uses displayOption for the custom option value by default', function() {
+      describe('formInputOption', () => {
+        test('uses displayOption for the custom option value by default', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES_COMPLEX }
             filterOption='firstName'
@@ -186,13 +190,13 @@ describe('TypeaheadTokenizer Component', function() {
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
           var tokens = getTokens(component);
-          assert.equal(tokens.length, 1);
-          assert.isDefined(tokens[0]);
+          expect(tokens.length).toEqual(1);
+          expect(tokens[0]).toBeDefined();
 
-          assert.equal(tokens[0].props.value, 'John Winston Ono Lennon MBE');
+          expect(tokens[0].props.value).toEqual('John Winston Ono Lennon MBE');
         });
 
-        it('renders custom option value when specified as a string', function() {
+        test('renders custom option value when specified as a string', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES_COMPLEX }
             filterOption='firstName'
@@ -206,13 +210,13 @@ describe('TypeaheadTokenizer Component', function() {
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
           var tokens = getTokens(component);
-          assert.equal(tokens.length, 1);
-          assert.isDefined(tokens[0]);
+          expect(tokens.length).toEqual(1);
+          expect(tokens[0]).toBeDefined();
 
-          assert.equal(tokens[0].props.value, 'Lennon');
+          expect(tokens[0].props.value).toEqual('Lennon');
         });
 
-        it('renders custom option value when specified as a function', function() {
+        test('renders custom option value when specified as a function', () => {
           var component = TestUtils.renderIntoDocument(<Tokenizer
             options={ BEATLES_COMPLEX }
             filterOption='firstName'
@@ -226,142 +230,148 @@ describe('TypeaheadTokenizer Component', function() {
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
           var tokens = getTokens(component);
-          assert.equal(tokens.length, 1);
-          assert.isDefined(tokens[0]);
+          expect(tokens.length).toEqual(1);
+          expect(tokens[0]).toBeDefined();
 
-          assert.equal(tokens[0].props.value, 'John Lennon');
+          expect(tokens[0].props.value).toEqual('John Lennon');
         });
       });
     });
 
-    describe('component functions', function() {
-      beforeEach(function() {
-        this.sinon = sinon.sandbox.create();
+    describe('component functions', () => {
+      beforeEach(() => {
+        testContext.sinon = sinon.sandbox.create();
       });
-      afterEach(function() {
-        this.sinon.restore();
+      afterEach(() => {
+        testContext.sinon.restore();
       });
 
-      it('focuses the typeahead', function() {
-        this.sinon.spy(this.component.refs.typeahead, 'focus');
-        this.component.focus();
-        assert.equal(this.component.refs.typeahead.focus.calledOnce, true);
+      test('focuses the typeahead', () => {
+        testContext.sinon.spy(testContext.component.refs.typeahead, 'focus');
+        testContext.component.focus();
+        expect(testContext.component.refs.typeahead.focus.calledOnce).toEqual(true);
       });
     });
 
-    it('should provide an exposed component function to get the selected tokens', function() {
-      simulateTokenInput(this.component, 'o');
-      var entry = this.component.refs.typeahead.refs.entry;
-      TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
-      TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
+    test(
+      'should provide an exposed component function to get the selected tokens',
+      () => {
+        simulateTokenInput(testContext.component, 'o');
+        var entry = testContext.component.refs.typeahead.refs.entry;
+        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
+        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
-      assert.equal(this.component.getSelectedTokens().length, 1);
-      assert.equal(this.component.getSelectedTokens()[0], "John");
-    });
+        expect(testContext.component.getSelectedTokens().length).toEqual(1);
+        expect(testContext.component.getSelectedTokens()[0]).toEqual("John");
+      }
+    );
 
-    describe('keyboard controls', function() {
-      it('down arrow + return creates a token', function() {
-        var results = simulateTokenInput(this.component, 'o');
+    describe('keyboard controls', () => {
+      test('down arrow + return creates a token', () => {
+        var results = simulateTokenInput(testContext.component, 'o');
         var secondItem = ReactDOM.findDOMNode(results[1]).innerText;
-        var node = this.component.refs.typeahead.refs.entry;
+        var node = testContext.component.refs.typeahead.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
-        var Tokens = getTokens(this.component);
-        assert.equal(Tokens[0].props.children, secondItem); // Poor Ringo
+        var Tokens = getTokens(testContext.component);
+        expect(Tokens[0].props.children).toEqual(secondItem); // Poor Ringo
       });
 
-      it('up arrow + return navigates and creates a token', function() {
-        var results = simulateTokenInput(this.component, 'o');
+      test('up arrow + return navigates and creates a token', () => {
+        var results = simulateTokenInput(testContext.component, 'o');
         var firstItem = ReactDOM.findDOMNode(results[0]).innerText;
-        var node = this.component.refs.typeahead.refs.entry;
+        var node = testContext.component.refs.typeahead.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_UP });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
-        var Tokens = getTokens(this.component);
-        assert.equal(Tokens[0].props.children, firstItem);
+        var Tokens = getTokens(testContext.component);
+        expect(Tokens[0].props.children).toEqual(firstItem);
       });
 
-      it('should remove a token when BKSPC is pressed on an empty input', function() {
-        // Select two items
-        simulateTokenInput(this.component, 'o');
-        var entry = this.component.refs.typeahead.refs.entry;
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
+      test(
+        'should remove a token when BKSPC is pressed on an empty input',
+        () => {
+          // Select two items
+          simulateTokenInput(testContext.component, 'o');
+          var entry = testContext.component.refs.typeahead.refs.entry;
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
-        simulateTokenInput(this.component, 'o');
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
+          simulateTokenInput(testContext.component, 'o');
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
-        // re-set the typeahead entry
-        var results = getTokens(this.component);
-        var startLength = results.length;
-        assert.equal(entry.value, "");
-        assert.equal(startLength, 2);
-        assert.equal(startLength, results.length);
+          // re-set the typeahead entry
+          var results = getTokens(testContext.component);
+          var startLength = results.length;
+          expect(entry.value).toEqual("");
+          expect(startLength).toEqual(2);
+          expect(startLength).toEqual(results.length);
 
-        // Now press backspace with the empty entry
-        TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_BACK_SPACE });
-        results = getTokens(this.component);
-        assert.equal(results.length + 1, startLength);
-      });
+          // Now press backspace with the empty entry
+          TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_BACK_SPACE });
+          results = getTokens(testContext.component);
+          expect(results.length + 1).toEqual(startLength);
+        }
+      );
 
-      it('should not remove a token on BKSPC when input is not empty', function() {
-        var input = this.component.refs.typeahead.refs.entry;
-        var startLength = getTokens(this.component).length;
+      test('should not remove a token on BKSPC when input is not empty', () => {
+        var input = testContext.component.refs.typeahead.refs.entry;
+        var startLength = getTokens(testContext.component).length;
 
         input.value = "hello";
         TestUtils.Simulate.change(input);
         TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_BACK_SPACE });
 
-        results = getTokens(this.component);
-        assert.equal(startLength , results.length);
+        results = getTokens(testContext.component);
+        expect(startLength).toEqual(results.length);
       });
 
-      it('tab to choose first item', function() {
-        var results = simulateTokenInput(this.component, 'o');
+      test('tab to choose first item', () => {
+        var results = simulateTokenInput(testContext.component, 'o');
         var itemText = ReactDOM.findDOMNode(results[0]).innerText;
-        var node = this.component.refs.typeahead.refs.entry;
-        var tokens = getTokens(this.component);
+        var node = testContext.component.refs.typeahead.refs.entry;
+        var tokens = getTokens(testContext.component);
 
         // Need to check Token list for props.children
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
 
-        var newTokens = getTokens(this.component)
-        assert.equal(tokens.length, newTokens.length - 1);
-        assert.equal(newTokens[newTokens.length - 1].props.children, itemText);
+        var newTokens = getTokens(testContext.component)
+        expect(tokens.length).toEqual(newTokens.length - 1);
+        expect(newTokens[newTokens.length - 1].props.children).toEqual(itemText);
       });
 
-      it('tab to selected current item', function() {
-        var results = simulateTokenInput(this.component, 'o');
+      test('tab to selected current item', () => {
+        var results = simulateTokenInput(testContext.component, 'o');
         var itemText = ReactDOM.findDOMNode(results[1]).innerText;
-        var node = this.component.refs.typeahead.refs.entry;
+        var node = testContext.component.refs.typeahead.refs.entry;
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
-        var tokens = getTokens(this.component);
-        assert.equal(tokens[tokens.length - 1].props.children, itemText);
+        var tokens = getTokens(testContext.component);
+        expect(tokens[tokens.length - 1].props.children).toEqual(itemText);
       });
     });
 
   });
 
-  describe('AllowCustomValues property test', function() {
+  describe('AllowCustomValues property test', () => {
     var tokenLength = 4;
 
-    beforeEach(function() {
-      this.sinon = sinon.sandbox.create();
-      this.tokenAdd = this.sinon.spy();
-      this.tokenRemove = this.sinon.spy();
+    beforeEach(() => {
+      testContext.sinon = sinon.sandbox.create();
+      testContext.tokenAdd = testContext.sinon.spy();
+      testContext.tokenRemove = testContext.sinon.spy();
 
 
-      this.component = TestUtils.renderIntoDocument(
+      testContext.component = TestUtils.renderIntoDocument(
         <Tokenizer
           options={BEATLES}
-          onTokenAdd={this.tokenAdd}
-          onTokenRemove={this.tokenRemove}
+          onTokenAdd={testContext.tokenAdd}
+          onTokenRemove={testContext.tokenRemove}
           allowCustomValues={tokenLength}
           customClasses={{
             customAdd: 'topcoat-custom__token'
@@ -370,116 +380,132 @@ describe('TypeaheadTokenizer Component', function() {
       );
     });
 
-    afterEach(function() {
-      this.sinon.restore();
+    afterEach(() => {
+      testContext.sinon.restore();
     })
 
 
-    it('should not allow custom tokens that are less than specified allowCustomValues length', function() {
-      var tokens = getTokens(this.component);
-      var results = simulateTokenInput(this.component, "abz");
-      assert.equal(0, results.length);
-    });
+    test(
+      'should not allow custom tokens that are less than specified allowCustomValues length',
+      () => {
+        var tokens = getTokens(testContext.component);
+        var results = simulateTokenInput(testContext.component, "abz");
+        expect(0).toEqual(results.length);
+      }
+    );
 
-    it('should display custom tokens when equal or exceeds allowCustomValues value', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      assert.equal(1, results.length);
-      assert.equal("abzz", results[0].props.children);
+    test(
+      'should display custom tokens when equal or exceeds allowCustomValues value',
+      () => {
+        var results = simulateTokenInput(testContext.component, "abzz");
+        expect(1).toEqual(results.length);
+        expect("abzz").toEqual(results[0].props.children);
 
-      results = simulateTokenInput(this.component, "bakercharlie")
-      assert.equal(1, results.length);
-      assert.equal("bakercharlie", results[0].props.customValue);
+        results = simulateTokenInput(testContext.component, "bakercharlie")
+        expect(1).toEqual(results.length);
+        expect("bakercharlie").toEqual(results[0].props.customValue);
+      }
+    )
+
+    test('should not add custom class to non-custom selection', () => {
+      var results = simulateTokenInput(testContext.component, "o");
+      expect(3).toEqual(results.length);
+      expect(
+        !ReactDOM.findDOMNode(results[0]).getAttribute('class').match(new RegExp(testContext.component.props.customClasses.customAdd))
+      ).toBeTruthy();
     })
 
-    it('should not add custom class to non-custom selection', function() {
-      var results = simulateTokenInput(this.component, "o");
-      assert.equal(3, results.length);
-      assert(!ReactDOM.findDOMNode(results[0]).getAttribute('class').match(new RegExp(this.component.props.customClasses.customAdd)));
+    test('should add custom class to custom selection', () => {
+      var results = simulateTokenInput(testContext.component, "abzz");
+      expect(1).toBeTruthy()
+      expect(
+        ReactDOM.findDOMNode(results[0]).getAttribute('class').match(new RegExp(testContext.component.props.customClasses.customAdd))
+      ).toBeTruthy();
     })
 
-    it('should add custom class to custom selection', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      assert(1, results.length)
-      assert(ReactDOM.findDOMNode(results[0]).getAttribute('class').match(new RegExp(this.component.props.customClasses.customAdd)));
-    })
-
-    it('should allow selection of custom token', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      var input = this.component.refs.typeahead.refs.entry;
-      var tokens = getTokens(this.component);
+    test('should allow selection of custom token', () => {
+      var results = simulateTokenInput(testContext.component, "abzz");
+      var input = testContext.component.refs.typeahead.refs.entry;
+      var tokens = getTokens(testContext.component);
 
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_DOWN})
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_RETURN})
-      tokens = getTokens(this.component)
-      assert(tokens.length == 1)
-      assert.equal("abzz", tokens[0].props.children);
+      tokens = getTokens(testContext.component)
+      expect(tokens.length == 1).toBeTruthy()
+      expect("abzz").toEqual(tokens[0].props.children);
     })
 
-    it('should call onTokenAdd for custom token', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      var input = this.component.refs.typeahead.refs.entry;
-      var tokens = getTokens(this.component);
+    test('should call onTokenAdd for custom token', () => {
+      var results = simulateTokenInput(testContext.component, "abzz");
+      var input = testContext.component.refs.typeahead.refs.entry;
+      var tokens = getTokens(testContext.component);
 
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_DOWN})
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_RETURN})
 
-      assert(this.tokenAdd.called);
-      assert(this.tokenAdd.calledWith( "abzz" ))
+      expect(testContext.tokenAdd.called).toBeTruthy();
+      expect(testContext.tokenAdd.calledWith( "abzz" )).toBeTruthy()
     })
 
-    it('should call onTokenRemove for custom token', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      var input = this.component.refs.typeahead.refs.entry;
-      var tokens = getTokens(this.component);
+    test('should call onTokenRemove for custom token', () => {
+      var results = simulateTokenInput(testContext.component, "abzz");
+      var input = testContext.component.refs.typeahead.refs.entry;
+      var tokens = getTokens(testContext.component);
 
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_DOWN})
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_RETURN})
 
-      assert(this.tokenAdd.called);
-      assert(this.tokenAdd.calledWith( "abzz" ))
+      expect(testContext.tokenAdd.called).toBeTruthy();
+      expect(testContext.tokenAdd.calledWith( "abzz" )).toBeTruthy()
 
-      tokens = getTokens(this.component);
+      tokens = getTokens(testContext.component);
       var tokenClose = TestUtils.scryRenderedDOMComponentsWithTag(tokens[0], "a")[0];
       TestUtils.Simulate.click(tokenClose);
-      assert(this.tokenRemove.called);
-      assert(this.tokenRemove.calledWith("abzz"));
+      expect(testContext.tokenRemove.called).toBeTruthy();
+      expect(testContext.tokenRemove.calledWith("abzz")).toBeTruthy();
     })
 
-    it('should not return undefined for a custom token when not selected', function() {
-      var results = simulateTokenInput(this.component, "abzz");
-      var input = this.component.refs.typeahead.refs.entry;
-      var tokens = getTokens(this.component);
+    test(
+      'should not return undefined for a custom token when not selected',
+      () => {
+        var results = simulateTokenInput(testContext.component, "abzz");
+        var input = testContext.component.refs.typeahead.refs.entry;
+        var tokens = getTokens(testContext.component);
+        TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_TAB})
+
+        var newTokens = getTokens(testContext.component)
+        // behavior is custom token is selected
+        expect(tokens.length < newTokens.length).toBeTruthy();
+        expect(input.value == "").toBeTruthy();
+        expect(newTokens[0].props.children).toEqual("abzz");
+      }
+    )
+
+    test('should not select value for a custom token when too short', () => {
+      var results = simulateTokenInput(testContext.component, "abz");
+      var input = testContext.component.refs.typeahead.refs.entry;
+      var tokens = getTokens(testContext.component);
       TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_TAB})
 
-      var newTokens = getTokens(this.component)
+      var newTokens = getTokens(testContext.component)
       // behavior is custom token is selected
-      assert(tokens.length < newTokens.length);
-      assert(input.value == "");
-      assert.equal(newTokens[0].props.children, "abzz");
-    })
-
-    it('should not select value for a custom token when too short', function() {
-      var results = simulateTokenInput(this.component, "abz");
-      var input = this.component.refs.typeahead.refs.entry;
-      var tokens = getTokens(this.component);
-      TestUtils.Simulate.keyDown(input, {keyCode: Keyevent.DOM_VK_TAB})
-
-      var newTokens = getTokens(this.component)
-      // behavior is custom token is selected
-      assert(newTokens.length == 0);
-      assert(input.value == "abz");
+      expect(newTokens.length == 0).toBeTruthy();
+      expect(input.value == "abz").toBeTruthy();
     })
   })
 
-  describe('defaultClassNames', function() {
-    it('should remove default classNames when this prop is specified and false', function() {
-      var component = TestUtils.renderIntoDocument(<Tokenizer
-        options={ BEATLES }
-        defaultClassNames={false}
-      />);
+  describe('defaultClassNames', () => {
+    test(
+      'should remove default classNames when this prop is specified and false',
+      () => {
+        var component = TestUtils.renderIntoDocument(<Tokenizer
+          options={ BEATLES }
+          defaultClassNames={false}
+        />);
 
-      assert.notOk(ReactDOM.findDOMNode(component).classList.contains("tokenizer-typeahead"));
-      assert.equal(false, component.refs.typeahead.props.defaultClassNames);
-    });
+        expect(ReactDOM.findDOMNode(component).classList.contains("tokenizer-typeahead")).toBeFalsy();
+        expect(false).toEqual(component.refs.typeahead.props.defaultClassNames);
+      }
+    );
   });
 });

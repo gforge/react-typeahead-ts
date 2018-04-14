@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { assert } from 'chai';
 import TestUtils from 'react-dom/test-utils';
 import { Typeahead as ReactTypeahead, Tokenizer as ReactTokenizer } from '../src';
 
 describe('Main entry point', () => {
-  it('exports a Typeahead component', function() {
+  test('exports a Typeahead component', () => {
     let typeahead = TestUtils.renderIntoDocument(<ReactTypeahead />);
-    assert.ok(TestUtils.isCompositeComponent(typeahead));
+    expect(TestUtils.isCompositeComponent(typeahead)).toBeTruthy();
   });
 
-  it('exports a Tokenizer component', function() {
+  test('exports a Tokenizer component', () => {
     var tokenizer = TestUtils.renderIntoDocument(<ReactTokenizer />);
-    assert.ok(TestUtils.isCompositeComponent(tokenizer));
+    expect(TestUtils.isCompositeComponent(tokenizer)).toBeTruthy();
   });
 });
