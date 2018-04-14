@@ -1,11 +1,12 @@
 import * as React from 'react';
+import bind from 'bind-decorator';
 import Accessor from '../accessor';
 import Token from './token';
 import KeyEvent from '../keyevent';
 import Typeahead from '../typeahead';
 import classNames from 'classnames';
 import { InputProps } from 'reactstrap';
-import { TokenCustomClasses } from '../types';
+import { TokenCustomClasses, Option, OptionToStrFn } from '../types';
 
 const arraysAreDifferent = (array1: any[], array2: any[]): boolean => {
   if (array1.length !== array2.length) {
@@ -21,9 +22,9 @@ const arraysAreDifferent = (array1: any[], array2: any[]): boolean => {
   return false;
 };
 
-export interface Props extends InputProps {
-  name: string;
-  options: any[];
+export interface Props<Opt extends Option> extends InputProps {
+  name?: string;
+  options: Opt[];
   customClasses?: TokenCustomClasses;
   allowCustomValues?: number;
   defaultSelected: any[];
@@ -35,16 +36,16 @@ export interface Props extends InputProps {
   onTokenAdd?: Function;
   filterOption?: string | Function;
   searchOptions?: Function;
-  displayOption?: string | ((arg: any) => string);
-  formInputOption?: string | ((arg: any) => string);
+  displayOption?: string | OptionToStrFn<Opt>;
+  formInputOption?: string | OptionToStrFn<Opt>;
   maxVisible?: number;
   resultsTruncatedMessage?: string;
   defaultClassNames?: boolean;
   showOptionsWhenEmpty?: boolean;
 }
 
-export interface State {
-  selected: string[];
+export interface State<Opt extends Option> {
+  selected: Opt[];
 }
 
 /**
@@ -52,8 +53,8 @@ export interface State {
  * the text entry widget, prepends a renderable "token", that may be deleted
  * by pressing backspace on the beginning of the line with the keyboard.
  */
-class TypeaheadTokenizer extends React.Component<Props, State> {
-  constructor(props: Props) {
+class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
+  constructor(props: Props<T>) {
     super(props);
 
     const { defaultSelected = [] } = props;
@@ -73,14 +74,26 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
         disabled: false,
         inputProps: {},
         defaultClassNames: true,
-        displayOption: (token: any) => token,
         showOptionsWhenEmpty: false,
       },
       ...this.props,
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  private inputMapper?: OptionToStrFn<T>;
+  private getInputOptionToStringMapper(): OptionToStrFn<T> {
+    if (this.inputMapper) {
+      return this.inputMapper;
+    }
+
+    const { formInputOption, displayOption } = this.getProps();
+    const anyToStrFn = formInputOption || displayOption;
+    this.inputMapper = Accessor.generateOptionToStringFor(anyToStrFn);
+
+    return this.inputMapper;
+  }
+
+  componentWillReceiveProps(nextProps: Props<T>) {
     // if we get new defaultProps, update selected
     if (arraysAreDifferent(this.props.defaultSelected, nextProps.defaultSelected)) {
       this.setState({ selected: nextProps.defaultSelected.slice(0) });
@@ -109,8 +122,8 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
 
     const result = this.state.selected
       .map((selected) => {
-        const displayString = Accessor.valueForOption(displayOption, selected);
-        const value = Accessor.valueForOption(formInputOption || displayOption, selected);
+        const displayString = Accessor.valueForOption(selected, displayOption);
+        const value = Accessor.valueForOption(selected, formInputOption || displayOption);
         if (!displayString || !value) throw new Error('Expected string and value to exist');
 
         const key: string = displayString;
@@ -135,6 +148,7 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
     return this.props.options;
   }
 
+  @bind
   private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     // We only care about intercepting backspaces
     if (event.keyCode === KeyEvent.DOM_VK_BACK_SPACE) {
@@ -160,8 +174,15 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
     }
   }
 
-  private removeTokenForValue(value: string) {
-    const index = this.state.selected.indexOf(value);
+  private getSelectedIndex(value: T) {
+    const mapper = this.getInputOptionToStringMapper();
+    const searchStr: string = mapper(value);
+    return this.state.selected
+      .map(mapper)
+      .indexOf(searchStr);
+  }
+  private removeTokenForValue(value: T) {
+    const index = this.getSelectedIndex(value);
     if (index === -1) {
       return;
     }
@@ -172,9 +193,10 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
     return;
   }
 
-  private addTokenForValue(value: string) {
+  @bind
+  private addTokenForValue(value: T) {
     let { selected } = this.state;
-    if (selected.indexOf(value) !== -1) {
+    if (this.getSelectedIndex(value) !== -1) {
       return;
     }
     selected = [...selected, value];
@@ -192,8 +214,9 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
       allowCustomValues, initialValue = '',
       maxVisible, resultsTruncatedMessage, placeholder,
       onKeyPress, onKeyUp, onFocus, onBlur,
-      displayOption, defaultClassNames, filterOption, searchOptions,
-      showOptionsWhenEmpty,
+      showOptionsWhenEmpty, displayOption,
+      defaultClassNames, filterOption,
+      searchOptions,
     } = this.getProps();
     const classes: any = {};
     const { typeahead } = customClasses;
@@ -234,6 +257,7 @@ class TypeaheadTokenizer extends React.Component<Props, State> {
       <div className={tokenizerClassList}>
         {this.renderTokens()}
         <Typeahead 
+          // @ts-ignore - issue with addTokenForValue!?
           innerRef={(c: HTMLInputElement) => this.typeaheadElement = c}
           className={classList}
           {...args2Pass}

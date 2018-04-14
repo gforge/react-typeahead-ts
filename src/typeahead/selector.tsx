@@ -1,10 +1,10 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import TypeaheadOption from './option';
-import { CustomClasses, OptionSelector } from '../types';
+import { CustomClasses, OptionSelector, Option } from '../types';
 
-export interface Props {
-  options: string[];
+export interface Props<Opt extends Option> {
+  options: Opt[];
   allowCustomValues?: number;
   customClasses?: CustomClasses;
   customValue?: string;
@@ -21,7 +21,7 @@ export interface Props {
  * Container for the options rendered as part of the autocompletion process
  * of the typeahead
  */
-class TypeaheadSelector extends React.Component<Props> {
+class TypeaheadSelector<T> extends React.Component<Props<T>> {
   // Hack to handle the buggy typescript defaultProps
   private getProps() {
     const customClasses: CustomClasses = {};
@@ -93,7 +93,7 @@ class TypeaheadSelector extends React.Component<Props> {
 
     if (areResultsTruncated && resultsTruncatedMessage) {
       const resultsTruncatedClasses: any = {
-        'results-truncated': defaultClassNames,
+        'results-truncated': true,
       };
       const { resultsTruncated } = customClasses;
       if (resultsTruncated) {
@@ -106,7 +106,7 @@ class TypeaheadSelector extends React.Component<Props> {
           {this.props.resultsTruncatedMessage}
         </li>);
     }
-
+    
     return (
       <ul className={classList}>
         {customValueComponent}

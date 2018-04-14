@@ -46,7 +46,7 @@ class TypeaheadOption extends React.Component<Props> {
       children, customValue,
      } = this.getProps();
 
-    const classes: any = {};
+    const classes: any = { };
     const { listItem, hover: hoverClass = 'hover', customAdd } = customClasses;
     classes[hoverClass] = Boolean(hover);
     if (listItem) {

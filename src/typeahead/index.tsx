@@ -5,15 +5,23 @@ import TypeaheadSelector, { Props as TypelistProps } from './selector';
 import KeyEvent from '../keyevent';
 import fuzzy, { FilterOptions } from 'fuzzy';
 import classNames from 'classnames';
-import { CustomClasses } from '../types';
+import { CustomClasses, Option, OptionToStrFn } from '../types';
 import { Input, InputProps } from 'reactstrap';
 
-export interface Props extends InputProps {
+export type OnOptionSelectArg<Opt extends Option> = 
+  ((option: Opt | string, event?: React.SyntheticEvent<HTMLAnchorElement>) => any);
+
+export type AnyReactWithProps<Opt extends Option> = 
+  React.Component<TypelistProps<Opt>> | 
+  React.PureComponent<TypelistProps<Opt>> |
+  React.SFC<TypelistProps<Opt>>;
+
+export interface Props<Opt extends Option, Mapped> extends InputProps {
   name?: string;
   customClasses?: CustomClasses;
   maxVisible?: number;
   resultsTruncatedMessage?: string;
-  options: string[];
+  options: Opt[];
   allowCustomValues?: number;
   initialValue?: string;
   value?: string;
@@ -21,21 +29,21 @@ export interface Props extends InputProps {
   disabled?: boolean;
   textarea?: boolean;
   inputProps?: object;
-  onOptionSelected?: Function;
-  filterOption?: string | Function;
-  searchOptions?: Function;
-  displayOption?: string | Function;
-  inputDisplayOption?: string | Function;
-  formInputOption?: string | Function;
+  onOptionSelected?: OnOptionSelectArg<Mapped>;
+  filterOption?: string | ((value: string, option: Opt) => boolean);
+  searchOptions?: ((value: string, option: Opt[]) => Mapped[]);
+  displayOption?: string | OptionToStrFn<Mapped>;
+  inputDisplayOption?: string | OptionToStrFn<Mapped>;
+  formInputOption?: string | OptionToStrFn<Mapped>;
   defaultClassNames?: boolean;
-  customListComponent?: React.Component<TypelistProps>;
+  customListComponent?: AnyReactWithProps<Opt>;
   showOptionsWhenEmpty?: boolean;
   innerRef?: (c: HTMLInputElement) => any;
 }
 
-export interface State {
+export interface State<Mapped> {
   // The options matching the entry value
-  searchResults: string[];
+  searchResults: Mapped[];
 
   // This should be called something else, "entryValue"
   entryValue: string;
@@ -60,8 +68,11 @@ export interface State {
  * Renders an text input that shows options nearby that you can use the
  * keyboard or mouse to select.  Requires CSS for MASSIVE DAMAGE.
  */
-class Typeahead extends React.Component<Props, State>{
-  constructor(props: Props) {
+class Typeahead<T extends Option, Mapped> extends React.Component<
+  Props<T, Mapped>,
+  State<Mapped>
+> {
+  constructor(props: Props<T, Mapped>) {
     super(props);
 
     this.state = {
@@ -115,17 +126,19 @@ class Typeahead extends React.Component<Props, State>{
     return !(this.props.showOptionsWhenEmpty && isFocused) && emptyValue;
   }
 
-  getOptionsForValue(value?: string, options?: string[]) {
-    if (this.shouldSkipSearch(value)) { return []; }
+  getOptionsForValue(value?: string, options?: T[]): Mapped[] {
+    if (this.shouldSkipSearch(value)) {
+      return [];
+    }
 
-    const searchOptions = this.generateSearchFunction();
-    return searchOptions(value, options);
+    const searchOptions = this.generateSearchFunction();    
+    return searchOptions(value || '', options || this.getProps().options);
   }
 
   setEntryText(value: string) {
     if (!this.inputElement) return;
     this.inputElement.value = value;
-    this.onTextEntryUpdated( );
+    this.onTextEntryUpdated();
   }
 
   @bind
@@ -137,12 +150,17 @@ class Typeahead extends React.Component<Props, State>{
   private hasCustomValue() {
     const { allowCustomValues } = this.getProps();
     const { entryValue, searchResults } = this.state;
-    
-    return (
-      allowCustomValues && 
-      allowCustomValues > 0 &&
-      entryValue.length >= allowCustomValues &&
-      searchResults.indexOf(this.state.entryValue) < 0);
+
+    if (
+      !allowCustomValues ||
+      allowCustomValues > 0 ||
+      entryValue.length >= allowCustomValues
+    ) {
+      return false;
+    }
+
+    const mapper = this.getInputOptionToStringMapper();
+    return searchResults.map(mapper).indexOf(this.state.entryValue) < 0;
   }
 
   private getCustomValue() {
@@ -152,13 +170,15 @@ class Typeahead extends React.Component<Props, State>{
     return undefined;
   }
 
-  selectElement?: HTMLElement;
   private renderIncrementalSearchResults() {
     const { entryValue, selection, searchResults, selectionIndex } = this.state;
     const {
-      // @ts-ignore
-      maxVisible, resultsTruncatedMessage, customListComponent, 
-      allowCustomValues, customClasses, defaultClassNames,
+      maxVisible,
+      resultsTruncatedMessage,
+      displayOption,
+      allowCustomValues,
+      customClasses,
+      defaultClassNames,
     } = this.getProps();
 
     // Nothing has been entered into the textbox
@@ -171,66 +191,114 @@ class Typeahead extends React.Component<Props, State>{
       return '';
     }
 
-    const truncated: boolean = Boolean(maxVisible && searchResults.length > maxVisible);
+    const truncated: boolean = Boolean(
+      maxVisible && searchResults.length > maxVisible,
+    );
     return (
-      // @ts-ignore
       <TypeaheadSelector
-        innerRef={(c: HTMLElement) => this.selectElement = c}
-        options={maxVisible ? searchResults.slice(0, maxVisible) : searchResults}
+        options={
+          maxVisible ? searchResults.slice(0, maxVisible) : searchResults
+        }
         areResultsTruncated={truncated}
-        resultsTruncatedMessage={resultsTruncatedMessage}
         onOptionSelected={this.onOptionSelected}
-        allowCustomValues={allowCustomValues}
         customValue={this.getCustomValue()}
-        customClasses={customClasses}
-        selectionIndex={selectionIndex}
-        defaultClassNames={defaultClassNames}
-        displayOption={Accessor.generateOptionToStringFor(this.props.displayOption)} 
+        displayOption={Accessor.generateOptionToStringFor(displayOption)}
+        {...{
+          allowCustomValues,
+          resultsTruncatedMessage,
+          customClasses,
+          selectionIndex,
+          defaultClassNames,
+        }}
       />
     );
   }
 
-  getSelection() {
+  getSelection(): Mapped | string | undefined {
     let index = this.state.selectionIndex;
-    if (index === undefined) throw new Error('No index set');
+    if (index === undefined) return undefined;
+
     if (this.hasCustomValue()) {
       if (index === 0) {
         return this.state.entryValue;
       }
       index -= 1;
     }
+
     return this.state.searchResults[index];
   }
 
+  private inputMapper?: OptionToStrFn<Mapped>;
+  private getInputOptionToStringMapper(): OptionToStrFn<Mapped> {
+    if (this.inputMapper) {
+      return this.inputMapper;
+    }
+
+    const {
+      formInputOption,
+      inputDisplayOption,
+      displayOption,
+    } = this.getProps();
+    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
+    this.inputMapper = Accessor.generateOptionToStringFor(anyToStrFn);
+
+    return this.inputMapper;
+  }
+
+  private displayMapper?: OptionToStrFn<Mapped>;
+  private getDisplayOptionToStringMapper(): OptionToStrFn<Mapped> {
+    if (this.displayMapper) {
+      return this.displayMapper;
+    }
+
+    const { displayOption, inputDisplayOption } = this.getProps();
+    this.displayMapper = Accessor.generateOptionToStringFor(
+      inputDisplayOption || displayOption,
+    );
+
+    return this.displayMapper;
+  }
+
   @bind
-  private onOptionSelected(option: string, event: React.SyntheticEvent<any>) {
+  private onOptionSelected(
+    option: Mapped | string,
+    event: React.SyntheticEvent<any>,
+  ) {
     if (!this.inputElement) throw new Error('No input element');
     this.inputElement.focus();
 
-    let { displayOption, formInputOption } = this.getProps();
-    displayOption = Accessor
-      .generateOptionToStringFor(this.props.inputDisplayOption || displayOption);
-    const optionString = displayOption(option, 0);
+    let optionString: string;
+    let formInputOptionString: string;
+    if (typeof option === 'string') {
+      optionString = option as string;
+      formInputOptionString = option as string;
+    } else {
+      const displayOption = this.getDisplayOptionToStringMapper();
+      optionString = displayOption(option, 0);
 
-    formInputOption = Accessor.generateOptionToStringFor(formInputOption || displayOption);
-    const formInputOptionString = formInputOption(option);
+      const formInputOption = this.getInputOptionToStringMapper();
+      formInputOptionString = formInputOption(option);
+    }
 
     this.inputElement.value = optionString;
     this.setState({
-      searchResults: this.getOptionsForValue(optionString, this.props.options),
+      searchResults: this.getOptionsForValue(optionString),
       selection: formInputOptionString,
       entryValue: optionString,
       showResults: false,
     });
-    return this.props.onOptionSelected && this.props.onOptionSelected(option, event);
+    return (
+      this.props.onOptionSelected && this.props.onOptionSelected(option, event)
+    );
   }
 
   @bind
-  private onTextEntryUpdated() {
+  private onTextEntryUpdated(newValue?: string) {
     if (!this.inputElement) throw new Error('No input element');
-    const value = this.inputElement.value;
+    const value = newValue === undefined ? this.inputElement.value : newValue;
+
     this.setState({
-      searchResults: this.getOptionsForValue(value, this.props.options),
+      searchResults: this.getOptionsForValue(value),
       selection: '',
       entryValue: value,
     });
@@ -255,8 +323,12 @@ class Typeahead extends React.Component<Props, State>{
   @bind
   private onTab(event: React.KeyboardEvent<HTMLInputElement>) {
     const selection = this.getSelection();
-    let option = selection ?
-      selection : (this.state.searchResults.length > 0 ? this.state.searchResults[0] : undefined);
+
+    let option = selection
+      ? selection
+      : this.state.searchResults.length > 0
+        ? this.state.searchResults[0]
+        : undefined;
 
     if (option === undefined && this.hasCustomValue()) {
       option = this.getCustomValue();
@@ -272,7 +344,9 @@ class Typeahead extends React.Component<Props, State>{
 
     events[KeyEvent.DOM_VK_UP] = this.navUp;
     events[KeyEvent.DOM_VK_DOWN] = this.navDown;
-    events[KeyEvent.DOM_VK_RETURN] = events[KeyEvent.DOM_VK_ENTER] = this.onEnter;
+    events[KeyEvent.DOM_VK_RETURN] = events[
+      KeyEvent.DOM_VK_ENTER
+    ] = this.onEnter;
     events[KeyEvent.DOM_VK_ESCAPE] = this.onEscape;
     events[KeyEvent.DOM_VK_TAB] = this.onTab;
 
@@ -283,11 +357,18 @@ class Typeahead extends React.Component<Props, State>{
     if (!this.hasHint()) {
       return;
     }
+
     const { selectionIndex, searchResults } = this.state;
     const { maxVisible } = this.getProps();
-    let newIndex = selectionIndex === undefined ? 
-      (delta === 1 ? 0 : delta) : selectionIndex + delta;
-    let length = maxVisible ? searchResults.slice(0, maxVisible).length : searchResults.length;
+    let newIndex =
+      selectionIndex === undefined
+        ? delta === 1
+          ? 0
+          : delta
+        : selectionIndex + delta;
+    let length = maxVisible
+      ? searchResults.slice(0, maxVisible).length
+      : searchResults.length;
     if (this.hasCustomValue()) {
       length += 1;
     }
@@ -301,10 +382,12 @@ class Typeahead extends React.Component<Props, State>{
     this.setState({ selectionIndex: newIndex });
   }
 
+  @bind
   navDown() {
     this.nav(1);
   }
 
+  @bind
   navUp() {
     this.nav(-1);
   }
@@ -316,21 +399,20 @@ class Typeahead extends React.Component<Props, State>{
       onChange(event);
     }
 
-    this.onTextEntryUpdated();
+    this.onTextEntryUpdated(event.target.value);
   }
 
   @bind
   private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     // If there are no visible elements, don't perform selector navigation.
     // Just pass this up to the upstream onKeydown handler.
-    // Also skip if the user is pressing the shift key, 
+    // Also skip if the user is pressing the shift key,
     // since none of our handlers are looking for shift
     if (!this.hasHint() || event.shiftKey) {
       return this.props.onKeyDown && this.props.onKeyDown(event);
     }
 
     const handler = this.eventMap()[event.keyCode];
-
     if (handler) {
       handler(event);
     } else {
@@ -340,14 +422,20 @@ class Typeahead extends React.Component<Props, State>{
     event.preventDefault();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    const searchResults = this.getOptionsForValue(this.state.entryValue, nextProps.options);
+  componentWillReceiveProps(nextProps: Props<T, Mapped>) {
+    const searchResults = this.getOptionsForValue(
+      this.state.entryValue,
+      nextProps.options,
+    );
     const showResults = Boolean(searchResults.length) && this.state.isFocused;
     this.setState({ searchResults, showResults });
   }
 
   render() {
-    const { customClasses: { input }, className } = this.getProps();
+    const {
+      customClasses: { input },
+      className,
+    } = this.getProps();
     const inputClasses: any = {};
     if (input) {
       inputClasses[input] = true;
@@ -365,7 +453,7 @@ class Typeahead extends React.Component<Props, State>{
     return (
       <div className={classList}>
         {this.renderHiddenInput()}
-        <Input 
+        <Input
           innerRef={(c: HTMLInputElement) => {
             this.inputElement = c;
             this.props.innerRef && this.props.innerRef(c);
@@ -393,9 +481,7 @@ class Typeahead extends React.Component<Props, State>{
     this.setState({ isFocused: true, showResults: true }, () => {
       this.onTextEntryUpdated();
     });
-    if (this.props.onFocus) {
-      return this.props.onFocus(event);
-    }
+    this.props.onFocus && this.props.onFocus(event);
   }
 
   @bind
@@ -403,9 +489,7 @@ class Typeahead extends React.Component<Props, State>{
     this.setState({ isFocused: false }, () => {
       this.onTextEntryUpdated();
     });
-    if (this.props.onBlur) {
-      return this.props.onBlur(event);
-    }
+    this.props.onBlur && this.props.onBlur(event);
   }
 
   private renderHiddenInput() {
@@ -414,42 +498,48 @@ class Typeahead extends React.Component<Props, State>{
       return null;
     }
 
-    return (
-      <input
-        type="hidden"
-        name={name}
-        value={this.state.selection}
-      />
-    );
+    return <input type="hidden" name={name} value={this.state.selection} />;
   }
 
-  private generateSearchFunction() {
+  private searchFunction?: (value: string, options: T[]) => Mapped[];
+  private generateSearchFunction(): (value: string, options: T[]) => Mapped[] {
+    if (this.searchFunction) {
+      return this.searchFunction;
+    }
     const { searchOptions, filterOption } = this.getProps();
     if (typeof searchOptions === 'function') {
-      if (filterOption !== null) {
-        console.warn('searchOptions prop is being used, filterOption prop will be ignored');
+      if (filterOption !== undefined) {
+        console.warn(
+          'searchOptions prop is being used, filterOption prop will be ignored',
+        );
       }
-      return searchOptions;
-    } 
-    
-    if (typeof filterOption === 'function') {
-      return (value: string, options: string[]) => {
-        return options.filter(o => filterOption(value, o));
+
+      this.searchFunction = searchOptions;
+
+    } else if (typeof filterOption === 'function') {
+  
+      this.searchFunction = (value: string, options: T[]): Mapped[] =>
+      options.filter(o => filterOption(value, o)).map(a => a as any);
+      
+    } else {
+  
+      let mapper: (input: any) => string;
+      if (typeof filterOption === 'string') {
+        mapper = Accessor.generateAccessor(filterOption);
+      } else {
+        mapper = Accessor.IDENTITY_FN;
+      }
+      
+      
+      this.searchFunction = (value: string, options: T[]) => {
+        const fuzzyOpt: FilterOptions<any> = { extract: mapper };
+        return fuzzy
+          .filter(value, options, fuzzyOpt)
+          .map((res: { index: number }) => options[res.index] as any);
       };
     }
-    
-    let mapper: (input: any) => string;
-    if (typeof filterOption === 'string') {
-      mapper = Accessor.generateAccessor(filterOption);
-    } else {
-      mapper = Accessor.IDENTITY_FN;
-    }
-    return (value: string, options: string[]) => {
-      const fuzzyOpt: FilterOptions<any> = { extract: mapper };
-      return fuzzy
-        .filter(value, options, fuzzyOpt)
-        .map((res: { index: number }) => options[res.index]);
-    };
+
+    return this.searchFunction;
   }
 
   private hasHint() {

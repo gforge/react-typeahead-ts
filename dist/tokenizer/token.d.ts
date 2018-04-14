@@ -2,12 +2,12 @@
 import * as React from 'react';
 export interface Props {
     className?: string;
-    name: string;
+    name?: string;
     children: React.ReactNode | string;
     object: string | object;
     onRemove: Function;
     value: string;
-    key?: string | number;
+    key: string | number;
 }
 declare class Token extends React.Component<Props> {
     render(): JSX.Element;

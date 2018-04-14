@@ -6,6 +6,7 @@ export interface CustomClasses {
   listItem?: string;
   customAdd?: string;
   listAnchor?: string;
+  nav?: string;
 }
 
 export interface TokenCustomClasses extends CustomClasses {
@@ -14,3 +15,7 @@ export interface TokenCustomClasses extends CustomClasses {
 }
 
 export type OptionSelector = (result: string, event: React.MouseEvent<HTMLDivElement>) => any;
+
+export type Option = string | { [propName: string]: any };
+
+export type OptionToStrFn<T> = (option: T, index?: number) => string;

@@ -7,6 +7,7 @@ export interface CustomClasses {
     listItem?: string;
     customAdd?: string;
     listAnchor?: string;
+    nav?: string;
 }
 export interface TokenCustomClasses extends CustomClasses {
     token?: string;

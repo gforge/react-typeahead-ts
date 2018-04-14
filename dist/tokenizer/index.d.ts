@@ -3,7 +3,7 @@ import * as React from 'react';
 import { InputProps } from 'reactstrap';
 import { TokenCustomClasses } from '../types';
 export interface Props extends InputProps {
-    name: string;
+    name?: string;
     options: any[];
     customClasses?: TokenCustomClasses;
     allowCustomValues?: number;

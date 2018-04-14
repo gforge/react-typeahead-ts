@@ -45,11 +45,10 @@ declare class Typeahead extends React.Component<Props, State> {
     focus(): void;
     private hasCustomValue();
     private getCustomValue();
-    selectElement?: HTMLElement;
     private renderIncrementalSearchResults();
-    getSelection(): string;
+    getSelection(): string | undefined;
     private onOptionSelected(option, event);
-    private onTextEntryUpdated();
+    private onTextEntryUpdated(newValue?);
     private onEnter(event);
     private onEscape();
     private onTab(event);
@@ -59,7 +58,7 @@ declare class Typeahead extends React.Component<Props, State> {
     navUp(): void;
     private onChange(event);
     private onKeyDown(event);
-    componentWillReceiveProps(nextProps: Props): void;
+    componentWillReceiveProps(nextProps: Props, newState: State): void;
     render(): JSX.Element;
     private onFocus(event);
     private onBlur(event);
