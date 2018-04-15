@@ -1,10 +1,10 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { InputProps } from 'reactstrap';
-import { TokenCustomClasses } from '../types';
-export interface Props extends InputProps {
+import { TokenCustomClasses, Option, OptionToStrFn } from '../types';
+export interface Props<Opt extends Option> extends InputProps {
     name?: string;
-    options: any[];
+    options: Opt[];
     customClasses?: TokenCustomClasses;
     allowCustomValues?: number;
     defaultSelected: any[];
@@ -16,27 +16,30 @@ export interface Props extends InputProps {
     onTokenAdd?: Function;
     filterOption?: string | Function;
     searchOptions?: Function;
-    displayOption?: string | ((arg: any) => string);
-    formInputOption?: string | ((arg: any) => string);
+    displayOption?: string | OptionToStrFn<Opt>;
+    formInputOption?: string | OptionToStrFn<Opt>;
     maxVisible?: number;
     resultsTruncatedMessage?: string;
     defaultClassNames?: boolean;
     showOptionsWhenEmpty?: boolean;
 }
-export interface State {
-    selected: string[];
+export interface State<Opt extends Option> {
+    selected: Opt[];
 }
-declare class TypeaheadTokenizer extends React.Component<Props, State> {
-    constructor(props: Props);
+declare class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
+    constructor(props: Props<T>);
     private getProps();
-    componentWillReceiveProps(nextProps: Props): void;
+    private inputMapper?;
+    private getInputOptionToStringMapper();
+    componentWillReceiveProps(nextProps: Props<T>): void;
     typeaheadElement?: HTMLInputElement;
     focus(): void;
-    getSelectedTokens(): string[];
+    getSelectedTokens(): T[];
     private renderTokens();
     private getOptionsForTypeahead();
     private onKeyDown(event);
     private handleBackspace(event);
+    private getSelectedIndex(value);
     private removeTokenForValue(value);
     private addTokenForValue(value);
     render(): JSX.Element;

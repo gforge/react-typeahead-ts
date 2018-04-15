@@ -14,3 +14,7 @@ export interface TokenCustomClasses extends CustomClasses {
     typeahead?: string;
 }
 export declare type OptionSelector = (result: string, event: React.MouseEvent<HTMLDivElement>) => any;
+export declare type Option = string | {
+    [propName: string]: any;
+};
+export declare type OptionToStrFn<T> = (option: T, index?: number) => string;

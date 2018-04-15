@@ -7,7 +7,9 @@ yarn-error.log*
 
 # Skip lock-files
 package-lock.json
-yarn.loc
+yarn.lock
+examples/package-lock.json
+examples/yarn.lock
 
 # Runtime data
 pids

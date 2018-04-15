@@ -1,8 +1,8 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { CustomClasses, OptionSelector } from '../types';
-export interface Props {
-    options: string[];
+import { CustomClasses, OptionSelector, Option } from '../types';
+export interface Props<Opt extends Option> {
+    options: Opt[];
     allowCustomValues?: number;
     customClasses?: CustomClasses;
     customValue?: string;
@@ -14,7 +14,7 @@ export interface Props {
     resultsTruncatedMessage?: string;
     innerRef?: ((c: HTMLElement) => void);
 }
-declare class TypeaheadSelector extends React.Component<Props> {
+declare class TypeaheadSelector<T> extends React.Component<Props<T>> {
     private getProps();
     render(): false | JSX.Element;
     private onClick(result, event);
