@@ -1,4 +1,4 @@
-# Examples for react-typeahead-ts
+# Examples for @gforge/react-typeahead-ts
 
 In order to run the example run the following bash commands in the parent folder:
 ```bash

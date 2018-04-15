@@ -275,33 +275,32 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
         selection: '',
         showResults: true,
       });
-      return;
-    }
-
-    this.selected = true;
-    if (!this.inputElement) throw new Error('No input element');
-    this.inputElement.focus();
-
-    let optionString: string;
-    let formInputOptionString: string;
-    if (typeof option === 'string') {
-      optionString = option as string;
-      formInputOptionString = option as string;
     } else {
-      const displayOption = this.getDisplayOptionToStringMapper();
-      optionString = displayOption(option, 0);
+      this.selected = true;
+      if (!this.inputElement) throw new Error('No input element');
+      this.inputElement.focus();
 
-      const formInputOption = this.getInputOptionToStringMapper();
-      formInputOptionString = formInputOption(option);
+      let optionString: string;
+      let formInputOptionString: string;
+      if (typeof option === 'string') {
+        optionString = option as string;
+        formInputOptionString = option as string;
+      } else {
+        const displayOption = this.getDisplayOptionToStringMapper();
+        optionString = displayOption(option, 0);
+
+        const formInputOption = this.getInputOptionToStringMapper();
+        formInputOptionString = formInputOption(option);
+      }
+
+      this.inputElement.value = optionString;
+      this.setState({
+        searchResults: this.searchOptions(optionString),
+        selection: formInputOptionString,
+        entryValue: optionString,
+        showResults: false,
+      });
     }
-
-    this.inputElement.value = optionString;
-    this.setState({
-      searchResults: this.searchOptions(optionString),
-      selection: formInputOptionString,
-      entryValue: optionString,
-      showResults: false,
-    });
 
     this.props.onOptionSelected && this.props.onOptionSelected(option, event);
   }
@@ -415,6 +414,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       onChange(event);
     }
 
+    console.log('onChange')
     this.onOptionSelected(undefined);
     this.onTextEntryUpdated(event.target.value);
   }

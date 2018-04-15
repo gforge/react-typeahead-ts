@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Card, CardHeader, CardBody } from 'reactstrap';
-import { Typeahead } from 'react-typeahead-ts';
+import { Typeahead } from '@gforge/react-typeahead-ts';
 import FormikExample from './FormikExample';
 import Code from './Code';
 import './App.css';
@@ -32,14 +32,14 @@ class App extends React.Component {
           <CardHeader>Simple test</CardHeader>
           <Code>
             {`
-              <Typeahead 
-                options={['John', 'Paul', 'George', 'Ringo']} 
-                maxVisible={2} 
+              <Typeahead
+                options={['John', 'Paul', 'George', 'Ringo']}
+                maxVisible={2}
               />`}
           </Code>
           <CardBody>
-            <Typeahead 
-              options={['John', 'Paul', 'George', 'Ringo']} 
+            <Typeahead
+              options={['John', 'Paul', 'George', 'Ringo']}
             />
           </CardBody>
         </Card>
@@ -48,19 +48,19 @@ class App extends React.Component {
           <CardHeader>Always show with Bootstrap classes</CardHeader>
           <Code>
             {`
-            <Typeahead 
-              options={['John', 'Paul', 'George', 'Ringo']} 
+            <Typeahead
+              options={['John', 'Paul', 'George', 'Ringo']}
               showOptionsWhenEmpty={true}
               className="inputStyle"
               customClasses={{
                 results: 'list-group',
                 listItem: 'list-group-item'
-              }}              
+              }}
             />`}
           </Code>
           <CardBody>
-            <Typeahead 
-              options={['John', 'Paul', 'George', 'Ringo']} 
+            <Typeahead
+              options={['John', 'Paul', 'George', 'Ringo']}
               showOptionsWhenEmpty={true}
               className="inputStyle"
               customClasses={{
@@ -76,11 +76,11 @@ class App extends React.Component {
           <CardHeader>Pass object array as option</CardHeader>
           <Code>
             {`
-              <Typeahead 
+              <Typeahead
                 options={[
-                  { id: 1, name: 'John' }, 
-                  { id: 2, name: 'Paul' }, 
-                  { id: 3, name: 'George' }, 
+                  { id: 1, name: 'John' },
+                  { id: 2, name: 'Paul' },
+                  { id: 3, name: 'George' },
                   { id: 4, name: 'Ringo' },
                 ]}
                 filterOption="name"
@@ -90,11 +90,11 @@ class App extends React.Component {
               />`}
           </Code>
           <CardBody>
-            <Typeahead 
+            <Typeahead
               options={[
-                { id: 1, name: 'John' }, 
-                { id: 2, name: 'Paul' }, 
-                { id: 3, name: 'George' }, 
+                { id: 1, name: 'John' },
+                { id: 2, name: 'Paul' },
+                { id: 3, name: 'George' },
                 { id: 4, name: 'Ringo' },
               ]}
               filterOption="name"

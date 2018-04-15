@@ -1,11 +1,11 @@
-# react-typeahead-ts
+# The @gforge/react-typeahead-ts
 
 > A typeahead/autocomplete component for React
 
-react-typeahead-ts is a [TypeScript](http://www.typescriptlang.org/) 
+@gforge/react-typeahead-ts is a [TypeScript](http://www.typescriptlang.org/)
 (a superset of JavaScript) library that provides a react-based
 typeahead, or autocomplete text entry, as well as a "typeahead tokenizer",
-a typeahead that allows you to select multiple results. It can be used 
+a typeahead that allows you to select multiple results. It can be used
 with regular JavaScript usin standard syntax although TypeScript is
 recommended as the library has dropped the deprecated `prop-types`.
 
@@ -14,7 +14,7 @@ recommended as the library has dropped the deprecated `prop-types`.
 For a typeahead input:
 
 ```javascript
-import { Typeahead } from 'react-typeahead-ts';
+import { Typeahead } from '@gforge/react-typeahead-ts';
 React.render(
   <Typeahead
     options={['John', 'Paul', 'George', 'Ringo']}
@@ -26,7 +26,7 @@ React.render(
 For a tokenizer typeahead input:
 
 ```javascript
-import { Tokenizer } from 'react-typeahead-ts';
+import { Tokenizer } from '@gforge/react-typeahead-ts';
 React.render(
   <Tokenizer
     options={['John', 'Paul', 'George', 'Ringo']}

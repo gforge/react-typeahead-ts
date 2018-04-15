@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Formik, Form, Field } from 'formik';
 import { ButtonGroup, Button } from 'reactstrap';
-import { Typeahead } from 'react-typeahead-ts';
+import { Typeahead } from '@gforge/react-typeahead-ts';
 
 export interface BeatleWithId { id: number; name: string; }
 export default () => {
@@ -16,7 +16,7 @@ export default () => {
       initialValues={{ my_form_field: '' }}
       onSubmit={(vals, { setSubmitting }) => {
         // tslint:disable-next-line:no-console
-        console.log(vals);
+        console.log(vals, 'value when submitting');
         setSubmitting(false);
       }}
     >
@@ -36,7 +36,11 @@ export default () => {
                 onChange={() => {
                   setFieldTouched(name, true);
                 }}
-                onOptionSelected={(value?: BeatleWithId) => setFieldValue(name, value && value.name)}
+                onOptionSelected={(value?: BeatleWithId) => {
+                  // tslint:disable-next-line:no-console
+                  console.log(value, 'value in onOptionSelected');
+                  setFieldValue(name, value && value.name);
+                }}
                 className="inputStyle"
                 customClasses={{
                   results: 'list-group',
