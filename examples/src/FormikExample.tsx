@@ -3,8 +3,14 @@ import { Formik, Form, Field } from 'formik';
 import { ButtonGroup, Button } from 'reactstrap';
 import { Typeahead } from 'react-typeahead-ts';
 
+export interface BeatleWithId { id: number; name: string; }
 export default () => {
-  
+  const options: BeatleWithId[] = [
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Paul' },
+    { id: 3, name: 'George' },
+    { id: 4, name: 'Ringo' },
+  ];
   return (
     <Formik
       initialValues={{ my_form_field: '' }}
@@ -16,18 +22,13 @@ export default () => {
     >
       {({ errors, touched, isSubmitting, handleReset }) => (
         <Form>
-          <Field 
-            type="text" 
-            name="my_form_field" 
+          <Field
+            type="text"
+            name="my_form_field"
           >
             {({ form: { setFieldValue, setFieldTouched }, field: { name } }) => (
-              <Typeahead 
-                options={[
-                  { id: 1, name: 'John' }, 
-                  { id: 2, name: 'Paul' }, 
-                  { id: 3, name: 'George' }, 
-                  { id: 4, name: 'Ringo' },
-                ]}
+              <Typeahead
+                options={options}
                 filterOption="name"
                 displayOption="name"
                 formInputOption="id"
@@ -35,12 +36,12 @@ export default () => {
                 onChange={() => {
                   setFieldTouched(name, true);
                 }}
-                onOptionSelected={(value) => setFieldValue(name, value)}
+                onOptionSelected={(value?: BeatleWithId) => setFieldValue(name, value && value.name)}
                 className="inputStyle"
                 customClasses={{
                   results: 'list-group',
                   listItem: 'list-group-item'
-                }}              
+                }}
               />
             )}
           </Field>
