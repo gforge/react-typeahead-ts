@@ -1,5 +1,5 @@
 {
-  "name": "reactstrap-typeahead",
+  "name": "react-typeahead-ts",
   "version": "0.1.0",
   "description": " A typescript rewrite of the react-typehead npm package",
   "main": "dist/typeahead.js",
@@ -23,14 +23,14 @@
     "precommit": "lint-staged",
     "lint": "tslint -p .",
     "lint:fix": "tslint -p . --fix",
-    "start:example": "cd examples && npm run start",
-    "build:example": "cd examples && npm install && npm run build",
-    "link:example": "npm link && cd examples && npm link reactstrap-typeahead",
-    "deploy": "npm run link:example && npm run build:example && gh-pages -d examples/build"
+    "start:example": "npm run link:example && cd examples && npm run start",
+    "build:example": "npm run link:example && cd examples && npm run build",
+    "link:example": "cd examples && yarn install && yarn link react-typeahead-ts",
+    "deploy": "npm run build:example && gh-pages -d examples/build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gforge/reactstrap-typeahead.git"
+    "url": "git+https://github.com/gforge/react-typeahead-ts.git"
   },
   "keywords": [
     "reactstrap",
@@ -41,9 +41,9 @@
   "author": "Max Gordon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gforge/reactstrap-typeahead/issues"
+    "url": "https://github.com/gforge/react-typeahead-ts/issues"
   },
-  "homepage": "https://github.com/gforge/reactstrap-typeahead#readme",
+  "homepage": "https://github.com/gforge/react-typeahead-ts#readme",
   "dependencies": {
     "@types/classnames": "^2.2.3",
     "bind-decorator": "^1.0.11",

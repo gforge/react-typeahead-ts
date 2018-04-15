@@ -2,7 +2,7 @@
   "name": "examples",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://gforge.github.com/reactstrap-typeahead",
+  "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
     "@types/reactstrap": "^5.0.21",
     "bootstrap": "^4.1.0",
