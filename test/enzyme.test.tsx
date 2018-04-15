@@ -9,9 +9,18 @@ import Typeahead, { Props as TProps } from '../src/typeahead';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
 
+const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
+  let controlComponent = component.find('input.form-control');
+  if (controlComponent.length === 0) {
+    controlComponent = component.find('input').first();
+  }
+
+  return controlComponent;
+};
+
 const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, value: string) => {
-  const inputElement = mountedComponent.find('input.form-control');
-  
+  const inputElement = getInput(mountedComponent);
+
   inputElement
     .simulate('focus')
     .simulate('change', { target: { value } });
@@ -19,12 +28,13 @@ const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, val
   return mountedComponent;
 };
 
+
 const simulateKeyEvent = (
   mountedComponent: ReactWrapper<TProps<any, any>>,
   code: string | number,
   eventName: string = 'keyDown',
 ) => {
-  const inputElement = mountedComponent.find('input.form-control');
+  const inputElement = getInput(mountedComponent);
 
   inputElement.simulate('focus').simulate(eventName, { keyCode: code });
 
@@ -56,14 +66,14 @@ const BEATLES_COMPLEX: Option[] = [
   },
 ];
 
-describe.only('TypeaheadTokenizer Component', () => {
+describe('TypeaheadTokenizer Component', () => {
   let testContext: any;
 
   beforeEach(() => {
     testContext = {};
   });
 
-  describe.only('basic tokenizer', () => {
+  describe('basic tokenizer', () => {
     beforeEach(() => {
       testContext.component = mount(
         <Typeahead
@@ -103,8 +113,7 @@ describe.only('TypeaheadTokenizer Component', () => {
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_RETURN);
-        expect(results
-          .find('input.form-control')
+        expect(getInput(results)
           .prop('value')).toEqual(BEATLES[2]);
       });
 
@@ -114,8 +123,7 @@ describe.only('TypeaheadTokenizer Component', () => {
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_UP);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_RETURN);
-        expect(results
-            .find('input.form-control')
+        expect(getInput(results)
             .prop('value')).toEqual(BEATLES[0]);
       });
 
@@ -151,8 +159,7 @@ describe.only('TypeaheadTokenizer Component', () => {
             .text();
 
         results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
-        expect(results
-            .find('input.form-control')
+        expect(getInput(results)
             .prop('value')).toEqual(first);
       });
 
@@ -162,8 +169,7 @@ describe.only('TypeaheadTokenizer Component', () => {
             .find('ul li')
             .length).toEqual(0);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
-        expect(results
-            .find('input.form-control')
+        expect(getInput(results)
             .prop('value')).toEqual('oz');
       });
     });
@@ -175,7 +181,7 @@ describe.only('TypeaheadTokenizer Component', () => {
         const secondItemValue = secondItem.text();
 
         secondItem.simulate('click');
-        expect(results.find('input.form-control').prop('value')).toEqual(secondItemValue);
+        expect(getInput(results).prop('value')).toEqual(secondItemValue);
       });
     });
 
@@ -195,7 +201,7 @@ describe.only('TypeaheadTokenizer Component', () => {
             onFocus={focusSpy}
           />);        
         expect(focusSpy.calledOnce).toEqual(false);
-        component.find('input.form-control').simulate('focus');
+        getInput(component).simulate('focus');
         
         expect(focusSpy.calledOnce).toEqual(true);
       });
@@ -203,7 +209,7 @@ describe.only('TypeaheadTokenizer Component', () => {
   });
 
 
-  describe.only('props', () => {
+  describe('props', () => {
     describe('maxVisible', () => {
       test('limits the result set based on the maxVisible option', () => {
         let component = mount(
