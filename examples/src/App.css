@@ -28,3 +28,20 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+div.inputStyle  {
+  border: 1px solid #FAFAFF;
+  padding: 10px;
+  background-color: #F9F9F9;
+  border-radius: 5px;
+}
+
+.inputStyle ul > li.hover a {
+  background-color: white;
+  font-weight: bold; 
+}
+
+ul > li.hover a {
+  background-color: white;
+  font-weight: bold; 
+}

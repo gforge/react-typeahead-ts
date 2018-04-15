@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Card, CardHeader, CardBody } from 'reactstrap';
 import { Typeahead } from 'react-typeahead-ts';
+import FormikExample from './FormikExample';
 import Code from './Code';
 import './App.css';
 
@@ -20,18 +21,27 @@ class App extends React.Component {
           </code>.
         </p>
         <Card>
+          <CardHeader>Formik</CardHeader>
+          <CardBody>
+            <FormikExample />
+          </CardBody>
+        </Card>
+        <br />
+
+        <Card>
           <CardHeader>Simple test</CardHeader>
           <Code>
             {`
               <Typeahead 
                 options={['John', 'Paul', 'George', 'Ringo']} 
                 maxVisible={2} 
+                className="inputStyle"
               />`}
           </Code>
           <CardBody>
             <Typeahead 
               options={['John', 'Paul', 'George', 'Ringo']} 
-              maxVisible={2} 
+              className="inputStyle"
             />
           </CardBody>
         </Card>
