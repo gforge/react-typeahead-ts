@@ -4,13 +4,14 @@
   "private": true,
   "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
+    "@gforge/react-typeahead-ts": "^0.2.0",
     "@types/prop-types": "^15.5.2",
     "@types/reactstrap": "^5.0.21",
     "bootstrap": "^4.1.0",
     "formik": "^0.11.11",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
-    "react-scripts-ts": "2.14.0",
+    "react-scripts-ts": "2.15.1",
     "reactstrap": "^5.0.0"
   },
   "scripts": {
