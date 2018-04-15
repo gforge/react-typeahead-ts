@@ -7,13 +7,13 @@ import fuzzy, { FilterOptions } from 'fuzzy';
 import classNames from 'classnames';
 import { CustomClasses, Option, OptionToStrFn, OnOptionSelectArg } from '../types';
 
-export type AnyReactWithProps<Opt extends Option> = 
-  React.Component<TypelistProps<Opt>> | 
+export type AnyReactWithProps<Opt extends Option> =
+  React.Component<TypelistProps<Opt>> |
   React.PureComponent<TypelistProps<Opt>> |
   React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option, Mapped> extends 
-  React.InputHTMLAttributes<HTMLInputElement> 
+export interface Props<Opt extends Option, Mapped> extends
+  React.InputHTMLAttributes<HTMLInputElement>
 {
   name?: string;
   customClasses?: CustomClasses;
@@ -116,6 +116,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private shouldSkipSearch(input?: string) {
+    if (this.selected) return true;
     const emptyValue = !input || input.trim().length === 0;
 
     // this.state must be checked because it may not be defined yet if this function
@@ -131,7 +132,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       return [];
     }
 
-    const searchOptions = this.generateSearchFunction();    
+    const searchOptions = this.generateSearchFunction();
     return searchOptions(searchString, options || this.getProps().options);
   }
 
@@ -180,7 +181,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       customClasses,
       defaultClassNames,
     } = this.getProps();
-    
+
     // Nothing has been entered into the textbox
     if (this.shouldSkipSearch(entryValue)) {
       return '';
@@ -227,7 +228,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       index -= 1;
     }
 
-    return this.state.searchResults[index];
+    return this.searchOptions()[index];
   }
 
   private inputMapper?: OptionToStrFn<Mapped>;
@@ -268,15 +269,16 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     event?: React.SyntheticEvent<any>,
   ) {
     if (!option) {
+      this.selected = false;
       this.setState({
         searchResults: this.searchOptions(),
         selection: '',
         showResults: true,
       });
-      this.selected = false;
       return;
     }
 
+    this.selected = true;
     if (!this.inputElement) throw new Error('No input element');
     this.inputElement.focus();
 
@@ -302,7 +304,6 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     });
 
     this.props.onOptionSelected && this.props.onOptionSelected(option, event);
-    this.selected = true;
   }
 
   @bind
@@ -414,7 +415,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       onChange(event);
     }
 
-    this.props.onOptionSelected && this.props.onOptionSelected(undefined);
+    this.onOptionSelected(undefined);
     this.onTextEntryUpdated(event.target.value);
   }
 
@@ -533,20 +534,20 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       this.searchFunction = searchOptions;
 
     } else if (typeof filterOption === 'function') {
-  
+
       this.searchFunction = (value: string, options: T[]): Mapped[] =>
       options.filter(o => filterOption(value, o)).map(a => a as any);
-      
+
     } else {
-  
+
       let mapper: (input: any) => string;
       if (typeof filterOption === 'string') {
         mapper = Accessor.generateAccessor(filterOption);
       } else {
         mapper = Accessor.IDENTITY_FN;
       }
-      
-      
+
+
       this.searchFunction = (value: string, options: T[]) => {
         const fuzzyOpt: FilterOptions<any> = { extract: mapper };
         return fuzzy

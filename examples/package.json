@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
-    "@gforge/react-typeahead-ts": "^0.2.0",
+    "@gforge/react-typeahead-ts": "^0.2.1",
     "@types/prop-types": "^15.5.2",
     "@types/reactstrap": "^5.0.21",
     "bootstrap": "^4.1.0",
