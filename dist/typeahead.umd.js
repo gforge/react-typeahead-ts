@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('tslib'), require('react'), require('reactstrap')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'tslib', 'react', 'reactstrap'], factory) :
-	(factory((global.FormikAdminTaskType = {}),global.tslib,global.React,global.reactstrap));
-}(this, (function (exports,tslib_1,React,reactstrap) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('tslib'), require('react')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'tslib', 'react'], factory) :
+	(factory((global.FormikAdminTaskType = {}),global.tslib,global.React));
+}(this, (function (exports,tslib_1,React) { 'use strict';
 
 	function unwrapExports (x) {
 		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -648,7 +648,7 @@
 	        var classList = classnames(classes);
 	        return (React.createElement("div", { className: classList },
 	            this.renderHiddenInput(),
-	            React.createElement(reactstrap.Input, tslib_1.__assign({ innerRef: function (c) {
+	            React.createElement("input", tslib_1.__assign({ ref: function (c) {
 	                    _this.inputElement = c;
 	                    _this.props.innerRef && _this.props.innerRef(c);
 	                }, type: this.props.textarea ? 'textarea' : 'text', disabled: this.props.disabled }, this.props.inputProps, { placeholder: this.props.placeholder, className: inputClassList, value: this.state.entryValue, onChange: this.onChange, onKeyDown: this.onKeyDown, onKeyPress: this.props.onKeyPress, onKeyUp: this.props.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur })),

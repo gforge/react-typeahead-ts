@@ -6,7 +6,6 @@ import KeyEvent from '../keyevent';
 import fuzzy, { FilterOptions } from 'fuzzy';
 import classNames from 'classnames';
 import { CustomClasses, Option, OptionToStrFn } from '../types';
-import { Input, InputProps } from 'reactstrap';
 
 export type OnOptionSelectArg<Opt extends Option> = 
   ((option: Opt | string, event?: React.SyntheticEvent<HTMLAnchorElement>) => any);
@@ -16,7 +15,7 @@ export type AnyReactWithProps<Opt extends Option> =
   React.PureComponent<TypelistProps<Opt>> |
   React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option, Mapped> extends InputProps {
+export interface Props<Opt extends Option, Mapped> extends  React.InputHTMLAttributes<HTMLInputElement> {
   name?: string;
   customClasses?: CustomClasses;
   maxVisible?: number;
@@ -453,8 +452,8 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     return (
       <div className={classList}>
         {this.renderHiddenInput()}
-        <Input
-          innerRef={(c: HTMLInputElement) => {
+        <input
+          ref={(c: HTMLInputElement) => {
             this.inputElement = c;
             this.props.innerRef && this.props.innerRef(c);
           }}

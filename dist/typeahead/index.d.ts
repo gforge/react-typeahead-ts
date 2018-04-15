@@ -2,10 +2,9 @@
 import * as React from 'react';
 import { Props as TypelistProps } from './selector';
 import { CustomClasses, Option, OptionToStrFn } from '../types';
-import { InputProps } from 'reactstrap';
 export declare type OnOptionSelectArg<Opt extends Option> = ((option: Opt | string, event?: React.SyntheticEvent<HTMLAnchorElement>) => any);
 export declare type AnyReactWithProps<Opt extends Option> = React.Component<TypelistProps<Opt>> | React.PureComponent<TypelistProps<Opt>> | React.SFC<TypelistProps<Opt>>;
-export interface Props<Opt extends Option, Mapped> extends InputProps {
+export interface Props<Opt extends Option, Mapped> extends React.InputHTMLAttributes<HTMLInputElement> {
     name?: string;
     customClasses?: CustomClasses;
     maxVisible?: number;

@@ -3,7 +3,6 @@ import { createElement, Component } from 'react';
 import classNames from 'classnames';
 import bind from 'bind-decorator';
 import fuzzy from 'fuzzy';
-import { Input } from 'reactstrap';
 
 var Accessor = (function () {
     function Accessor() {
@@ -417,7 +416,7 @@ var Typeahead = (function (_super) {
         var classList = classNames(classes);
         return (createElement("div", { className: classList },
             this.renderHiddenInput(),
-            createElement(Input, __assign({ innerRef: function (c) {
+            createElement("input", __assign({ ref: function (c) {
                     _this.inputElement = c;
                     _this.props.innerRef && _this.props.innerRef(c);
                 }, type: this.props.textarea ? 'textarea' : 'text', disabled: this.props.disabled }, this.props.inputProps, { placeholder: this.props.placeholder, className: inputClassList, value: this.state.entryValue, onChange: this.onChange, onKeyDown: this.onKeyDown, onKeyPress: this.props.onKeyPress, onKeyUp: this.props.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur })),

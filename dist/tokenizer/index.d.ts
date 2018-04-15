@@ -1,8 +1,7 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { InputProps } from 'reactstrap';
 import { TokenCustomClasses, Option, OptionToStrFn } from '../types';
-export interface Props<Opt extends Option> extends InputProps {
+export interface Props<Opt extends Option> extends React.InputHTMLAttributes<HTMLInputElement> {
     name?: string;
     options: Opt[];
     customClasses?: TokenCustomClasses;
@@ -22,6 +21,7 @@ export interface Props<Opt extends Option> extends InputProps {
     resultsTruncatedMessage?: string;
     defaultClassNames?: boolean;
     showOptionsWhenEmpty?: boolean;
+    innerRef?: (c: HTMLInputElement) => any;
 }
 export interface State<Opt extends Option> {
     selected: Opt[];

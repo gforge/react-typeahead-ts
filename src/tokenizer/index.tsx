@@ -5,7 +5,6 @@ import Token from './token';
 import KeyEvent from '../keyevent';
 import Typeahead from '../typeahead';
 import classNames from 'classnames';
-import { InputProps } from 'reactstrap';
 import { TokenCustomClasses, Option, OptionToStrFn } from '../types';
 
 const arraysAreDifferent = (array1: any[], array2: any[]): boolean => {
@@ -22,7 +21,7 @@ const arraysAreDifferent = (array1: any[], array2: any[]): boolean => {
   return false;
 };
 
-export interface Props<Opt extends Option> extends InputProps {
+export interface Props<Opt extends Option> extends React.InputHTMLAttributes<HTMLInputElement> {
   name?: string;
   options: Opt[];
   customClasses?: TokenCustomClasses;
@@ -42,6 +41,7 @@ export interface Props<Opt extends Option> extends InputProps {
   resultsTruncatedMessage?: string;
   defaultClassNames?: boolean;
   showOptionsWhenEmpty?: boolean;
+  innerRef?: (c: HTMLInputElement) => any;
 }
 
 export interface State<Opt extends Option> {
