@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { Card, CardHeader, CardBody } from 'reactstrap';
 import { Typeahead } from 'react-typeahead-ts';
+import Code from './Code';
 import './App.css';
 
 class App extends React.Component {
@@ -17,7 +19,74 @@ class App extends React.Component {
             create-react-class
           </code>.
         </p>
-        <Typeahead options={['John', 'Paul', 'George', 'Ringo']} maxVisible={2} />
+        <Card>
+          <CardHeader>Simple test</CardHeader>
+          <Code>
+            {`
+              <Typeahead 
+                options={['John', 'Paul', 'George', 'Ringo']} 
+                maxVisible={2} 
+              />`}
+          </Code>
+          <CardBody>
+            <Typeahead 
+              options={['John', 'Paul', 'George', 'Ringo']} 
+              maxVisible={2} 
+            />
+          </CardBody>
+        </Card>
+        <br />
+        <Card>
+          <CardHeader>Always show</CardHeader>
+          <Code>
+            {`
+            <Typeahead 
+              options={['John', 'Paul', 'George', 'Ringo']} 
+              showOptionsWhenEmpty={true}
+            />`}
+          </Code>
+          <CardBody>
+            <Typeahead 
+              options={['John', 'Paul', 'George', 'Ringo']} 
+              showOptionsWhenEmpty={true}
+            />
+          </CardBody>
+        </Card>
+
+        <br />
+        <Card>
+          <CardHeader>Pass object array as option</CardHeader>
+          <Code>
+            {`
+              <Typeahead 
+                options={[
+                  { id: 1, name: 'John' }, 
+                  { id: 2, name: 'Paul' }, 
+                  { id: 3, name: 'George' }, 
+                  { id: 4, name: 'Ringo' },
+                ]}
+                filterOption="name"
+                displayOption="name"
+                maxVisible={2}
+                showOptionsWhenEmpty={true}
+              />`}
+          </Code>
+          <CardBody>
+            <Typeahead 
+              options={[
+                { id: 1, name: 'John' }, 
+                { id: 2, name: 'Paul' }, 
+                { id: 3, name: 'George' }, 
+                { id: 4, name: 'Ringo' },
+              ]}
+              filterOption="name"
+              displayOption="name"
+              maxVisible={2}
+              showOptionsWhenEmpty={true}
+            />
+          </CardBody>
+        </Card>
+
     </div>);
   }
 }

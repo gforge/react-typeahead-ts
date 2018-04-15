@@ -15,7 +15,9 @@ export type AnyReactWithProps<Opt extends Option> =
   React.PureComponent<TypelistProps<Opt>> |
   React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option, Mapped> extends  React.InputHTMLAttributes<HTMLInputElement> {
+export interface Props<Opt extends Option, Mapped> extends 
+  React.InputHTMLAttributes<HTMLInputElement> 
+{
   name?: string;
   customClasses?: CustomClasses;
   maxVisible?: number;
