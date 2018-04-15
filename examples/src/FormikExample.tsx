@@ -20,7 +20,7 @@ export default () => {
             type="text" 
             name="my_form_field" 
           >
-            {({ field }) => (
+            {({ form: { setFieldValue, setFieldTouched }, field: { name } }) => (
               <Typeahead 
                 options={[
                   { id: 1, name: 'John' }, 
@@ -31,9 +31,16 @@ export default () => {
                 filterOption="name"
                 displayOption="name"
                 formInputOption="id"
-                maxVisible={2}
                 showOptionsWhenEmpty={true}
-                {...field}                
+                onChange={() => {
+                  setFieldTouched(name, true);
+                }}
+                onOptionSelected={(value) => setFieldValue(name, value)}
+                className="inputStyle"
+                customClasses={{
+                  results: 'list-group',
+                  listItem: 'list-group-item'
+                }}              
               />
             )}
           </Field>
@@ -41,10 +48,7 @@ export default () => {
           <br />
           <ButtonGroup>
             <Button color="success" type="submit" disabled={isSubmitting}>
-              Submit
-            </Button>
-            <Button color="warning" type="reset" disabled={isSubmitting} onClick={handleReset}>
-              Reset
+              Submit to <pre>console.log()</pre>
             </Button>
           </ButtonGroup>
         </Form>

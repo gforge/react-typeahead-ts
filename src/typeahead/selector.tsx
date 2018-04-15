@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import TypeaheadOption from './option';
-import { CustomClasses, OptionSelector, Option } from '../types';
+import { CustomClasses, SelectorOptionSelector, Option } from '../types';
 
 export interface Props<Opt extends Option> {
   options: Opt[];
@@ -9,7 +9,7 @@ export interface Props<Opt extends Option> {
   customClasses?: CustomClasses;
   customValue?: string;
   selectionIndex?: number;
-  onOptionSelected?: OptionSelector;
+  onOptionSelected: SelectorOptionSelector<Opt>;
   displayOption: Function;
   defaultClassNames?: boolean;
   areResultsTruncated?: boolean;
@@ -29,7 +29,6 @@ class TypeaheadSelector<T> extends React.Component<Props<T>> {
       ...{
         customClasses,
         allowCustomValues: 0,
-        onOptionSelected: () => {},
         defaultClassNames: true,
       },
       ...this.props,
@@ -115,7 +114,7 @@ class TypeaheadSelector<T> extends React.Component<Props<T>> {
     );
   }
 
-  private onClick(result: string, event: React.MouseEvent<HTMLDivElement>) {
+  private onClick(result: T, event: React.MouseEvent<HTMLDivElement>) {
     const { onOptionSelected } = this.props;
     if (!onOptionSelected) return;
 

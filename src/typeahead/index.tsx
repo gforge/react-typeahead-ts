@@ -5,10 +5,7 @@ import TypeaheadSelector, { Props as TypelistProps } from './selector';
 import KeyEvent from '../keyevent';
 import fuzzy, { FilterOptions } from 'fuzzy';
 import classNames from 'classnames';
-import { CustomClasses, Option, OptionToStrFn } from '../types';
-
-export type OnOptionSelectArg<Opt extends Option> = 
-  ((option: Opt | string, event?: React.SyntheticEvent<HTMLAnchorElement>) => any);
+import { CustomClasses, Option, OptionToStrFn, OnOptionSelectArg } from '../types';
 
 export type AnyReactWithProps<Opt extends Option> = 
   React.Component<TypelistProps<Opt>> | 
@@ -78,7 +75,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
 
     this.state = {
       // The options matching the entry value
-      searchResults: this.getOptionsForValue(props.initialValue, props.options),
+      searchResults: this.searchOptions(props.initialValue || '', props.options),
 
       // This should be called something else, "entryValue"
       entryValue: props.value || '',
@@ -127,13 +124,15 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     return !(this.props.showOptionsWhenEmpty && isFocused) && emptyValue;
   }
 
-  getOptionsForValue(value?: string, options?: T[]): Mapped[] {
-    if (this.shouldSkipSearch(value)) {
+  searchOptions(value?: string, options?: T[]): Mapped[] {
+    const { entryValue } = this.state || { entryValue: undefined };
+    const searchString = value || entryValue;
+    if (this.shouldSkipSearch(searchString)) {
       return [];
     }
 
     const searchOptions = this.generateSearchFunction();    
-    return searchOptions(value || '', options || this.getProps().options);
+    return searchOptions(searchString, options || this.getProps().options);
   }
 
   setEntryText(value: string) {
@@ -150,7 +149,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
 
   private hasCustomValue() {
     const { allowCustomValues } = this.getProps();
-    const { entryValue, searchResults } = this.state;
+    const { entryValue } = this.state;
 
     if (
       !allowCustomValues ||
@@ -161,7 +160,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     }
 
     const mapper = this.getInputOptionToStringMapper();
-    return searchResults.map(mapper).indexOf(this.state.entryValue) < 0;
+    return this.searchOptions().map(mapper).indexOf(this.state.entryValue) < 0;
   }
 
   private getCustomValue() {
@@ -172,7 +171,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private renderIncrementalSearchResults() {
-    const { entryValue, selection, searchResults, selectionIndex } = this.state;
+    const { entryValue, selection, selectionIndex } = this.state;
     const {
       maxVisible,
       resultsTruncatedMessage,
@@ -181,7 +180,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       customClasses,
       defaultClassNames,
     } = this.getProps();
-
+    
     // Nothing has been entered into the textbox
     if (this.shouldSkipSearch(entryValue)) {
       return '';
@@ -192,9 +191,11 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       return '';
     }
 
+    const searchResults = this.searchOptions();
     const truncated: boolean = Boolean(
       maxVisible && searchResults.length > maxVisible,
     );
+
     return (
       <TypeaheadSelector
         options={
@@ -260,11 +261,22 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     return this.displayMapper;
   }
 
+  private selected: boolean = false;
   @bind
   private onOptionSelected(
-    option: Mapped | string,
-    event: React.SyntheticEvent<any>,
+    option?: Mapped | string,
+    event?: React.SyntheticEvent<any>,
   ) {
+    if (!option) {
+      this.setState({
+        searchResults: this.searchOptions(),
+        selection: '',
+        showResults: true,
+      });
+      this.selected = false;
+      return;
+    }
+
     if (!this.inputElement) throw new Error('No input element');
     this.inputElement.focus();
 
@@ -283,14 +295,14 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
 
     this.inputElement.value = optionString;
     this.setState({
-      searchResults: this.getOptionsForValue(optionString),
+      searchResults: this.searchOptions(optionString),
       selection: formInputOptionString,
       entryValue: optionString,
       showResults: false,
     });
-    return (
-      this.props.onOptionSelected && this.props.onOptionSelected(option, event)
-    );
+
+    this.props.onOptionSelected && this.props.onOptionSelected(option, event);
+    this.selected = true;
   }
 
   @bind
@@ -299,7 +311,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     const value = newValue === undefined ? this.inputElement.value : newValue;
 
     this.setState({
-      searchResults: this.getOptionsForValue(value),
+      searchResults: this.searchOptions(value),
       selection: '',
       entryValue: value,
     });
@@ -325,10 +337,11 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   private onTab(event: React.KeyboardEvent<HTMLInputElement>) {
     const selection = this.getSelection();
 
+    const availableOptions = this.searchOptions();
     let option = selection
       ? selection
-      : this.state.searchResults.length > 0
-        ? this.state.searchResults[0]
+      : availableOptions.length > 0
+        ? availableOptions[0]
         : undefined;
 
     if (option === undefined && this.hasCustomValue()) {
@@ -359,8 +372,9 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       return;
     }
 
-    const { selectionIndex, searchResults } = this.state;
+    const { selectionIndex } = this.state;
     const { maxVisible } = this.getProps();
+    const availableOptions = this.searchOptions();
     let newIndex =
       selectionIndex === undefined
         ? delta === 1
@@ -368,8 +382,8 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
           : delta
         : selectionIndex + delta;
     let length = maxVisible
-      ? searchResults.slice(0, maxVisible).length
-      : searchResults.length;
+      ? availableOptions.slice(0, maxVisible).length
+      : availableOptions.length;
     if (this.hasCustomValue()) {
       length += 1;
     }
@@ -400,6 +414,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       onChange(event);
     }
 
+    this.props.onOptionSelected && this.props.onOptionSelected(undefined);
     this.onTextEntryUpdated(event.target.value);
   }
 
@@ -413,21 +428,21 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       return this.props.onKeyDown && this.props.onKeyDown(event);
     }
 
+    const selectedBefore = this.selected;
     const handler = this.eventMap()[event.keyCode];
     if (handler) {
       handler(event);
+      if (!selectedBefore || !this.selected) {
+        // Don't propagate the keystroke back to the DOM/browser
+        event.preventDefault();
+      }
     } else {
       return this.props.onKeyDown && this.props.onKeyDown(event);
     }
-    // Don't propagate the keystroke back to the DOM/browser
-    event.preventDefault();
   }
 
   componentWillReceiveProps(nextProps: Props<T, Mapped>) {
-    const searchResults = this.getOptionsForValue(
-      this.state.entryValue,
-      nextProps.options,
-    );
+    const searchResults = this.searchOptions(undefined, nextProps.options);
     const showResults = Boolean(searchResults.length) && this.state.isFocused;
     this.setState({ searchResults, showResults });
   }
@@ -544,7 +559,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private hasHint() {
-    return this.state.searchResults.length > 0 || this.hasCustomValue();
+    return this.searchOptions().length > 0 || this.hasCustomValue();
   }
 }
 

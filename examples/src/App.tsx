@@ -35,30 +35,38 @@ class App extends React.Component {
               <Typeahead 
                 options={['John', 'Paul', 'George', 'Ringo']} 
                 maxVisible={2} 
-                className="inputStyle"
               />`}
           </Code>
           <CardBody>
             <Typeahead 
               options={['John', 'Paul', 'George', 'Ringo']} 
-              className="inputStyle"
             />
           </CardBody>
         </Card>
         <br />
         <Card>
-          <CardHeader>Always show</CardHeader>
+          <CardHeader>Always show with Bootstrap classes</CardHeader>
           <Code>
             {`
             <Typeahead 
               options={['John', 'Paul', 'George', 'Ringo']} 
               showOptionsWhenEmpty={true}
+              className="inputStyle"
+              customClasses={{
+                results: 'list-group',
+                listItem: 'list-group-item'
+              }}              
             />`}
           </Code>
           <CardBody>
             <Typeahead 
               options={['John', 'Paul', 'George', 'Ringo']} 
               showOptionsWhenEmpty={true}
+              className="inputStyle"
+              customClasses={{
+                results: 'list-group',
+                listItem: 'list-group-item',
+              }}
             />
           </CardBody>
         </Card>
