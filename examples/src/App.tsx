@@ -42,7 +42,7 @@ class App extends React.Component {
             />
           </CardBody>
         </Card>
-
+        <br />
         <Card>
           <CardHeader>Simple tokenizer test</CardHeader>
           <Code>
