@@ -117,8 +117,6 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private shouldSkipSearch(input?: string) {
-    console.log(this.selected, '...');
-    
     if (this.selected) return true;
     const emptyValue = !input || input.trim().length === 0;
 
@@ -199,7 +197,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     const truncated: boolean = Boolean(
       maxVisible && searchResults.length > maxVisible,
     );
-    
+
 
     return (
       <TypeaheadSelector
@@ -332,7 +330,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     if (!selection) {
       return this.props.onKeyDown && this.props.onKeyDown(event);
     }
-    
+
     return this.onOptionSelected(selection, event);
   }
 
