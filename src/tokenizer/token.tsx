@@ -8,7 +8,6 @@ export interface Props {
   object: string | object;
   onRemove: Function;
   value: string;
-  key: string | number;
 }
 
 /**
@@ -24,7 +23,7 @@ class Token extends React.Component<Props> {
     ]);
 
     return (
-      <div className={className} key={this.props.key}>
+      <div className={className}>
         {this.renderHiddenInput()}
         {this.props.children}
         {this.renderCloseButton()}

@@ -85,9 +85,7 @@ describe('TypeaheadTokenizer Component', () => {
         (expected, value) => {
           const results = simulateTokenInput(testContext.component, value);
           expect(results.length).toEqual(expected);
-        },
-        this,
-      );
+        });
     });
 
     test('should have custom and default token classes', () => {

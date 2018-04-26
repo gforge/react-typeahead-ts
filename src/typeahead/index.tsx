@@ -18,6 +18,7 @@ export interface Props<Opt extends Option, Mapped> extends
   name?: string;
   customClasses?: CustomClasses;
   maxVisible?: number;
+  clearOnSelection?: boolean;
   resultsTruncatedMessage?: string;
   options: Opt[];
   allowCustomValues?: number;
@@ -116,6 +117,8 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private shouldSkipSearch(input?: string) {
+    console.log(this.selected, '...');
+    
     if (this.selected) return true;
     const emptyValue = !input || input.trim().length === 0;
 
@@ -196,6 +199,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     const truncated: boolean = Boolean(
       maxVisible && searchResults.length > maxVisible,
     );
+    
 
     return (
       <TypeaheadSelector
@@ -292,6 +296,10 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
         const formInputOption = this.getInputOptionToStringMapper();
         formInputOptionString = formInputOption(option);
       }
+      if (this.props.clearOnSelection) {
+        this.selected = false;
+        optionString = '';
+      }
 
       this.inputElement.value = optionString;
       this.setState({
@@ -300,9 +308,10 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
         entryValue: optionString,
         showResults: false,
       });
-    }
+      this.inputElement.blur();
 
-    this.props.onOptionSelected && this.props.onOptionSelected(option, event);
+      this.props.onOptionSelected && this.props.onOptionSelected(option, event);
+    }
   }
 
   @bind
@@ -323,6 +332,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     if (!selection) {
       return this.props.onKeyDown && this.props.onKeyDown(event);
     }
+    
     return this.onOptionSelected(selection, event);
   }
 
@@ -414,7 +424,6 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       onChange(event);
     }
 
-    console.log('onChange')
     this.onOptionSelected(undefined);
     this.onTextEntryUpdated(event.target.value);
   }

@@ -1,16 +1,16 @@
 {
-  "name": "examples",
-  "version": "0.1.0",
+  "name": "typeahead_ts_examples",
+  "version": "1.0.0",
   "private": true,
   "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
-    "@gforge/react-typeahead-ts": "^0.2.1",
+    "@gforge/react-typeahead-ts": "^0.2.2",
     "@types/prop-types": "^15.5.2",
-    "@types/reactstrap": "^5.0.21",
+    "@types/reactstrap": "^5.0.23",
     "bootstrap": "^4.1.0",
     "formik": "^0.11.11",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "react-scripts-ts": "2.15.1",
     "reactstrap": "^5.0.0"
   },
@@ -18,13 +18,16 @@
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "tlink": "yarn link @gforge/react-typeahead-ts",
+    "reset:type": "rimraf nodemodules/@types && npm install"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
-    "@types/node": "^9.6.4",
-    "@types/react": "^16.3.10",
+    "@types/node": "^9.6.6",
+    "@types/react": "^16.3.12",
     "@types/react-dom": "^16.0.5",
-    "typescript": "^2.8.1"
+    "rimraf": "^2.6.2",
+    "typescript": "^2.8.3"
   }
 }

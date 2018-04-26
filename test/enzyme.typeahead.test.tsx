@@ -9,6 +9,7 @@ import Typeahead, { Props as TProps } from '../src/typeahead';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
 
+// @ts-ignore
 const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
   let controlComponent = component.find('input.form-control');
   if (controlComponent.length === 0) {

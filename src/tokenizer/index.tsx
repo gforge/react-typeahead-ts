@@ -7,7 +7,7 @@ import Typeahead from '../typeahead';
 import classNames from 'classnames';
 import { TokenCustomClasses, Option, OptionToStrFn } from '../types';
 
-const arraysAreDifferent = (array1: any[], array2: any[]): boolean => {
+const arraysAreDifferent = (array1: any[] = [], array2: any[] = []): boolean => {
   if (array1.length !== array2.length) {
     return true;
   }
@@ -26,13 +26,13 @@ export interface Props<Opt extends Option> extends React.InputHTMLAttributes<HTM
   options: Opt[];
   customClasses?: TokenCustomClasses;
   allowCustomValues?: number;
-  defaultSelected: any[];
+  defaultSelected?: any[];
   initialValue?: string;
   placeholder?: string;
   disabled?: boolean;
-  inputProps: object;
-  onTokenRemove?: Function;
-  onTokenAdd?: Function;
+  inputProps?: object;
+  onTokenRemove?: (value: Opt) => any;
+  onTokenAdd?: (value: Opt) => any;
   filterOption?: string | Function;
   searchOptions?: Function;
   displayOption?: string | OptionToStrFn<Opt>;
@@ -42,6 +42,7 @@ export interface Props<Opt extends Option> extends React.InputHTMLAttributes<HTM
   defaultClassNames?: boolean;
   showOptionsWhenEmpty?: boolean;
   innerRef?: (c: HTMLInputElement) => any;
+  renderAbove?: boolean;
 }
 
 export interface State<Opt extends Option> {
@@ -95,8 +96,9 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
 
   componentWillReceiveProps(nextProps: Props<T>) {
     // if we get new defaultProps, update selected
-    if (arraysAreDifferent(this.props.defaultSelected, nextProps.defaultSelected)) {
-      this.setState({ selected: nextProps.defaultSelected.slice(0) });
+    const { defaultSelected = [] } = nextProps;
+    if (arraysAreDifferent(this.props.defaultSelected, defaultSelected)) {
+      this.setState({ selected: defaultSelected.slice(0) });
     }
   }
 
@@ -145,7 +147,14 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
 
   private getOptionsForTypeahead() {
     // return this.props.options without this.selected
-    return this.props.options;
+    const mapper = this.getInputOptionToStringMapper();
+    return this.props.options
+      .filter((opt: T) => {
+        const value: string = mapper(opt);
+        return !this.state.selected
+          .map(mapper)
+          .includes(value);
+      });
   }
 
   @bind
@@ -181,6 +190,8 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
       .map(mapper)
       .indexOf(searchStr);
   }
+
+  @bind
   private removeTokenForValue(value: T) {
     const index = this.getSelectedIndex(value);
     if (index === -1) {
@@ -196,10 +207,12 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
   @bind
   private addTokenForValue(value: T) {
     let { selected } = this.state;
+    
     if (this.getSelectedIndex(value) !== -1) {
       return;
     }
     selected = [...selected, value];
+    
     this.setState({ selected });
     
     if (!this.typeaheadElement) throw new Error('Expected typahead to be set');
@@ -216,7 +229,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
       onKeyPress, onKeyUp, onFocus, onBlur,
       showOptionsWhenEmpty, displayOption,
       defaultClassNames, filterOption,
-      searchOptions,
+      searchOptions, renderAbove,
     } = this.getProps();
     const classes: any = {};
     const { typeahead } = customClasses;
@@ -255,7 +268,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
 
     return (
       <div className={tokenizerClassList}>
-        {this.renderTokens()}
+        {renderAbove && this.renderTokens()}
         <Typeahead 
           // @ts-ignore - issue with addTokenForValue!?
           innerRef={(c: HTMLInputElement) => this.typeaheadElement = c}
@@ -264,7 +277,9 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
           options={this.getOptionsForTypeahead()}
           onOptionSelected={this.addTokenForValue}
           onKeyDown={this.onKeyDown}
+          clearOnSelection={true}
         />
+        {!renderAbove && this.renderTokens()}
       </div>
     );
   }

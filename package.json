@@ -1,6 +1,6 @@
 {
   "name": "@gforge/react-typeahead-ts",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A typescript rewrite of the react-typehead npm package",
   "main": "dist/typeahead.js",
   "module": "dist/typeahead.es6.js",
@@ -26,7 +26,8 @@
     "start:example": "npm run link:example && cd examples && npm run start",
     "build:example": "npm run link:example && cd examples && npm run build",
     "link:example": "cd examples && yarn install && yarn link react-typeahead-ts",
-    "deploy": "npm run build:example && gh-pages -d examples/build"
+    "deploy": "npm run build:example && gh-pages -d examples/build",
+    "reset:type": "rimraf nodemodules/@types && npm install"
   },
   "repository": {
     "type": "git",
@@ -49,30 +50,32 @@
     "bind-decorator": "^1.0.11",
     "classnames": "^2.2.5",
     "fuzzy": "^0.1.3",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1"
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
   },
   "devDependencies": {
-    "@types/enzyme": "^3.1.9",
+    "@types/enzyme": "^3.1.10",
     "@types/jest": "^22.2.3",
-    "@types/lodash": "^4.14.106",
-    "@types/react": "^16.3.10",
+    "@types/lodash": "^4.14.108",
+    "@types/react": "^16.3.12",
     "@types/react-dom": "^16.0.5",
-    "@types/reactstrap": "^5.0.21",
+    "@types/reactstrap": "^5.0.23",
     "@types/sinon": "^4.3.1",
     "create-react-class": "^15.6.3",
     "cross-env": "^5.1.4",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.3",
     "gh-pages": "^1.1.0",
     "jest": "^22.4.3",
     "jest-cli": "^22.4.3",
-    "lint-staged": "7.0.4",
-    "lodash": "^4.17.5",
-    "prettier": "1.12.0",
+    "lint-staged": "7.0.5",
+    "lodash": "^4.17.10",
+    "prettier": "1.12.1",
     "raf": "^3.4.0",
+    "react-test-renderer": "^16.3.2",
     "rimraf": "^2.6.2",
-    "rollup": "^0.57.1",
+    "rollup": "^0.58.2",
     "rollup-plugin-commonjs": "9.1.0",
     "rollup-plugin-filesize": "1.5.0",
     "rollup-plugin-json": "^2.3.0",
@@ -82,12 +85,12 @@
     "rollup-plugin-sourcemaps": "0.4.2",
     "rollup-plugin-uglify": "^3.0.0",
     "sinon": "^4.5.0",
-    "ts-jest": "^22.4.2",
-    "tsc-watch": "1.0.19",
+    "ts-jest": "^22.4.4",
+    "tsc-watch": "1.0.21",
     "tslint": "5.9.1",
     "tslint-config-airbnb": "^5.8.0",
     "tslint-react": "3.5.1",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.3"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [
@@ -104,6 +107,9 @@
     "setupFiles": [
       "raf/polyfill",
       "<rootDir>/test/setupTest.ts"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
     ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}"

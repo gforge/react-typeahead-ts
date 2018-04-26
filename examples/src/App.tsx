@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Card, CardHeader, CardBody } from 'reactstrap';
-import { Typeahead } from '@gforge/react-typeahead-ts';
+import { Typeahead, Tokenizer } from '@gforge/react-typeahead-ts';
 import FormikExample from './FormikExample';
 import Code from './Code';
 import './App.css';
@@ -15,8 +15,8 @@ class App extends React.Component {
         <p className="App-intro">
           This is a rewrite of the the <a href="https://github.com/fmoo/react-typeahead">
             react-typeahead
-          </a> component that seems to have a somewhat old code-base by with <code
-          >
+          </a> component that seems to have a somewhat old code-base by with 
+          {' '}<code>
             create-react-class
           </code>.
         </p>
@@ -34,12 +34,28 @@ class App extends React.Component {
             {`
               <Typeahead
                 options={['John', 'Paul', 'George', 'Ringo']}
-                maxVisible={2}
               />`}
           </Code>
           <CardBody>
             <Typeahead
               options={['John', 'Paul', 'George', 'Ringo']}
+            />
+          </CardBody>
+        </Card>
+
+        <Card>
+          <CardHeader>Simple tokenizer test</CardHeader>
+          <Code>
+            {`
+              <Tokenizer
+                options={['John', 'Paul', 'George', 'Ringo']}
+                defaultSelected={['John']}
+              />`}
+          </Code>
+          <CardBody>
+            <Tokenizer
+              options={['John', 'Paul', 'George', 'Ringo']}
+              defaultSelected={['John']}
             />
           </CardBody>
         </Card>
