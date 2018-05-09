@@ -1,0 +1,97 @@
+import * as React from 'react';
+
+declare module "@gforge/react-typeahead-ts" {
+
+  declare export interface TypelistProps<Opt> {
+    options: Opt[],
+    allowCustomValues?: number,
+    customClasses?: CustomClasses,
+    customValue?: string,
+    selectionIndex?: number,
+    onOptionSelected: SelectorOptionSelector<Opt>,
+    displayOption: Function,
+    defaultClassNames?: boolean,
+    areResultsTruncated?: boolean,
+    resultsTruncatedMessage?: string,
+    innerRef?: ((c: any) => void)
+  }
+
+  declare export type AnyReactWithProps<Opt> = React$ComponentType<TypelistProps<Opt>>;
+
+  declare export interface CustomClasses {
+    results?: string,
+    hover?: string,
+    input?: string,
+    resultsTruncated?: string,
+    listItem?: string,
+    customAdd?: string,
+    listAnchor?: string,
+    nav?: string
+  }
+
+  declare export type TokenCustomClasses = {
+    token?: string,
+    typeahead?: string
+  } & CustomClasses
+
+  declare export type SelectorOptionSelector<Opt> = (result: Opt, event: any) => any;
+  declare export type OnOptionSelectArg<Opt> = ((option?: Opt | string, event?: any) => any);
+  declare export type Option = string | {
+    [propName: string]: any
+  };
+
+  declare export type OptionToStrFn<T> = (option: T, index?: number) => string;
+
+  declare export type TypeaheadProps<Opt, Mapped> = {
+    name?: string,
+    customClasses?: CustomClasses,
+    maxVisible?: number,
+    clearOnSelection?: boolean,
+    resultsTruncatedMessage?: string,
+    options: Opt[],
+    allowCustomValues?: number,
+    initialValue?: string,
+    value?: string,
+    placeholder?: string,
+    disabled?: boolean,
+    textarea?: boolean,
+    inputProps?: Object,
+    onOptionSelected?: OnOptionSelectArg<Mapped>,
+    filterOption?: string | ((value: string, option: Opt) => boolean),
+    searchOptions?: ((value: string, option: Opt[]) => Mapped[]),
+    displayOption?: string | OptionToStrFn<Mapped>,
+    inputDisplayOption?: string | OptionToStrFn<Mapped>,
+    formInputOption?: string | OptionToStrFn<Mapped>,
+    defaultClassNames?: boolean,
+    customListComponent?: AnyReactWithProps<Opt>,
+    showOptionsWhenEmpty?: boolean,
+    innerRef?: (c: any) => any
+  }
+
+  declare export type TokenProps<Opt> = {
+    name?: string,
+    options: Opt[],
+    customClasses?: TokenCustomClasses,
+    allowCustomValues?: number,
+    defaultSelected?: any[],
+    initialValue?: string,
+    placeholder?: string,
+    disabled?: boolean,
+    inputProps?: Object,
+    onTokenRemove?: (value: Opt) => any,
+    onTokenAdd?: (value: Opt) => any,
+    filterOption?: string | Function,
+    searchOptions?: Function,
+    displayOption?: string | OptionToStrFn<Opt>,
+    formInputOption?: string | OptionToStrFn<Opt>,
+    maxVisible?: number,
+    resultsTruncatedMessage?: string,
+    defaultClassNames?: boolean,
+    showOptionsWhenEmpty?: boolean,
+    innerRef?: (c: any) => any,
+    renderAbove?: boolean
+  }
+
+  declare export class Tokenizer<Opt> extends React$Component<TokenProps<Opt>> { }
+  declare export class Typeahead<Opt, Mapped> extends React$Component<TypeaheadProps<Opt, Mapped>> { }
+}
