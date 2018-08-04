@@ -5,7 +5,7 @@ export interface Props {
   className?: string;
   name?: string;
   children: React.ReactNode | string;
-  object: string | object;
+  object: unknown;
   onRemove: Function;
   value: string;
 }
@@ -13,9 +13,9 @@ export interface Props {
 /**
  * Encapsulates the rendering of an option that has been "selected" in a
  * TypeaheadTokenizer
- */ 
+ */
 class Token extends React.Component<Props> {
-  
+
   render() {
     const className = classNames([
       'typeahead-token',
@@ -52,16 +52,17 @@ class Token extends React.Component<Props> {
   }
 
   renderCloseButton() {
-    if (!this.props.onRemove) {
+    const { onRemove, object, className = 'typeahead-token-close' } = this.props;
+    if (!onRemove) {
       return '';
     }
 
     return (
       <a
-        className={this.props.className || 'typeahead-token-close'} 
-        href="#" 
+        className={className}
+        href="#"
         onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
-          this.props.onRemove(this.props.object);
+          onRemove(object);
           event.preventDefault();
         }}
       >

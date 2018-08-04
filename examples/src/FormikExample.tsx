@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Formik, Form, Field, FieldArray } from 'formik';
+import { Formik, Form, Field, FieldArray, FieldProps, FormikProps } from 'formik';
 import { ButtonGroup, Button, Label } from 'reactstrap';
 import { Typeahead, Tokenizer } from '@gforge/react-typeahead-ts';
 
 export interface BeatleWithId { id: number; name: string; }
+type Values = { my_form_field: string, my_array: number[] };
 export default () => {
   const options: BeatleWithId[] = [
     { id: 1, name: 'John' },
@@ -20,14 +21,14 @@ export default () => {
         setSubmitting(false);
       }}
     >
-      {({ errors, touched, isSubmitting, handleReset, values }) => (
+      {({ errors, touched, isSubmitting, handleReset, values }: FormikProps<Values>) => (
         <Form>
           <Label>Typeahed</Label>
           <Field
             type="text"
             name="my_form_field"
           >
-            {({ form: { setFieldValue, setFieldTouched }, field: { name } }) => (
+            {({ form: { setFieldValue, setFieldTouched }, field: { name } }: FieldProps<Values>) => (
               <Typeahead
                 options={options}
                 filterOption="name"

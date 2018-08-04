@@ -198,7 +198,6 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       maxVisible && searchResults.length > maxVisible,
     );
 
-
     return (
       <TypeaheadSelector
         options={
@@ -366,9 +365,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
 
     events[KeyEvent.DOM_VK_UP] = this.navUp;
     events[KeyEvent.DOM_VK_DOWN] = this.navDown;
-    events[KeyEvent.DOM_VK_RETURN] = events[
-      KeyEvent.DOM_VK_ENTER
-    ] = this.onEnter;
+    events[KeyEvent.DOM_VK_RETURN] = events[KeyEvent.DOM_VK_ENTER] = this.onEnter;
     events[KeyEvent.DOM_VK_ESCAPE] = this.onEscape;
     events[KeyEvent.DOM_VK_TAB] = this.onTab;
 
@@ -553,7 +550,6 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
       } else {
         mapper = Accessor.IDENTITY_FN;
       }
-
 
       this.searchFunction = (value: string, options: T[]) => {
         const fuzzyOpt: FilterOptions<any> = { extract: mapper };

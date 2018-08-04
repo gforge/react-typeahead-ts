@@ -1,4 +1,4 @@
-export interface CustomClasses { 
+export interface CustomClasses {
   results?: string;
   hover?: string;
   input?: string;
@@ -14,10 +14,10 @@ export interface TokenCustomClasses extends CustomClasses {
   typeahead?: string;
 }
 
-export type SelectorOptionSelector<Opt extends Option> = 
+export type SelectorOptionSelector<Opt extends Option> =
   (result: Opt, event: React.MouseEvent<HTMLDivElement>) => any;
 
-export type OnOptionSelectArg<Opt extends Option> = 
+export type OnOptionSelectArg<Opt extends Option> =
   ((option?: Opt | string, event?: React.SyntheticEvent<any>) => any);
 
 export type Option = string | { [propName: string]: any };

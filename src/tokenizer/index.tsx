@@ -115,7 +115,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
   // TODO: Support initialized tokens
   //
   private renderTokens() {
-    const { 
+    const {
       customClasses: { token }, displayOption, formInputOption, name,
     } = this.getProps();
     const tokenClasses: any = {};
@@ -130,8 +130,8 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
 
         const key: string = displayString;
         return (
-          <Token 
-            key={key} 
+          <Token
+            key={key}
             className={classList}
             onRemove={this.removeTokenForValue}
             object={selected}
@@ -207,14 +207,14 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
   @bind
   private addTokenForValue(value: T) {
     let { selected } = this.state;
-    
+
     if (this.getSelectedIndex(value) !== -1) {
       return;
     }
     selected = [...selected, value];
-    
+
     this.setState({ selected });
-    
+
     if (!this.typeaheadElement) throw new Error('Expected typahead to be set');
 
     this.typeaheadElement.value = '';
@@ -222,7 +222,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
   }
 
   render() {
-    const { 
+    const {
       className, customClasses = {}, disabled, inputProps,
       allowCustomValues, initialValue = '',
       maxVisible, resultsTruncatedMessage, placeholder,
@@ -269,12 +269,12 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
     return (
       <div className={tokenizerClassList}>
         {renderAbove && this.renderTokens()}
-        <Typeahead 
-          // @ts-ignore - issue with addTokenForValue!?
+        <Typeahead
           innerRef={(c: HTMLInputElement) => this.typeaheadElement = c}
           className={classList}
           {...args2Pass}
           options={this.getOptionsForTypeahead()}
+          // @ts-ignore
           onOptionSelected={this.addTokenForValue}
           onKeyDown={this.onKeyDown}
           clearOnSelection={true}
