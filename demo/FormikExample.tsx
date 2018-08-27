@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Formik, Form, Field, FieldArray, FieldProps, FormikProps } from 'formik';
 import { ButtonGroup, Button, Label } from 'reactstrap';
-import { Typeahead, Tokenizer } from '@gforge/react-typeahead-ts';
+import Example from './Example';
+import { Typeahead, Tokenizer } from '../src';
 
 export interface BeatleWithId { id: number; name: string; }
-type Values = { my_form_field: string, my_array: number[] };
+type Values = { typeahead_field: string, tokenizer_field: number[] };
 export default () => {
   const options: BeatleWithId[] = [
     { id: 1, name: 'John' },
@@ -14,7 +15,7 @@ export default () => {
   ];
   return (
     <Formik
-      initialValues={{ my_form_field: '', my_array: [] }}
+      initialValues={{ typeahead_field: '', tokenizer_field: [] }}
       onSubmit={(vals, { setSubmitting }) => {
         // tslint:disable-next-line:no-console
         console.log(vals, 'value when submitting');
@@ -23,69 +24,147 @@ export default () => {
     >
       {({ errors, touched, isSubmitting, handleReset, values }: FormikProps<Values>) => (
         <Form>
-          <Label>Typeahed</Label>
-          <Field
-            type="text"
-            name="my_form_field"
+          <Example
+            title="Typeahead"
+            code={`
+              <Field
+                type="text"
+                name="typeahead_field"
+              >
+                {({
+                  form: { setFieldValue, setFieldTouched },
+                  field: { name },
+                }: FieldProps<Values>) => (
+                  <Typeahead
+                    options={options}
+                    filterOption="name"
+                    displayOption="name"
+                    formInputOption="id"
+                    showOptionsWhenEmpty={true}
+                    onChange={() => {
+                      setFieldTouched(name, true);
+                    }}
+                    onOptionSelected={(value?: BeatleWithId) => {
+                      // tslint:disable-next-line:no-console
+                      console.log(value, 'value in onOptionSelected');
+                      setFieldValue(name, value && value.name);
+                    }}
+                    className="inputStyle"
+                    customClasses={{
+                      results: 'list-group',
+                      listItem: 'list-group-item'
+                    }}
+                  />
+                )}
+              </Field>
+            `}
           >
-            {({ form: { setFieldValue, setFieldTouched }, field: { name } }: FieldProps<Values>) => (
-              <Typeahead
-                options={options}
-                filterOption="name"
-                displayOption="name"
-                formInputOption="id"
-                showOptionsWhenEmpty={true}
-                onChange={() => {
-                  setFieldTouched(name, true);
-                }}
-                onOptionSelected={(value?: BeatleWithId) => {
-                  // tslint:disable-next-line:no-console
-                  console.log(value, 'value in onOptionSelected');
-                  setFieldValue(name, value && value.name);
-                }}
-                className="inputStyle"
-                customClasses={{
-                  results: 'list-group',
-                  listItem: 'list-group-item'
-                }}
-              />
-            )}
-          </Field>
-          {errors.my_form_field && touched.my_form_field && <div>{errors.my_form_field}</div>}
-          <br />
-          <Label>Tokenizer</Label>
-          <FieldArray
-            name="my_array"
-          >
-            {({ push, remove }) => {
-              return (
-                <Tokenizer
+            <Field
+              type="text"
+              name="typeahead_field"
+            >
+              {({
+                form: { setFieldValue, setFieldTouched },
+                field: { name },
+              }: FieldProps<Values>) => (
+                <Typeahead
                   options={options}
                   filterOption="name"
                   displayOption="name"
                   formInputOption="id"
                   showOptionsWhenEmpty={true}
-                  onTokenAdd={(value: BeatleWithId) => {
-                    // tslint:disable-next-line:no-console
-                    console.log(value, 'value in Add');
-                    push(value.id);
+                  onChange={() => {
+                    setFieldTouched(name, true);
                   }}
-                  onTokenRemove={(value: BeatleWithId) => {
+                  onOptionSelected={(value?: BeatleWithId) => {
                     // tslint:disable-next-line:no-console
-                    console.log(value, 'value in Remove');
-                    remove(values.my_array.findIndex(id => id === value.id));
+                    console.log(value, 'value in onOptionSelected');
+                    setFieldValue(name, value && value.id);
                   }}
                   className="inputStyle"
                   customClasses={{
                     results: 'list-group',
                     listItem: 'list-group-item',
-                    token: 'badge badge-primary',
                   }}
                 />
-              );
-            }}
-          </FieldArray>
-          {errors.my_form_field && touched.my_form_field && <div>{errors.my_form_field}</div>}
+              )}
+            </Field>
+            {errors.typeahead_field
+              && touched.typeahead_field
+              && <div>{errors.typeahead_field}</div>}
+          </Example>
+          <br />
+          <Example
+            title="Tokenizer"
+            code={`
+            <FieldArray
+              name="tokenizer_field"
+            >
+              {({ push, remove }) => {
+                return (
+                  <Tokenizer
+                    options={options}
+                    filterOption="name"
+                    displayOption="name"
+                    formInputOption="id"
+                    showOptionsWhenEmpty={true}
+                    onTokenAdd={(value: BeatleWithId) => {
+                      // tslint:disable-next-line:no-console
+                      console.log(value, 'value in Add');
+                      push(value.id);
+                    }}
+                    onTokenRemove={(value: BeatleWithId) => {
+                      // tslint:disable-next-line:no-console
+                      console.log(value, 'value in Remove');
+                      remove(values.tokenizer_field.findIndex(id => id === value.id));
+                    }}
+                    className="inputStyle"
+                    customClasses={{
+                      results: 'list-group',
+                      listItem: 'list-group-item',
+                      token: 'badge badge-primary',
+                    }}
+                  />
+                );
+              }}
+            </FieldArray>`}
+          >
+            <FieldArray
+              name="tokenizer_field"
+            >
+              {({ push, remove }) => {
+                return (
+                  <Tokenizer
+                    options={options}
+                    filterOption="name"
+                    displayOption="name"
+                    formInputOption="id"
+                    showOptionsWhenEmpty={true}
+                    onTokenAdd={(value: BeatleWithId) => {
+                      // tslint:disable-next-line:no-console
+                      console.log(value, 'value in Add');
+                      push(value.id);
+                    }}
+                    onTokenRemove={(value: BeatleWithId) => {
+                      // tslint:disable-next-line:no-console
+                      console.log(value, 'value in Remove');
+                      remove(values.tokenizer_field.findIndex(id => id === value.id));
+                    }}
+                    className="inputStyle"
+                    customClasses={{
+                      results: 'list-group',
+                      listItem: 'list-group-item',
+                      token: 'badge badge-primary',
+                    }}
+                  />
+                );
+              }}
+            </FieldArray>
+            {errors.typeahead_field
+              && touched.typeahead_field
+              && <div>{errors.typeahead_field}</div>}
+          </Example>
+
           <br />
           <ButtonGroup>
             <Button color="success" type="submit" disabled={isSubmitting}>

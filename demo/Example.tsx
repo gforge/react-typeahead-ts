@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { Card, CardHeader, CardBody } from 'reactstrap';
+import {
+  Card, CardHeader, CardBody, Button,
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 import SyntaxHighlighter, { light } from 'react-syntax-highlighter/prism';
 
 export interface Props {
@@ -10,15 +13,18 @@ export interface Props {
 
 interface State {
   hasError: boolean;
+  popoverOpen: boolean;
 }
 
-export default class Example extends React.PureComponent<Props> {
-  state = { hasError: false };
+export default class Example extends React.PureComponent<Props, State> {
+  state = { hasError: false, popoverOpen: false };
 
   componentDidCatch(error, info) {
     this.setState({ hasError: true });
     console.warn(error, info);
   }
+
+  toggle = () => this.setState({ popoverOpen: !this.state.popoverOpen });
 
   getCleanCode(): string | void {
     const { code } = this.props;
@@ -40,6 +46,37 @@ export default class Example extends React.PureComponent<Props> {
     return lines.join('\n').trim();
   }
 
+  renderCode() {
+    const code = this.getCleanCode();
+    if (!code) return;
+
+    const highlightedCode = (
+      <SyntaxHighlighter language="javascript" style={light}>
+        {code}
+      </SyntaxHighlighter>);
+
+    if (code.split('\n').length < 15) {
+      return highlightedCode;
+    }
+
+    return (
+      <React.Fragment>
+        <Button onClick={this.toggle} color="info">
+          View code
+        </Button>
+        <Modal
+          isOpen={this.state.popoverOpen}
+          target="CodeHighlight"
+          toggle={this.toggle}
+          size="lg"
+          style={{ width: '90%' }}
+        >
+          <ModalHeader>Code</ModalHeader>
+          <ModalBody>{highlightedCode}</ModalBody>
+        </Modal>
+      </React.Fragment>);
+  }
+
   render () {
     const { hasError } = this.state;
     if (hasError) {
@@ -55,11 +92,7 @@ export default class Example extends React.PureComponent<Props> {
     return (
       <Card>
         <CardHeader>{title}</CardHeader>
-        {code && (
-          <SyntaxHighlighter language="javascript" style={light}>
-            {code}
-          </SyntaxHighlighter>
-        )}
+        {this.renderCode()}
         <CardBody>
           {children}
         </CardBody>
