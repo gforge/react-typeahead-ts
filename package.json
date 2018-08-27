@@ -25,7 +25,7 @@
     "lint": "tslint -p .",
     "lint:fix": "tslint -p . --fix",
     "demo": "parcel serve ./demo/index.html --out-dir demo/dist",
-    "build:demo": "parcel build demo/index.html --out-dir demo/dist --public-url=/formik-task_type",
+    "build:demo": "parcel build demo/index.html --out-dir demo/dist --public-url=/react-typeahead-ts",
     "deploy": "npm run build:demo && gh-pages -d demo/dist",
     "reset:type": "rimraf nodemodules/@types && npm install"
   },
