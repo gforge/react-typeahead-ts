@@ -1,5 +1,4 @@
 import * as React from 'react';
-import bind from 'bind-decorator';
 import Accessor from '../accessor';
 import Token from './token';
 import KeyEvent from '../keyevent';
@@ -157,8 +156,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
       });
   }
 
-  @bind
-  private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  private onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // We only care about intercepting backspaces
     if (event.keyCode === KeyEvent.DOM_VK_BACK_SPACE) {
       return this.handleBackspace(event);
@@ -191,8 +189,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
       .indexOf(searchStr);
   }
 
-  @bind
-  private removeTokenForValue(value: T) {
+  private removeTokenForValue = (value: T) => {
     const index = this.getSelectedIndex(value);
     if (index === -1) {
       return;
@@ -204,8 +201,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
     return;
   }
 
-  @bind
-  private addTokenForValue(value: T) {
+  private addTokenForValue = (value: T) => {
     let { selected } = this.state;
 
     if (this.getSelectedIndex(value) !== -1) {

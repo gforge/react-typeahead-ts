@@ -1,5 +1,4 @@
 import * as React from 'react';
-import bind from 'bind-decorator';
 import Accessor from '../accessor';
 import TypeaheadSelector, { Props as TypelistProps } from './selector';
 import KeyEvent from '../keyevent';
@@ -143,8 +142,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     this.onTextEntryUpdated();
   }
 
-  @bind
-  focus() {
+  focus = () => {
     if (!this.inputElement) return;
     this.inputElement.focus();
   }
@@ -264,11 +262,10 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
   }
 
   private selected: boolean = false;
-  @bind
-  private onOptionSelected(
+  private onOptionSelected = (
     option?: Mapped | string,
     event?: React.SyntheticEvent<any>,
-  ) {
+  ) => {
     if (!option) {
       this.selected = false;
       this.setState({
@@ -311,8 +308,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     }
   }
 
-  @bind
-  private onTextEntryUpdated(newValue?: string) {
+  private onTextEntryUpdated = (newValue?: string) => {
     if (!this.inputElement) throw new Error('No input element');
     const value = newValue === undefined ? this.inputElement.value : newValue;
 
@@ -323,8 +319,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     });
   }
 
-  @bind
-  private onEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+  private onEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const selection = this.getSelection();
     if (!selection) {
       return this.props.onKeyDown && this.props.onKeyDown(event);
@@ -333,15 +328,13 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     return this.onOptionSelected(selection, event);
   }
 
-  @bind
-  private onEscape() {
+  private onEscape = () => {
     this.setState({
       selectionIndex: undefined,
     });
   }
 
-  @bind
-  private onTab(event: React.KeyboardEvent<HTMLInputElement>) {
+  private onTab = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const selection = this.getSelection();
 
     const availableOptions = this.searchOptions();
@@ -402,18 +395,11 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     this.setState({ selectionIndex: newIndex });
   }
 
-  @bind
-  navDown() {
-    this.nav(1);
-  }
+  navDown = () => this.nav(1);
 
-  @bind
-  navUp() {
-    this.nav(-1);
-  }
+  navUp = () => this.nav(-1);
 
-  @bind
-  private onChange(event: React.ChangeEvent<HTMLInputElement>) {
+  private onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { onChange } = this.getProps();
     if (onChange) {
       onChange(event);
@@ -423,8 +409,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     this.onTextEntryUpdated(event.target.value);
   }
 
-  @bind
-  private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  private onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // If there are no visible elements, don't perform selector navigation.
     // Just pass this up to the upstream onKeydown handler.
     // Also skip if the user is pressing the shift key,
@@ -497,16 +482,14 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
     );
   }
 
-  @bind
-  private onFocus(event: React.FocusEvent<HTMLInputElement>) {
+  private onFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     this.setState({ isFocused: true, showResults: true }, () => {
       this.onTextEntryUpdated();
     });
     this.props.onFocus && this.props.onFocus(event);
   }
 
-  @bind
-  private onBlur(event: React.FocusEvent<HTMLInputElement>) {
+  private onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     this.setState({ isFocused: false }, () => {
       this.onTextEntryUpdated();
     });
