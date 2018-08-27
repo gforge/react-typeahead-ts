@@ -20,6 +20,26 @@ export default class Example extends React.PureComponent<Props> {
     console.warn(error, info);
   }
 
+  getCleanCode(): string | void {
+    const { code } = this.props;
+    if (!code) return;
+    let lines = code.split(/\n/);
+    const firstNonEmpty = lines.findIndex(l => l.search(/[^ ]/) >= 0);
+    if (firstNonEmpty < 0) return;
+    lines = lines.slice(firstNonEmpty);
+
+    const indentation = lines[0].search(/[^ ]/);
+    if (indentation <= 0) return lines.join('\n').trim();
+
+    lines = lines.map((line) => {
+      const currInd = line.search(/[^ ]/);
+      if (currInd < indentation) return line;
+
+      return line.substr(indentation);
+    });
+    return lines.join('\n').trim();
+  }
+
   render () {
     const { hasError } = this.state;
     if (hasError) {
@@ -30,7 +50,8 @@ export default class Example extends React.PureComponent<Props> {
       );
     }
 
-    const { title, code, children } = this.props;
+    const { title, children } = this.props;
+    const code = this.getCleanCode();
     return (
       <Card>
         <CardHeader>{title}</CardHeader>
