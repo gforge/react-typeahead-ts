@@ -1,6 +1,6 @@
 {
   "name": "@gforge/react-typeahead-ts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A typescript rewrite of the react-typehead npm package",
   "main": "dist/typeahead.js",
   "module": "dist/typeahead.es6.js",
@@ -46,12 +46,11 @@
   },
   "homepage": "https://github.com/gforge/react-typeahead-ts#readme",
   "dependencies": {
-    "@gforge/react-typeahead-ts": "^0.3.0",
-    "@types/classnames": "^2.2.6",
     "classnames": "^2.2.6",
     "fuzzy": "^0.1.3"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.6",
     "@types/enzyme": "^3.1.13",
     "@types/jest": "^23.3.1",
     "@types/lodash": "^4.14.116",
