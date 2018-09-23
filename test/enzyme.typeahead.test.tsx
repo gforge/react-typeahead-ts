@@ -200,10 +200,10 @@ describe('TypeaheadTokenizer Component', () => {
           <Typeahead
             options={BEATLES}
             onFocus={focusSpy}
-          />);        
+          />);
         expect(focusSpy.calledOnce).toEqual(false);
         getInput(component).simulate('focus');
-        
+
         expect(focusSpy.calledOnce).toEqual(true);
       });
     });
@@ -218,7 +218,7 @@ describe('TypeaheadTokenizer Component', () => {
             options={BEATLES}
             maxVisible={1}
           />);
-        
+
         simulateTextInput(component, 'o');
         expect(component.find('a.typeahead-option').length).toEqual(1);
 
@@ -231,12 +231,12 @@ describe('TypeaheadTokenizer Component', () => {
       // tslint:disable-next-line:max-line-length
       test('limits the result set based on the maxVisible option, and shows resultsTruncatedMessage when specified', () => {
         const component = mount(
-          <Typeahead 
-            options={BEATLES} 
-            maxVisible={1} 
-            resultsTruncatedMessage="Results truncated" 
+          <Typeahead
+            options={BEATLES}
+            maxVisible={1}
+            resultsTruncatedMessage="Results truncated"
           />);
-        
+
         simulateTextInput(component, 'o');
         expect(component
             .find('ul li.results-truncated')
@@ -287,15 +287,15 @@ describe('TypeaheadTokenizer Component', () => {
         };
 
         const component = mount(
-          <Typeahead 
-            options={BEATLES} 
+          <Typeahead
+            options={BEATLES}
             searchOptions={(value: string, opts: string[]) => opts
                 .map(createObject)
                 .filter(o => o.orig.match(RegExp(value, 'i')))}
             displayOption={(o: Mapped) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={(o: Mapped) => o.orig} 
+            inputDisplayOption={(o: Mapped) => o.orig}
           />);
-        
+
         simulateTextInput(component, 'john');
         expect(component.text()).toEqual('Score: 4 John');
       });
@@ -307,8 +307,8 @@ describe('TypeaheadTokenizer Component', () => {
         };
 
         const component = mount(
-          <Typeahead 
-            options={BEATLES} 
+          <Typeahead
+            options={BEATLES}
             searchOptions={(value: string, opts: string[]) => opts
               .sort()
               .map(createObject)

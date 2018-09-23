@@ -3,7 +3,7 @@ import * as React from 'react';
 // @ts-ignore
 import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
-import Typeahead, { Props as TProps } from '../src/typeahead';
+import { Props as TProps } from '../src/typeahead';
 import Tokenizer from '../src/tokenizer';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
@@ -26,12 +26,6 @@ const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, val
     .simulate('change', { target: { value } });
 
   return mountedComponent;
-};
-
-
-const simulateTokenInput = (component: Typeahead<any, any>, value: string) => {
-  const typeahead = component.inputElement;
-  return simulateTextInput(typeahead, value);
 };
 
 const simulateKeyEvent = (
@@ -106,18 +100,19 @@ describe('TypeaheadTokenizer Component', () => {
 
 
     test('should have custom and default token classes', () => {
-      simulateTokenInput(testContext.component, 'o');
+      simulateTextInput(testContext.component, 'o');
       simulateKeyEvent(testContext.component, Keyevent.DOM_VK_DOWN);
       simulateKeyEvent(testContext.component, Keyevent.DOM_VK_DOWN);
       simulateKeyEvent(testContext.component, Keyevent.DOM_VK_RETURN);
 
-      
-      const tokens = testContext.component;
-      expect(tokens.length).toEqual(1);
-      expect(tokens[0]).toBeDefined();
+      simulateTextInput(testContext.component, 'Ringo');
+      simulateKeyEvent(testContext.component, Keyevent.DOM_VK_DOWN);
+      simulateKeyEvent(testContext.component, Keyevent.DOM_VK_RETURN);
 
-      // TestUtils.findRenderedDOMComponentWithClass(tokens[0], 'typeahead-token');
-      // TestUtils.findRenderedDOMComponentWithClass(tokens[0], 'custom-token');
+      const tokens = testContext.component.find('.typeahead-token');
+
+      expect(tokens.length).toEqual(2);
+      expect(tokens.at(0)).toBeDefined();
     });
   });
 });

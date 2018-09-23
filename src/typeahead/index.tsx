@@ -301,6 +301,7 @@ class Typeahead<T extends Option, Mapped> extends React.Component<
         selection: formInputOptionString,
         entryValue: optionString,
         showResults: false,
+        selectionIndex: undefined,
       });
       this.inputElement.blur();
 

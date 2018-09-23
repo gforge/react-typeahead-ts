@@ -147,6 +147,7 @@ class TypeaheadTokenizer<T> extends React.Component<Props<T>, State<T>> {
   private getOptionsForTypeahead() {
     // return this.props.options without this.selected
     const mapper = this.getInputOptionToStringMapper();
+
     return this.props.options
       .filter((opt: T) => {
         const value: string = mapper(opt);
