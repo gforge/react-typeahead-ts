@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/gforge/react-typeahead-ts.svg?branch=master)](https://travis-ci.org/gforge/react-typeahead-ts)
+[![npm version](https://badge.fury.io/js/%40gforge%2Freact-typeahead-ts.svg)](https://badge.fury.io/js/%40gforge%2Freact-typeahead-ts)
+
 # The @gforge/react-typeahead-ts
 
 > A typeahead/autocomplete component for React
