@@ -39,27 +39,27 @@ const BEATLES_COMPLEX = [
 ];
 
 describe('Typeahead Component', () => {
-  let testContext;
+  let testContext: {};
 
   beforeEach(() => {
     testContext = {};
   });
 
   // Prev. tests moved (sanity, props - sections)
-
   describe('props', () => {
     describe('searchOptions', () => {
       test('maps correctly when specified with map function', () => {
-        const createObject = function (o) {
+        type RetVal = { len: number, orig: string };
+        const createObject = function (o: string): RetVal {
           return { len: o.length, orig: o };
         };
 
         const component = TestUtils.renderIntoDocument(
           <Typeahead
             options={BEATLES}
-            searchOptions={(inp, opts) => opts.map(createObject)}
-            displayOption={(o, i) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={function (o, i) { return o.orig; }}
+            searchOptions={(_, opts: string[]) => opts.map(createObject)}
+            displayOption={(o: RetVal) => `Score: ${o.len} ${o.orig}`}
+            inputDisplayOption={function (o) { return o.orig; }}
           />);
 
         const results = simulateTextInput(component, 'john');
