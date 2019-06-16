@@ -19,10 +19,7 @@ For a typeahead input:
 ```javascript
 import { Typeahead } from '@gforge/react-typeahead-ts';
 React.render(
-  <Typeahead
-    options={['John', 'Paul', 'George', 'Ringo']}
-    maxVisible={2}
-  />
+  <Typeahead options={['John', 'Paul', 'George', 'Ringo']} maxVisible={2} />
 );
 ```
 
@@ -42,7 +39,7 @@ React.render(
 
 ## Examples
 
-* [Basic Typeahead][1]
+- [Basic Typeahead][1]
 
 ![](https://i.cloudup.com/CeLPJjWvFK.gif)
 
@@ -207,6 +204,7 @@ This component receives the following props :
 - `props.onOptionSelected`
 
 ##### Created or modified
+
 - `props.options`
   - This is the Typeahead's `props.options` filtered and limited to `Typeahead.props.maxVisible`.
 - `props.selectionIndex`
@@ -419,21 +417,20 @@ A function to return the currently selected tokens.
 
 ### Setting Up
 
-You will need `npm` to develop on react-typeahead-ts.  [Installing npm][4].
+You will need `npm` to develop on react-typeahead-ts. [Installing npm][4].
 
 Once that's done, to get started, run `npm install` in your checkout directory.
 This will install all the local development dependences, such as `gulp` and `mocha`
 
 ### Testing
 
-react-typeahead-ts uses jest and enzyme for unit tests.  Large changes should
+react-typeahead-ts uses jest and enzyme for unit tests. Large changes should
 include unittests. After updating or creating new tests, run `npm run test` to regenerate the
 test package.
 
-
 ### Contributing
 
-Basically, fork the repository and send a pull request.  It can be difficult to review these, so
+Basically, fork the repository and send a pull request. It can be difficult to review these, so
 here are some general rules to follow for getting your PR accepted more quickly:
 
 - All new properties and exposed component function should be documented in the README.md

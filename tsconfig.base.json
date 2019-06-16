@@ -8,11 +8,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "jsx": "react",
-    "lib": [
-      "es2017",
-      "es2015",
-      "dom"
-    ],
+    "lib": ["es2017", "es2015", "dom"],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -30,12 +26,6 @@
     "stripInternal": true,
     "target": "es5"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "examples"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "examples"]
 }

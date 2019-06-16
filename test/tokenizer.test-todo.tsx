@@ -2,11 +2,11 @@ import * as React from 'react';
 import _ from 'lodash';
 import sinon from 'sinon';
 import ReactDOM from 'react-dom';
-import Typeahead from '../src/typeahead';
-import TypeaheadOption from '../src/typeahead/option';
-import TypeaheadSelector from '../src/typeahead/selector';
-import Tokenizer from '../src/tokenizer';
-import Token from '../src/tokenizer/token';
+import Typeahead from '../src/Typeahead';
+import TypeaheadOption from '../src/Typeahead/option';
+import TypeaheadSelector from '../src/Typeahead/selector';
+import Tokenizer from '../src/Tokenizer';
+import Token from '../src/Tokenizer/Token';
 import Keyevent from '../src/keyevent';
 import TestUtils from 'react-dom/test-utils';
 
@@ -52,7 +52,7 @@ const BEATLES_COMPLEX = [
 ];
 
 describe('TypeaheadTokenizer Component', () => {
-  let testContext;
+  let testContext: { component?: any } = {};
 
   beforeEach(() => {
     testContext = {};
@@ -66,7 +66,7 @@ describe('TypeaheadTokenizer Component', () => {
           customClasses={{
             token: 'custom-token',
           }}
-        />,
+        />
       );
     });
 
@@ -80,12 +80,10 @@ describe('TypeaheadTokenizer Component', () => {
         xxx: 0,
       };
 
-      _.each(
-        testplan,
-        (expected, value) => {
-          const results = simulateTokenInput(testContext.component, value);
-          expect(results.length).toEqual(expected);
-        });
+      _.each(testplan, (expected, value) => {
+        const results = simulateTokenInput(testContext.component, value);
+        expect(results.length).toEqual(expected);
+      });
     });
 
     test('should have custom and default token classes', () => {
@@ -103,15 +101,15 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     describe('onKeyDown', () => {
-      test('should bind to key events on the input', (done) => {
+      test('should bind to key events on the input', done => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyDown={function (e) {
+            onKeyDown={function(e) {
               expect(e.keyCode).toEqual(87);
               done();
             }}
-          />,
+          />
         );
         const input = ReactDOM.findDOMNode(component.refs.typeahead.refs.entry);
         TestUtils.Simulate.keyDown(input, { keyCode: 87 });
@@ -119,15 +117,15 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     describe('onKeyPress', () => {
-      test('should bind to key events on the input', (done) => {
+      test('should bind to key events on the input', done => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyPress={function (e) {
+            onKeyPress={function(e) {
               expect(e.keyCode).toEqual(87);
               done();
             }}
-          />,
+          />
         );
 
         const input = ReactDOM.findDOMNode(component.refs.typeahead.refs.entry);
@@ -136,15 +134,15 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     describe('onKeyUp', () => {
-      test('should bind to key events on the input', (done) => {
+      test('should bind to key events on the input', done => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyUp={function (e) {
+            onKeyUp={function(e) {
               expect(e.keyCode).toEqual(87);
               done();
             }}
-          />,
+          />
         );
 
         const input = ReactDOM.findDOMNode(component.refs.typeahead.refs.entry);
@@ -156,7 +154,7 @@ describe('TypeaheadTokenizer Component', () => {
       describe('displayOption', () => {
         test('renders simple options verbatim when not specified', () => {
           const component = TestUtils.renderIntoDocument(
-            <Tokenizer options={BEATLES} />,
+            <Tokenizer options={BEATLES} />
           );
           const results = simulateTokenInput(component, 'john');
           expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual('John');
@@ -168,11 +166,11 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-            />,
+            />
           );
           const results = simulateTokenInput(component, 'john');
           expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual(
-            'John Winston Ono Lennon MBE',
+            'John Winston Ono Lennon MBE'
           );
         });
 
@@ -181,14 +179,14 @@ describe('TypeaheadTokenizer Component', () => {
             <Tokenizer
               options={BEATLES_COMPLEX}
               filterOption="firstName"
-              displayOption={function (o, i) {
+              displayOption={function(o, i) {
                 return i + ' ' + o.firstName + ' ' + o.lastName;
               }}
-            />,
+            />
           );
           const results = simulateTokenInput(component, 'john');
           expect(ReactDOM.findDOMNode(results[0]).textContent).toEqual(
-            '0 John Lennon',
+            '0 John Lennon'
           );
         });
       });
@@ -200,7 +198,7 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-            />,
+            />
           );
           const results = simulateTokenInput(component, 'john');
 
@@ -224,7 +222,7 @@ describe('TypeaheadTokenizer Component', () => {
               filterOption="firstName"
               displayOption="nameWithTitle"
               formInputOption="lastName"
-            />,
+            />
           );
           const results = simulateTokenInput(component, 'john');
 
@@ -247,10 +245,10 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-              formInputOption={function (o, i) {
+              formInputOption={function(o, i) {
                 return o.firstName + ' ' + o.lastName;
               }}
-            />,
+            />
           );
           results = simulateTokenInput(component, 'john');
 
@@ -281,7 +279,7 @@ describe('TypeaheadTokenizer Component', () => {
         testContext.sinon.spy(testContext.component.refs.typeahead, 'focus');
         testContext.component.focus();
         expect(testContext.component.refs.typeahead.focus.calledOnce).toEqual(
-          true,
+          true
         );
       });
     });
@@ -373,7 +371,7 @@ describe('TypeaheadTokenizer Component', () => {
         const newTokens = getTokens(testContext.component);
         expect(tokens.length).toEqual(newTokens.length - 1);
         expect(newTokens[newTokens.length - 1].props.children).toEqual(
-          itemText,
+          itemText
         );
       });
 
@@ -407,7 +405,7 @@ describe('TypeaheadTokenizer Component', () => {
           customClasses={{
             customAdd: 'topcoat-custom__token',
           }}
-        />,
+        />
       );
     });
 
@@ -439,8 +437,8 @@ describe('TypeaheadTokenizer Component', () => {
         !ReactDOM.findDOMNode(results[0])
           .getAttribute('class')
           .match(
-            new RegExp(testContext.component.props.customClasses.customAdd),
-          ),
+            new RegExp(testContext.component.props.customClasses.customAdd)
+          )
       ).toBeTruthy();
     });
 
@@ -451,8 +449,8 @@ describe('TypeaheadTokenizer Component', () => {
         ReactDOM.findDOMNode(results[0])
           .getAttribute('class')
           .match(
-            new RegExp(testContext.component.props.customClasses.customAdd),
-          ),
+            new RegExp(testContext.component.props.customClasses.customAdd)
+          )
       ).toBeTruthy();
     });
 
@@ -494,7 +492,7 @@ describe('TypeaheadTokenizer Component', () => {
       tokens = getTokens(testContext.component);
       const tokenClose = TestUtils.scryRenderedDOMComponentsWithTag(
         tokens[0],
-        'a',
+        'a'
       )[0];
       TestUtils.Simulate.click(tokenClose);
       expect(testContext.tokenRemove.called).toBeTruthy();
@@ -530,13 +528,13 @@ describe('TypeaheadTokenizer Component', () => {
   describe('defaultClassNames', () => {
     test('should remove default classNames when this prop is specified and false', () => {
       const component = TestUtils.renderIntoDocument(
-        <Tokenizer options={BEATLES} defaultClassNames={false} />,
+        <Tokenizer options={BEATLES} defaultClassNames={false} />
       );
 
       expect(
         ReactDOM.findDOMNode(component).classList.contains(
-          'tokenizer-typeahead',
-        ),
+          'tokenizer-typeahead'
+        )
       ).toBeFalsy();
       expect(false).toEqual(component.refs.typeahead.props.defaultClassNames);
     });

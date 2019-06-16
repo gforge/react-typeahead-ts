@@ -3,8 +3,8 @@ import * as React from 'react';
 // @ts-ignore
 import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
-import { Props as TProps } from '../src/typeahead';
-import Tokenizer from '../src/tokenizer';
+import { Props as TProps } from '../src/Typeahead';
+import Tokenizer from '../src/Tokenizer';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
 
@@ -18,12 +18,13 @@ const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
   return controlComponent;
 };
 
-const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, value: string) => {
+const simulateTextInput = (
+  mountedComponent: ReactWrapper<TProps<any, any>>,
+  value: string
+) => {
   const inputElement = getInput(mountedComponent);
 
-  inputElement
-    .simulate('focus')
-    .simulate('change', { target: { value } });
+  inputElement.simulate('focus').simulate('change', { target: { value } });
 
   return mountedComponent;
 };
@@ -31,7 +32,7 @@ const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, val
 const simulateKeyEvent = (
   mountedComponent: ReactWrapper<TProps<any, any>>,
   code: string | number,
-  eventName: string = 'keyDown',
+  eventName: string = 'keyDown'
 ) => {
   const inputElement = getInput(mountedComponent);
 
@@ -74,30 +75,20 @@ describe('TypeaheadTokenizer Component', () => {
 
   describe('basic tokenizer', () => {
     beforeEach(() => {
-      testContext.component = mount(
-        <Tokenizer
-          options={BEATLES}
-        />);
+      testContext.component = mount(<Tokenizer options={BEATLES} />);
     });
 
     test('Basic mount', () => {
-      const ret = mount(
-        <Tokenizer
-          options={BEATLES}
-        />);
+      const ret = mount(<Tokenizer options={BEATLES} />);
 
       expect(ret.html()).toMatchSnapshot();
     });
 
     test('Complex mount', () => {
-      const ret = mount(
-        <Tokenizer
-          options={BEATLES_COMPLEX}
-        />);
+      const ret = mount(<Tokenizer options={BEATLES_COMPLEX} />);
 
       expect(ret.html()).toMatchSnapshot();
     });
-
 
     test('should have custom and default token classes', () => {
       simulateTextInput(testContext.component, 'o');
