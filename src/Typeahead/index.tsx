@@ -1,12 +1,6 @@
 import * as React from 'react';
 import { Props as TypelistProps } from './TypeaheadSelector';
-import {
-  CustomClasses,
-  Option,
-  OptionToStrFn,
-  OnOptionSelectArg,
-  OptionsObject,
-} from '../types';
+import { CustomClasses, Option, OptionToStrFn, OptionsObject } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
 import useStuff from './helpers/useStuff';
@@ -42,7 +36,10 @@ export interface Props<Opt extends Option>
   disabled?: boolean;
   textarea?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  onOptionSelected?: OnOptionSelectArg<string>;
+  onOptionSelected?: (
+    selection: string | number,
+    event?: React.SyntheticEvent<HTMLInputElement>
+  ) => void;
   filterOption?: string | ((value: string, option: Opt) => boolean);
   searchOptions?: (value: string, option: Opt[]) => Opt[];
   displayOption?: string | OptionToStrFn<OptionsObject>;
@@ -93,7 +90,7 @@ function Typeahead<T extends Option>(props: Props<T>) {
   // The options matching the entry value
 
   const inputElement = React.useRef<HTMLInputElement | undefined>();
-  const [selection, setSelection] = React.useState(value);
+  const [selection, setSelection] = React.useState<string | number>(value);
   const [selectionIndex, setSelectionIndex] = React.useState<number>();
   const [entryValue, setEntryValue] = React.useState(value || initialValue);
   const { mainClassNames, inputClassNames } = useClassNames({

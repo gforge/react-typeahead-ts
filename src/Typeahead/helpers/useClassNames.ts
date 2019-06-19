@@ -3,7 +3,9 @@ import classNames from 'classnames';
 
 import { CustomClasses } from '../../types';
 
-interface ClassName { [className: string]: boolean }
+interface ClassName {
+  [className: string]: boolean;
+}
 interface Props {
   customClasses: CustomClasses | undefined;
   className: string | undefined;
@@ -15,7 +17,7 @@ export default (props: Props) => {
 
   return useMemo(() => {
     const inputClasses: ClassName = {};
-    const { input } = customClasses;
+    const { input } = customClasses || { input: undefined };
     if (input) {
       inputClasses[input] = true;
     }
@@ -27,11 +29,11 @@ export default (props: Props) => {
     if (className) {
       classes[className] = true;
     }
-    const classList = classNames(classes);
+    const mainClassNames = classNames(classes);
 
-  return {
-    mainClassNames,
-    inputClassNames,
-  }
-}, [className, defaultClassNames, customClasses])
-}
+    return {
+      mainClassNames,
+      inputClassNames,
+    };
+  }, [className, defaultClassNames, customClasses]);
+};

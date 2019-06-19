@@ -11,7 +11,7 @@ import TypeaheadSelector from './TypeaheadSelector';
 
 interface Props<Opt extends Option> {
   showResults: boolean;
-  selection: string | undefined;
+  selection: string | number | undefined;
   maxVisible: number | undefined;
   handleOptionSelected: OnOptionSelectArg<string | Option>;
   displayOption: string | OptionToStrFn<OptionsObject> | undefined;

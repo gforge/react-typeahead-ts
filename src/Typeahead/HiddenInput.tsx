@@ -2,7 +2,7 @@ import * as React from 'react';
 
 const HiddenInput = (props: {
   name: string;
-  selection: string | undefined;
+  selection: React.InputHTMLAttributes<HTMLInputElement>['value'];
 }) => {
   const { name, selection } = props;
   if (!name) {

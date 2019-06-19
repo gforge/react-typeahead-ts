@@ -10,7 +10,7 @@ export interface Props<T extends Option> {
   children: React.ReactNode | string;
   object: T;
   onRemove: (arg: T) => void;
-  value: string;
+  value: string | number;
 }
 
 /**

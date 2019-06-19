@@ -9,8 +9,8 @@ export interface Props<Opt extends Option>
   name?: string;
   selectedOptions: Opt[];
   token?: TokenCustomClasses['token'];
-  displayOption?: SelectorType<Opt>;
-  formInputOption?: SelectorType<Opt>;
+  displayOption?: SelectorType;
+  formInputOption?: SelectorType;
   removeTokenForValue: (value: any) => void;
 }
 
@@ -39,7 +39,7 @@ const Tokens = <T extends Option>(props: Props<T>) => {
         if (!displayString || !value)
           throw new Error('Expected string and value to exist');
 
-        const key: string = displayString;
+        const key: string = `Token: ${displayString}`;
         return (
           <Token
             key={key}

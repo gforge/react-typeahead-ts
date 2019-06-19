@@ -38,8 +38,8 @@ export interface Props<Opt extends Option>
   onTokenAdd?: (value: Opt) => any;
   filterOption?: string | Function;
   searchOptions?: Function;
-  displayOption?: SelectorType<Opt>;
-  formInputOption?: SelectorType<Opt>;
+  displayOption?: SelectorType;
+  formInputOption?: SelectorType;
   maxVisible?: number;
   resultsTruncatedMessage?: string;
   defaultClassNames?: boolean;

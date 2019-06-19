@@ -13,7 +13,7 @@ interface Props<Opt extends Option> {
   entryValue: string;
   allowCustomValues: number | undefined;
   showOptionsWhenEmpty?: boolean;
-  setSelection: (value: string) => void;
+  setSelection: (value: string | number) => void;
   setSelectionIndex: (value: number | undefined) => void;
   setEntryValue: (value: string) => void;
   inputElement: React.MutableRefObject<HTMLInputElement | undefined>;
@@ -27,7 +27,9 @@ interface Props<Opt extends Option> {
   onFocus: React.InputHTMLAttributes<HTMLInputElement>['onFocus'];
   onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearOnSelection: boolean;
-  onOptionSelected: OnOptionSelectArg<string> | undefined;
+  onOptionSelected:
+    | ((selection: Opt, event?: React.SyntheticEvent<HTMLInputElement>) => void)
+    | undefined;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -107,7 +109,7 @@ export default <T extends Option>(props: Props<T>) => {
   > = React.useCallback(
     (
       option?: Option | string | undefined,
-      event?: React.SyntheticEvent<any>
+      event?: React.SyntheticEvent<HTMLInputElement>
     ) => {
       if (!option) {
         setSelection('');
@@ -117,8 +119,8 @@ export default <T extends Option>(props: Props<T>) => {
         if (!inputElement.current) throw new Error('No input element');
         inputElement.current.focus();
 
-        let optionString: string;
-        let formInputOptionString: string;
+        let optionString: string | number;
+        let formInputOptionString: string | number;
         if (typeof option === 'string') {
           optionString = option as string;
           formInputOptionString = option as string;
@@ -135,15 +137,15 @@ export default <T extends Option>(props: Props<T>) => {
           optionString = '';
         }
 
-        inputElement.current.value = optionString;
+        inputElement.current.value = `${optionString}`;
         setSelection(formInputOptionString);
-        setEntryValue(optionString);
+        setEntryValue(`${optionString}`);
         setShowResults(false);
         setSelectionIndex(undefined);
         inputElement.current.blur();
 
         if (onOptionSelected) {
-          onOptionSelected(option2string(option), event);
+          onOptionSelected(option, event);
         }
       }
     },

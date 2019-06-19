@@ -30,11 +30,9 @@ export type Option = string | OptionsObject;
 export type OptionToStrFn<T extends OptionsObject> = (
   option: T,
   index?: number
-) => string;
+) => string | number;
 
-export type SelectorType<T extends Option> = T extends string
-  ? string
-  : OptionToStrFn<OptionsObject>;
+export type SelectorType = string | OptionToStrFn<OptionsObject>;
 
 // type StringOrObject = string | { [key: string]: string };
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-interface Props {
-  name?: string;
-  value: string;
-}
+type Props = {
+  name?: React.InputHTMLAttributes<HTMLInputElement>['name'];
+  value: React.InputHTMLAttributes<HTMLInputElement>['value'];
+};
 
 const HiddenInput = (props: Props) => {
   const { name, value } = props;
