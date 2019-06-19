@@ -21,7 +21,7 @@ const Token = <T extends Option>(props: Props<T>) => {
   const { name, object, value, onRemove, children, className } = props;
   return (
     <div className={classNames(['typeahead-token', className])}>
-      <HiddenInput name={name} object={object} value={value} />
+      <HiddenInput name={name} value={value} />
       {children}
       <CloseButton className={className} onRemove={onRemove} object={object} />
     </div>

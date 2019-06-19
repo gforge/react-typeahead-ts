@@ -1,23 +1,25 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Option } from '../../types';
 
 interface Props<T extends Option> {
   hasHint: boolean;
-  availableOptions: T[];
-  selectionIndex: number;
-  setSelectionIndex: (idx: number) => void;
-  hasCustomValue: () => boolean;
+  filteredOptions: T[];
+  hasCustomValue: boolean;
   maxVisible: number | undefined;
+  entryValue: string;
+  selectionIndex: number | undefined;
+  setSelectionIndex: (value: number | undefined) => void;
 }
 
 export default <T extends Option>(props: Props<T>) => {
   const {
     hasHint,
-    availableOptions,
-    selectionIndex,
-    setSelectionIndex,
+    filteredOptions,
     maxVisible,
     hasCustomValue,
+    entryValue,
+    selectionIndex,
+    setSelectionIndex,
   } = props;
 
   const nav = useCallback(
@@ -33,9 +35,9 @@ export default <T extends Option>(props: Props<T>) => {
             : delta
           : selectionIndex + delta;
       let length = maxVisible
-        ? availableOptions.slice(0, maxVisible).length
-        : availableOptions.length;
-      if (hasCustomValue()) {
+        ? filteredOptions.slice(0, maxVisible).length
+        : filteredOptions.length;
+      if (hasCustomValue) {
         length += 1;
       }
 
@@ -49,7 +51,7 @@ export default <T extends Option>(props: Props<T>) => {
     },
     [
       hasHint,
-      availableOptions,
+      filteredOptions,
       selectionIndex,
       setSelectionIndex,
       maxVisible,
@@ -59,10 +61,28 @@ export default <T extends Option>(props: Props<T>) => {
 
   const navDown = useCallback(() => nav(1), [nav]);
   const navUp = useCallback(() => nav(-1), [nav]);
+  const clearSelection = useCallback(() => setSelectionIndex(undefined), [
+    setSelectionIndex,
+  ]);
+  const selection = useMemo(() => {
+    let index = selectionIndex;
+    if (index === undefined) return undefined;
+
+    if (hasCustomValue) {
+      if (index === 0) {
+        return entryValue;
+      }
+      index -= 1;
+    }
+
+    return filteredOptions[index];
+  }, [selectionIndex, filteredOptions, hasCustomValue, entryValue]);
 
   return {
     nav,
     navDown,
     navUp,
+    clearSelection,
+    selection,
   };
 };

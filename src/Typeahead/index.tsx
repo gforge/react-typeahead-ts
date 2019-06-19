@@ -1,8 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
-import Accessor from '../accessor';
-import TypeaheadSelector, { Props as TypelistProps } from './selector';
-import KeyEvent from '../keyevent';
+import { Props as TypelistProps } from './TypeaheadSelector';
 import {
   CustomClasses,
   Option,
@@ -11,14 +8,27 @@ import {
   OptionsObject,
 } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
-import useSearch from './helpers/useSearch';
+import useClassNames from './helpers/useClassNames';
+import useStuff from './helpers/useStuff';
+import useOnKey from './helpers/useOnKey';
+import IncrementalSearchResults from './IncrementalSearchResults';
 
-export type AnyReactWithProps =
-  | React.Component<TypelistProps>
-  | React.PureComponent<TypelistProps>
-  | React.SFC<TypelistProps>;
+export type AnyReactWithProps<Opt extends Option> =
+  | React.Component<TypelistProps<Opt>>
+  | React.PureComponent<TypelistProps<Opt>>
+  | React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option> {
+export interface Props<Opt extends Option>
+  extends Pick<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    | 'onChange'
+    | 'className'
+    | 'onBlur'
+    | 'onFocus'
+    | 'onKeyPress'
+    | 'onKeyUp'
+    | 'onKeyDown'
+  > {
   name?: string;
   customClasses?: CustomClasses;
   maxVisible?: number;
@@ -39,10 +49,9 @@ export interface Props<Opt extends Option> {
   inputDisplayOption?: string | OptionToStrFn<OptionsObject>;
   formInputOption?: string | OptionToStrFn<OptionsObject>;
   defaultClassNames?: boolean;
-  customListComponent?: AnyReactWithProps;
+  customListComponent?: AnyReactWithProps<Opt>;
   showOptionsWhenEmpty?: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
-  className?: string;
 }
 
 /**
@@ -57,7 +66,6 @@ function Typeahead<T extends Option>(props: Props<T>) {
     allowCustomValues = 0,
     initialValue = '',
     value = '',
-    showOptionsWhenEmpty = false,
     maxVisible,
     textarea,
     defaultClassNames,
@@ -66,118 +74,118 @@ function Typeahead<T extends Option>(props: Props<T>) {
     inputDisplayOption,
     searchOptions: searchOptionsFunction,
     inputProps,
-    filterOption,
     disabled,
     customClasses = {},
     innerRef,
     placeholder,
     className,
+    onChange,
+    clearOnSelection,
+    onOptionSelected,
+    onKeyPress,
+    onKeyUp,
+    onBlur,
+    onFocus,
+    onKeyDown,
+    filterOption,
+    resultsTruncatedMessage,
   } = props;
   // The options matching the entry value
-  const [searchResults, setSearchResults] = React.useState(
-    initialValue || options
-  );
-  const [entryValue, setEntryValue] = React.useState(value);
-  const [selection, setSelection] = React.useState(value);
-  const [selectionIndex, setSelectionIndex] = React.useState<number>();
-  const [isFocused, setIsFocused] = React.useState(false);
-  const [showResults, setShowResults] = React.useState(false);
-  const [selected, setSelected] = React.useState(false);
 
   const inputElement = React.useRef<HTMLInputElement | undefined>();
-
-  const shouldSkipSearch = React.useCallback(
-    (input?: string) => {
-      if (selected) return true;
-      const emptyValue = !input || input.trim().length === 0;
-
-      return !(showOptionsWhenEmpty && isFocused) && emptyValue;
+  const [selection, setSelection] = React.useState(value);
+  const [selectionIndex, setSelectionIndex] = React.useState<number>();
+  const [entryValue, setEntryValue] = React.useState(value || initialValue);
+  const { mainClassNames, inputClassNames } = useClassNames({
+    customClasses,
+    className,
+    defaultClassNames,
+  });
+  const setRef = React.useCallback(
+    (c: HTMLInputElement) => {
+      inputElement.current = c;
+      if (innerRef) {
+        innerRef.current = c;
+      }
     },
-    [selected, showOptionsWhenEmpty, isFocused]
+    [inputElement, innerRef]
   );
-
-  const { filteredOptions, searchFunction } = useSearch({
-    searchOptions: searchOptionsFunction,
-    filterOption,
+  const {
+    handleChange,
+    handleOptionSelected,
+    handleFocus,
+    handleBlur,
+    showResults,
     shouldSkipSearch,
-    entryValue,
+    hasHint,
+    hasCustomValue,
+    filteredOptions,
+    selected,
+  } = useStuff({
     options,
+    entryValue,
+    inputElement,
+    initialValue,
+    setSelection,
+    setEntryValue,
+    searchOptionsFunction,
+    onBlur,
+    onFocus,
+    onChange,
+    allowCustomValues,
+    clearOnSelection: !!clearOnSelection,
+    onOptionSelected,
+    displayOption,
+    formInputOption,
+    inputDisplayOption,
+    filterOption,
+    setSelectionIndex,
+  });
+  const { handleKeyDown } = useOnKey({
+    onKeyDown,
+    handleOptionSelected,
+    selected,
+    hasHint,
+    filteredOptions,
+    maxVisible,
+    hasCustomValue,
+    entryValue,
+    selectionIndex,
+    setSelectionIndex,
   });
 
-  const option2string = React.useMemo(() => {
-    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
-    return Accessor.generateOptionToStringFor(anyToStrFn);
-  }, [formInputOption, inputDisplayOption, displayOption]);
-
-  const hasCustomValue = React.useMemo(() => {
-    if (
-      !allowCustomValues ||
-      allowCustomValues > 0 ||
-      entryValue.length >= allowCustomValues
-    ) {
-      return false;
-    }
-
-    return filteredOptions.map(option2string).indexOf(entryValue) < 0;
-  }, [allowCustomValues, entryValue, filteredOptions, option2string]);
-
-  const onTextEntryUpdated = React.useCallback(
-    (newValue?: string) => {
-      if (!inputElement.current) throw new Error('No input element');
-      const value =
-        newValue === undefined ? inputElement.current.value : newValue;
-
-      setSearchResults(searchFunction(value, options));
-      setSelection('');
-      setEntryValue(value);
-    },
-    [options, searchFunction, setSearchResults, setSelection, setEntryValue]
-  );
-
-  const hasHint = React.useMemo(() => {
-    return filteredOptions.length > 0 || hasCustomValue;
-  }, [filteredOptions, hasCustomValue]);
-
-  const inputClasses: { [className: string]: boolean } = {};
-  const { input } = customClasses;
-  if (input) {
-    inputClasses[input] = true;
-  }
-  const inputClassList = classNames(inputClasses);
-
-  const classes: { [className: string]: boolean } = {
-    typeahead: !!defaultClassNames,
-  };
-  if (className) {
-    classes[className] = true;
-  }
-  const classList = classNames(classes);
-
   return (
-    <div className={classList}>
-      <HiddenInput name={name} value={selection} object={object} />
+    <div className={mainClassNames}>
+      <HiddenInput name={name} value={selection} />
       <input
-        ref={(c: HTMLInputElement) => {
-          inputElement.current = c;
-          if (innerRef) {
-            innerRef.current = c;
-          }
-        }}
+        ref={setRef}
         type={textarea ? 'textarea' : 'text'}
         disabled={disabled}
         {...inputProps}
         placeholder={placeholder}
-        className={inputClassList}
+        className={inputClassNames}
         value={entryValue}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
         onKeyPress={onKeyPress}
         onKeyUp={onKeyUp}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
-      <IncrementalSerchResylts
+      <IncrementalSearchResults
         showResults={showResults && !shouldSkipSearch(entryValue)}
+        hasCustomValue={hasCustomValue}
+        entryValue={entryValue}
+        selection={selection}
+        maxVisible={maxVisible}
+        handleOptionSelected={handleOptionSelected}
+        displayOption={displayOption}
+        allowCustomValues={allowCustomValues}
+        resultsTruncatedMessage={resultsTruncatedMessage}
+        customClasses={customClasses}
+        selectionIndex={selectionIndex}
+        defaultClassNames={defaultClassNames}
+        filteredOptions={filteredOptions}
       />
     </div>
   );

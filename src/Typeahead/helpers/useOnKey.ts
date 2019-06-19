@@ -1,63 +1,72 @@
 import { useCallback } from 'react';
 import KeyEvent from '../../keyevent';
 import useNav from './useNav';
+import { OnOptionSelectArg, Option } from '../../types';
 
-interface Props {
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+interface Props<Opt extends Option>
+  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'onKeyDown'> {
+  filteredOptions: Opt[];
+  selectionIndex: number | undefined;
   setSelectionIndex: (args: number | undefined) => void;
   selected: boolean;
   hasHint: boolean;
-  onOptionSelected?: OnOptionSelectArg<string>;
+  handleOptionSelected: OnOptionSelectArg<Opt>;
+  maxVisible: number | undefined;
+  hasCustomValue: boolean;
+  entryValue: string;
 }
 
-export default (props: Props) => {
+export default <T extends Option>(props: Props<T>) => {
   const {
     onKeyDown,
-    onOptionSelected,
-    getSelection,
-    setSelectionIndex,
+    handleOptionSelected,
     selected,
     hasHint,
     filteredOptions,
+    maxVisible,
+    hasCustomValue,
+    entryValue,
+    selectionIndex,
+    setSelectionIndex,
   } = props;
+  const { navUp, navDown, clearSelection, selection } = useNav({
+    hasHint,
+    filteredOptions,
+    maxVisible,
+    hasCustomValue,
+    entryValue,
+    selectionIndex,
+    setSelectionIndex,
+  });
+
   const onEnter = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      const selection = getSelection();
       if (!selection) {
         return onKeyDown && onKeyDown(event);
       }
 
-      return onOptionSelected(selection, event);
+      return handleOptionSelected(selection, event);
     },
-    [onKeyDown, getSelection, onOptionSelected]
+    [onKeyDown, getSelection, handleOptionSelected, selection]
   );
-
-  const onEscape = useCallback(() => setSelectionIndex(undefined), [
-    setSelectionIndex,
-  ]);
 
   const onTab = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      const selection = getSelection();
+      let option: T | undefined =
+        selection || filteredOptions.length > 0
+          ? filteredOptions[0]
+          : undefined;
 
-      let option = selection
-        ? selection
-        : filteredOptions.length > 0
-        ? filteredOptions[0]
-        : undefined;
-
-      if (option === undefined && hasCustomValue()) {
-        option = getCustomValue();
+      if (option === undefined && hasCustomValue) {
+        option = entryValue as T;
       }
 
       if (option !== undefined) {
-        return onOptionSelected(option, event);
+        return handleOptionSelected(option, event);
       }
     },
-    [filteredOptions, getSelection, onOptionSelected]
+    [filteredOptions, getSelection, handleOptionSelected]
   );
-
-  const { navUp, navDown } = useNav();
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,7 +84,7 @@ export default (props: Props) => {
       events[KeyEvent.DOM_VK_UP] = navUp;
       events[KeyEvent.DOM_VK_DOWN] = navDown;
       events[KeyEvent.DOM_VK_RETURN] = events[KeyEvent.DOM_VK_ENTER] = onEnter;
-      events[KeyEvent.DOM_VK_ESCAPE] = onEscape;
+      events[KeyEvent.DOM_VK_ESCAPE] = clearSelection;
       events[KeyEvent.DOM_VK_TAB] = onTab;
 
       const handler = events[event.keyCode];
@@ -89,7 +98,16 @@ export default (props: Props) => {
         return onKeyDown && onKeyDown(event);
       }
     },
-    [hasHint, navUp, navDown, onEnter, onEscape, onTab, onKeyDown, selected]
+    [
+      hasHint,
+      navUp,
+      navDown,
+      onEnter,
+      clearSelection,
+      onTab,
+      onKeyDown,
+      selected,
+    ]
   );
 
   return { handleKeyDown };

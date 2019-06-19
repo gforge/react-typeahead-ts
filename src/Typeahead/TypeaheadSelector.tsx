@@ -1,26 +1,26 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import TypeaheadOption from './option';
-import { CustomClasses, SelectorOptionSelector } from '../types';
+import TypeaheadOption from './TypeaheadOption';
+import { CustomClasses, SelectorOptionSelector, Option } from '../types';
 
-export interface Props {
-  options: string[];
-  allowCustomValues?: number;
+export interface Props<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues: number | undefined;
   customClasses?: CustomClasses;
-  customValue?: string;
-  selectionIndex?: number;
-  onOptionSelected: SelectorOptionSelector<string>;
+  customValue: string | undefined;
+  selectionIndex: number | undefined;
+  handleOptionSelected: SelectorOptionSelector<Opt | string>;
   displayOption: Function;
-  defaultClassNames?: boolean;
-  areResultsTruncated?: boolean;
-  resultsTruncatedMessage?: string;
+  defaultClassNames: boolean | undefined;
+  areResultsTruncated: boolean | undefined;
+  resultsTruncatedMessage: string | undefined;
 }
 
 /**
  * Container for the options rendered as part of the autocompletion process
  * of the typeahead
  */
-const TypeaheadSelector = (props: Props) => {
+const TypeaheadSelector = <T extends Option>(props: Props<T>) => {
   const {
     options,
     customClasses = {},
@@ -31,7 +31,7 @@ const TypeaheadSelector = (props: Props) => {
     selectionIndex,
     areResultsTruncated,
     resultsTruncatedMessage,
-    onOptionSelected,
+    handleOptionSelected,
   } = props;
   // Don't render if there are no options to display
   if (!options.length && allowCustomValues <= 0) {
@@ -59,7 +59,7 @@ const TypeaheadSelector = (props: Props) => {
         hover={selectionIndex === 0}
         customClasses={customClasses}
         customValue={customValue}
-        onOptionSelected={onOptionSelected}
+        handleOptionSelected={handleOptionSelected}
       >
         {customValue}
       </TypeaheadOption>
@@ -75,7 +75,7 @@ const TypeaheadSelector = (props: Props) => {
         key={uniqueKey}
         hover={selectionIndex === i + customValueOffset}
         customClasses={customClasses}
-        onOptionSelected={onOptionSelected}
+        handleOptionSelected={handleOptionSelected}
         result={result}
       >
         {displayString}

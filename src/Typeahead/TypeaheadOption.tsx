@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { SelectorOptionSelector } from '../types';
+import { SelectorOptionSelector, Option } from '../types';
 
 export interface CustomClasses {
   listItem?: string;
@@ -9,13 +9,13 @@ export interface CustomClasses {
   listAnchor?: string;
 }
 
-export interface Props {
+export interface Props<Opt extends Option> {
   customClasses?: CustomClasses;
   customValue?: string;
   children: React.ReactNode;
   hover?: boolean;
-  result?: string;
-  onOptionSelected: SelectorOptionSelector<string>;
+  result?: Opt;
+  handleOptionSelected: SelectorOptionSelector<Opt | string>;
 }
 
 const getClasses = ({
@@ -37,26 +37,26 @@ const getClasses = ({
 /**
  * A single option within the TypeaheadSelector
  */
-const TypeaheadOption = (props: Props) => {
+const TypeaheadOption = <T extends Option>(props: Props<T>) => {
   const {
     customClasses = {},
     hover = false,
     children,
     customValue,
     result,
-    onOptionSelected,
+    handleOptionSelected,
   } = props;
 
   const onClick = React.useCallback(
     (event: React.MouseEvent<HTMLLIElement>) => {
       event.preventDefault();
       if (customValue) {
-        onOptionSelected(customValue, event);
+        handleOptionSelected(customValue, event);
       } else if (result) {
-        onOptionSelected(result, event);
+        handleOptionSelected(result, event);
       }
     },
-    [onOptionSelected, result, customValue]
+    [handleOptionSelected, result, customValue]
   );
 
   const classes: any = {};

@@ -15,16 +15,16 @@ export default class Accessor {
     };
   }
 
-  static generateOptionToStringFor<T extends OptionsObject>(prop?: string | OptionToStrFn<T>): OptionToStrFn<T> {
+  static generateOptionToStringFor<T extends OptionsObject>(prop?: string | OptionToStrFn<T>): (opt: Option) => string {
     if (typeof prop === 'string') {
-      return Accessor.generateAccessor(prop);
+      return Accessor.generateAccessor(prop) as (opt: Option) => string;
     }
 
     if (typeof prop === 'function') {
-      return prop;
+      return prop as (opt: Option) => string;
     }
 
-    return function (input: any) { return (input as string); };
+    return function (input: Option) { return (input as string); };
   }
 
   static valueForOption<T extends Option>(object: T, selector?: SelectorType<T>): string | void
