@@ -27,14 +27,14 @@ const TypeaheadSelector = <T extends Option>(props: Props<T>) => {
     customValue,
     displayOption,
     defaultClassNames = true,
-    allowCustomValues = 0,
+    allowCustomValues,
     selectionIndex,
     areResultsTruncated,
     resultsTruncatedMessage,
     handleOptionSelected,
   } = props;
   // Don't render if there are no options to display
-  if (!options.length && allowCustomValues <= 0) {
+  if (!options.length && !allowCustomValues) {
     return null;
   }
 

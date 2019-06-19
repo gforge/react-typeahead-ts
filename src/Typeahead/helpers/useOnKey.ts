@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import KeyEvent from '../../keyevent';
 import useNav from './useNav';
-import { OnOptionSelectArg, Option } from '../../types';
+import { HandleOnOptionSelectArg, Option } from '../../types';
 
 interface Props<Opt extends Option>
   extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'onKeyDown'> {
@@ -10,7 +10,7 @@ interface Props<Opt extends Option>
   setSelectionIndex: (args: number | undefined) => void;
   selected: boolean;
   hasHint: boolean;
-  handleOptionSelected: OnOptionSelectArg<Opt>;
+  handleOptionSelected: HandleOnOptionSelectArg;
   maxVisible: number | undefined;
   hasCustomValue: boolean;
   entryValue: string;

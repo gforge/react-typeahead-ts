@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   OptionToStrFn,
   OptionsObject,
-  OnOptionSelectArg,
+  HandleOnOptionSelectArg,
   Option,
 } from '../types';
 import { CustomClasses } from './TypeaheadOption';
@@ -13,7 +13,7 @@ interface Props<Opt extends Option> {
   showResults: boolean;
   selection: string | number | undefined;
   maxVisible: number | undefined;
-  handleOptionSelected: OnOptionSelectArg<string | Option>;
+  handleOptionSelected: HandleOnOptionSelectArg;
   displayOption: string | OptionToStrFn<OptionsObject> | undefined;
   allowCustomValues: number | undefined;
   resultsTruncatedMessage: string | undefined;

@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { Props as TypelistProps } from './TypeaheadSelector';
-import { CustomClasses, Option, OptionToStrFn, OptionsObject } from '../types';
+import {
+  CustomClasses,
+  Option,
+  OptionToStrFn,
+  OptionsObject,
+  OnOptionSelectArg,
+} from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
 import useStuff from './helpers/useStuff';
@@ -12,7 +18,7 @@ export type AnyReactWithProps<Opt extends Option> =
   | React.PureComponent<TypelistProps<Opt>>
   | React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option>
+export interface Props<Opt extends Option, Custom extends boolean = boolean>
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
     | 'onChange'
@@ -29,17 +35,14 @@ export interface Props<Opt extends Option>
   clearOnSelection?: boolean;
   resultsTruncatedMessage?: string;
   options: Opt[];
-  allowCustomValues?: number;
+  allowCustomValues: Custom;
   initialValue?: string;
   value?: string;
   placeholder?: string;
   disabled?: boolean;
   textarea?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  onOptionSelected?: (
-    selection: string | number,
-    event?: React.SyntheticEvent<HTMLInputElement>
-  ) => void;
+  onOptionSelected?: OnOptionSelectArg<Opt, Custom>;
   filterOption?: string | ((value: string, option: Opt) => boolean);
   searchOptions?: (value: string, option: Opt[]) => Opt[];
   displayOption?: string | OptionToStrFn<OptionsObject>;
@@ -47,7 +50,7 @@ export interface Props<Opt extends Option>
   formInputOption?: string | OptionToStrFn<OptionsObject>;
   defaultClassNames?: boolean;
   customListComponent?: AnyReactWithProps<Opt>;
-  showOptionsWhenEmpty?: boolean;
+  showOptionsWhenEmpty: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
 }
 
@@ -60,7 +63,7 @@ export interface Props<Opt extends Option>
 function Typeahead<T extends Option>(props: Props<T>) {
   const {
     options,
-    allowCustomValues = 0,
+    allowCustomValues,
     initialValue = '',
     value = '',
     maxVisible,
@@ -86,6 +89,7 @@ function Typeahead<T extends Option>(props: Props<T>) {
     onKeyDown,
     filterOption,
     resultsTruncatedMessage,
+    showOptionsWhenEmpty,
   } = props;
   // The options matching the entry value
 
@@ -137,6 +141,7 @@ function Typeahead<T extends Option>(props: Props<T>) {
     inputDisplayOption,
     filterOption,
     setSelectionIndex,
+    showOptionsWhenEmpty,
   });
   const { handleKeyDown } = useOnKey({
     onKeyDown,

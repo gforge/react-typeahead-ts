@@ -3,16 +3,17 @@ import {
   Option,
   OptionToStrFn,
   OptionsObject,
+  HandleOnOptionSelectArg,
   OnOptionSelectArg,
 } from '../../types';
 import Accessor from '../../accessor';
 import useSearch from './useSearch';
 
-interface Props<Opt extends Option> {
+interface Props<Opt extends Option, Custom extends boolean = boolean> {
   options: Opt[];
   entryValue: string;
-  allowCustomValues: number | undefined;
-  showOptionsWhenEmpty?: boolean;
+  allowCustomValues: Custom;
+  showOptionsWhenEmpty: boolean;
   setSelection: (value: string | number) => void;
   setSelectionIndex: (value: number | undefined) => void;
   setEntryValue: (value: string) => void;
@@ -27,9 +28,7 @@ interface Props<Opt extends Option> {
   onFocus: React.InputHTMLAttributes<HTMLInputElement>['onFocus'];
   onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearOnSelection: boolean;
-  onOptionSelected:
-    | ((selection: Opt, event?: React.SyntheticEvent<HTMLInputElement>) => void)
-    | undefined;
+  onOptionSelected: OnOptionSelectArg<Opt, Custom> | undefined;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -83,8 +82,8 @@ export default <T extends Option>(props: Props<T>) => {
   const hasCustomValue = React.useMemo(() => {
     if (
       !allowCustomValues ||
-      allowCustomValues > 0 ||
-      entryValue.length >= allowCustomValues
+      allowCustomValues ||
+      entryValue.length >= 1 // TODO: add minCustomValueLength
     ) {
       return false;
     }
@@ -104,9 +103,7 @@ export default <T extends Option>(props: Props<T>) => {
     [options, searchFunction, setSelection, setEntryValue]
   );
 
-  const handleOptionSelected: OnOptionSelectArg<
-    Option | string
-  > = React.useCallback(
+  const handleOptionSelected: HandleOnOptionSelectArg = React.useCallback(
     (
       option?: Option | string | undefined,
       event?: React.SyntheticEvent<HTMLInputElement>
@@ -145,11 +142,18 @@ export default <T extends Option>(props: Props<T>) => {
         inputElement.current.blur();
 
         if (onOptionSelected) {
-          onOptionSelected(option, event);
+          const orgOption = options.find(
+            opt => option2string(opt) === formInputOptionString
+          );
+          if (allowCustomValues === true) {
+            onOptionSelected(formInputOptionString, event);
+          } else {
+            onOptionSelected(orgOption, event);
+          }
         }
       }
     },
-    [clearOnSelection, onOptionSelected, option2string]
+    [clearOnSelection, onOptionSelected, option2string, allowCustomValues]
   );
 
   const handleChange = React.useCallback(

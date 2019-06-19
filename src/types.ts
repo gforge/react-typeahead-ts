@@ -19,8 +19,22 @@ export type SelectorOptionSelector<Opt extends Option> = (
   event: React.MouseEvent<HTMLLIElement>
 ) => any;
 
-export type OnOptionSelectArg<Opt extends Option> = (
-  option?: Opt | string,
+type OptionSelectRaw<T extends Option> = (
+  option: T | undefined,
+  event?: React.SyntheticEvent<any>
+) => void;
+
+export type OnOptionSelectArg<
+  Arg extends Option,
+  Custom extends boolean
+> = Custom extends true
+  ? OptionSelectRaw<string>
+  : (Arg extends string
+      ? OptionSelectRaw<string>
+      : OptionSelectRaw<OptionsObject>);
+
+export type HandleOnOptionSelectArg = (
+  option?: Option | string | undefined,
   event?: React.SyntheticEvent<any>
 ) => void;
 
@@ -64,18 +78,30 @@ export type SelectorType = string | OptionToStrFn<OptionsObject>;
 // test('value', (arg: { [key: string]: string }) => arg.var);
 // test('value', (arg: { [key: string]: string }) => arg.var);
 
-// interface Props<T = unknown> {
-//   apa: T;
-//   a: T extends number ? number : string;
+// interface Props<T, S extends boolean = boolean> {
+//   value: T;
+//   isString: S;
+//   submit: S extends true ? (arg: string) => void : (arg: T & {}) => void;
 // }
 
-// function test2<T>(args: Props<T>): Props<T>;
-// function test2(args: Props) {
-//   if (typeof args.apa === 'string') {
-//     const test: string = args.a;
-//     alert(test);
+// interface SuperProps<T> {
+//   value: T;
+//   isString: boolean;
+//   submit: ((arg: string) => void) | ((arg: T & {}) => void); // change here
+// }
+
+// declare function fancyFunction<T>(props: Props<T>): void;
+// function fancyFunction<T>(props: SuperProps<T>): void {
+//   if (props.isString === true) {
+//     props.submit('return a string');
+//   } else if (props.isString === false) {
+//     props.submit(props.value);
 //   }
-//   return args;
 // }
 
-// test2({ apa: '2', a: 'a' });
+// const args = {
+//   value: 2,
+//   isString: true,
+//   submit: (arg: string) => console.log(arg),
+// };
+// fancyFunction(args);
