@@ -16,37 +16,46 @@ export interface TokenCustomClasses extends CustomClasses {
 
 export type SelectorOptionSelector<Opt extends Option> = (
   result: Opt,
-  event: React.MouseEvent<HTMLLIElement>
-) => any;
-
-type OptionSelectRaw<T extends Option> = (
-  option: T | undefined,
-  event?: React.SyntheticEvent<any>
+  event: React.MouseEvent<HTMLInputElement>
 ) => void;
 
-export type OnOptionSelectArg<
-  Arg extends Option,
-  Custom extends boolean
-> = Custom extends true
-  ? OptionSelectRaw<string>
-  : (Arg extends string
-      ? OptionSelectRaw<string>
-      : OptionSelectRaw<OptionsObject>);
+export type OptionSelect<T extends Option> = (
+  option: T | undefined,
+  event?: React.SyntheticEvent<HTMLInputElement>
+) => void;
 
 export type HandleOnOptionSelectArg = (
   option?: Option | string | undefined,
-  event?: React.SyntheticEvent<any>
+  event?: React.SyntheticEvent<HTMLInputElement>
 ) => void;
 
-export type OptionsObject = { [propName: string]: unknown };
-export type Option = string | OptionsObject;
+export interface OptionsObject {
+  [propName: string]: unknown;
+}
+export type Option = string | number | OptionsObject;
 
-export type OptionToStrFn<T extends OptionsObject> = (
+export type OptionToStrFn<T extends Option = Option> = (
   option: T,
   index?: number
 ) => string | number;
 
-export type SelectorType = string | OptionToStrFn<OptionsObject>;
+export type SelectorType = string | OptionToStrFn;
+
+export interface TrueOptionProp<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues: true;
+  onOptionSelected?: OptionSelect<string | number>;
+}
+
+export interface FalseOptionProp<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues?: false;
+  onOptionSelected?: OptionSelect<Opt>;
+}
+
+export type OptionsProps<Opt extends Option> =
+  | FalseOptionProp<Opt>
+  | TrueOptionProp<Opt>;
 
 // type StringOrObject = string | { [key: string]: string };
 

@@ -15,7 +15,7 @@ interface Props<Opt extends Option> {
   maxVisible: number | undefined;
   handleOptionSelected: HandleOnOptionSelectArg;
   displayOption: string | OptionToStrFn<OptionsObject> | undefined;
-  allowCustomValues: number | undefined;
+  allowCustomValues: boolean | undefined;
   resultsTruncatedMessage: string | undefined;
   customClasses: CustomClasses | undefined;
   selectionIndex: number | undefined;
@@ -51,9 +51,7 @@ const IncrementalSearchResults = <T extends Option>(props: Props<T>) => {
     return null;
   }
 
-  const truncated: boolean = Boolean(
-    maxVisible && filteredOptions.length > maxVisible
-  );
+  const truncated = Boolean(maxVisible && filteredOptions.length > maxVisible);
 
   return (
     <TypeaheadSelector
@@ -64,8 +62,8 @@ const IncrementalSearchResults = <T extends Option>(props: Props<T>) => {
       handleOptionSelected={handleOptionSelected}
       customValue={(hasCustomValue && entryValue) || undefined}
       displayOption={Accessor.generateOptionToStringFor(displayOption)}
+      allowCustomValues={!!allowCustomValues}
       {...{
-        allowCustomValues,
         resultsTruncatedMessage,
         customClasses,
         selectionIndex,

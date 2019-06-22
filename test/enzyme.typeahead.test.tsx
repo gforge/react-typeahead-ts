@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/@types/jest/index.d.ts"/>.
 import * as React from 'react';
 import _ from 'lodash';
 // @ts-ignore
@@ -7,10 +6,10 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import Typeahead, { Props as TProps } from '../src/Typeahead';
 import Keyevent from '../src/keyevent';
-import { Option } from '../src/types';
+import { Option, OptionsObject } from '../src/types';
 
 // @ts-ignore
-const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
+const getInput = (component: ReactWrapper<TProps<unknown>>) => {
   let controlComponent = component.find('input.form-control');
   if (controlComponent.length === 0) {
     controlComponent = component.find('input').first();
@@ -20,7 +19,7 @@ const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
 };
 
 const simulateTextInput = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
+  mountedComponent: ReactWrapper<TProps<unknown>>,
   value: string
 ) => {
   const inputElement = getInput(mountedComponent);
@@ -31,7 +30,7 @@ const simulateTextInput = (
 };
 
 const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
+  mountedComponent: ReactWrapper<TProps<unknown>>,
   code: string | number,
   eventName: string = 'keyDown'
 ) => {
@@ -44,7 +43,13 @@ const simulateKeyEvent = (
 
 const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
 
-const BEATLES_COMPLEX: Option[] = [
+interface ComplexOption extends OptionsObject {
+  firstName: string;
+  lastName: string;
+  nameWithTitle: string;
+}
+
+const BEATLES_COMPLEX: ComplexOption[] = [
   {
     firstName: 'John',
     lastName: 'Lennon',
@@ -255,14 +260,11 @@ describe('TypeaheadTokenizer Component', () => {
         });
 
         test('renders custom options when specified as a function', () => {
-          type Mapped = { firstName: string; lastName: string };
           const component = mount(
             <Typeahead
               options={BEATLES_COMPLEX}
               filterOption="firstName"
-              displayOption={(o: Mapped, i) =>
-                `${i} ${o.firstName} ${o.lastName}`
-              }
+              displayOption={(o, i) => `${i} ${o.firstName} ${o.lastName}`}
             />
           );
           simulateTextInput(component, 'john');
@@ -272,22 +274,15 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     describe('searchOptions', () => {
-      test('maps correctly when specified with map function', () => {
-        type Mapped = { len: number; orig: string };
-        const createObject = (o: string): Mapped => {
-          return { len: o.length, orig: o };
-        };
-
+      test('Simplesearch example', () => {
         const component = mount(
           <Typeahead
             options={BEATLES}
             searchOptions={(value: string, opts: string[]) =>
-              opts
-                .map(createObject)
-                .filter(o => o.orig.match(RegExp(value, 'i')))
+              opts.filter(o => o.match(RegExp(value, 'i')))
             }
-            displayOption={(o: Mapped) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={(o: Mapped) => o.orig}
+            displayOption={(o: string) => `Score: ${o.length} ${o}`}
+            inputDisplayOption={(o: string) => o}
           />
         );
 
@@ -296,22 +291,13 @@ describe('TypeaheadTokenizer Component', () => {
       });
 
       test('can sort displayed items when specified with map function wrapped with sort', () => {
-        type Mapped = { len: number; orig: string };
-        const createObject = (o: string): Mapped => {
-          return { len: o.length, orig: o };
-        };
-
         const component = mount(
           <Typeahead
             options={BEATLES}
             searchOptions={(value: string, opts: string[]) =>
-              opts
-                .sort()
-                .map(createObject)
-                .filter(o => o.orig.match(RegExp(value, 'i')))
+              opts.sort().filter(o => o.match(RegExp(value, 'i')))
             }
-            displayOption={(o: Mapped) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={(o: Mapped) => o.orig}
+            displayOption={(o: string) => `Score: ${o.length} ${o}`}
           />
         );
 

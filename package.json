@@ -1,6 +1,6 @@
 {
   "name": "@gforge/react-typeahead-ts",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "A typescript rewrite of the react-typehead npm package",
   "main": "dist/typeahead.js",
   "module": "dist/typeahead.es6.js",
@@ -46,6 +46,7 @@
   },
   "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "classnames": "^2.2.6",
     "fuzzy": "^0.1.3"
   },

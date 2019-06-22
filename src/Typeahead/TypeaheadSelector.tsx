@@ -5,7 +5,7 @@ import { CustomClasses, SelectorOptionSelector, Option } from '../types';
 
 export interface Props<Opt extends Option> {
   options: Opt[];
-  allowCustomValues: number | undefined;
+  allowCustomValues: boolean | undefined;
   customClasses?: CustomClasses;
   customValue: string | undefined;
   selectionIndex: number | undefined;
@@ -38,7 +38,7 @@ const TypeaheadSelector = <T extends Option>(props: Props<T>) => {
     return null;
   }
 
-  const classes: any = {
+  const classes: { [key: string]: boolean } = {
     'typeahead-selector': defaultClassNames,
   };
   const { results: resClass } = customClasses;
@@ -84,7 +84,7 @@ const TypeaheadSelector = <T extends Option>(props: Props<T>) => {
   });
 
   if (areResultsTruncated && resultsTruncatedMessage) {
-    const resultsTruncatedClasses: any = {
+    const resultsTruncatedClasses: { [key: string]: boolean } = {
       'results-truncated': true,
     };
     const { resultsTruncated } = customClasses;

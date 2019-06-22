@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/@types/jest/index.d.ts"/>.
 import * as React from 'react';
 // @ts-ignore
 import { ReactWrapper } from 'jest';
@@ -8,8 +7,7 @@ import Tokenizer from '../src/Tokenizer';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
 
-//  @ts-ignore
-const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
+const getInput = (component: ReactWrapper<TProps<unknown>>) => {
   let controlComponent = component.find('input.form-control');
   if (controlComponent.length === 0) {
     controlComponent = component.find('input').first();
@@ -19,7 +17,7 @@ const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
 };
 
 const simulateTextInput = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
+  mountedComponent: ReactWrapper<TProps<unknown>>,
   value: string
 ) => {
   const inputElement = getInput(mountedComponent);
@@ -30,7 +28,7 @@ const simulateTextInput = (
 };
 
 const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
+  mountedComponent: ReactWrapper<TProps<unknown>>,
   code: string | number,
   eventName: string = 'keyDown'
 ) => {

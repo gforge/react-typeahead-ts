@@ -5,7 +5,9 @@ import {
   Option,
   OptionToStrFn,
   OptionsObject,
-  OnOptionSelectArg,
+  OptionsProps,
+  TrueOptionProp,
+  FalseOptionProp,
 } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
@@ -18,7 +20,7 @@ export type AnyReactWithProps<Opt extends Option> =
   | React.PureComponent<TypelistProps<Opt>>
   | React.SFC<TypelistProps<Opt>>;
 
-export interface Props<Opt extends Option, Custom extends boolean = boolean>
+export interface Props<Opt extends Option>
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
     | 'onChange'
@@ -30,27 +32,24 @@ export interface Props<Opt extends Option, Custom extends boolean = boolean>
     | 'onKeyDown'
   > {
   name?: string;
-  customClasses?: CustomClasses;
   maxVisible?: number;
   clearOnSelection?: boolean;
   resultsTruncatedMessage?: string;
-  options: Opt[];
-  allowCustomValues: Custom;
   initialValue?: string;
   value?: string;
   placeholder?: string;
   disabled?: boolean;
   textarea?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  onOptionSelected?: OnOptionSelectArg<Opt, Custom>;
   filterOption?: string | ((value: string, option: Opt) => boolean);
   searchOptions?: (value: string, option: Opt[]) => Opt[];
-  displayOption?: string | OptionToStrFn<OptionsObject>;
-  inputDisplayOption?: string | OptionToStrFn<OptionsObject>;
-  formInputOption?: string | OptionToStrFn<OptionsObject>;
+  displayOption?: string | OptionToStrFn<Opt>;
+  inputDisplayOption?: string | OptionToStrFn<Opt>;
+  formInputOption?: string | OptionToStrFn<Opt>;
+  customClasses?: CustomClasses;
   defaultClassNames?: boolean;
   customListComponent?: AnyReactWithProps<Opt>;
-  showOptionsWhenEmpty: boolean;
+  showOptionsWhenEmpty?: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
 }
 
@@ -60,7 +59,7 @@ export interface Props<Opt extends Option, Custom extends boolean = boolean>
  * Renders an text input that shows options nearby that you can use the
  * keyboard or mouse to select.  Requires CSS for MASSIVE DAMAGE.
  */
-function Typeahead<T extends Option>(props: Props<T>) {
+function Typeahead<T extends Option>(props: Props<T> & OptionsProps<T>) {
   const {
     options,
     allowCustomValues,
@@ -111,6 +110,23 @@ function Typeahead<T extends Option>(props: Props<T>) {
     },
     [inputElement, innerRef]
   );
+
+  let trueFalseOptions: TrueOptionProp<T> | FalseOptionProp<T>;
+  if (allowCustomValues) {
+    // @ts-ignore
+    trueFalseOptions = {
+      allowCustomValues: true as const,
+      options,
+      onOptionSelected,
+    };
+  } else {
+    // @ts-ignore
+    trueFalseOptions = {
+      allowCustomValues: false as const,
+      options,
+      onOptionSelected,
+    };
+  }
   const {
     handleChange,
     handleOptionSelected,
@@ -123,7 +139,7 @@ function Typeahead<T extends Option>(props: Props<T>) {
     filteredOptions,
     selected,
   } = useStuff({
-    options,
+    ...trueFalseOptions,
     entryValue,
     inputElement,
     initialValue,
@@ -133,9 +149,7 @@ function Typeahead<T extends Option>(props: Props<T>) {
     onBlur,
     onFocus,
     onChange,
-    allowCustomValues,
     clearOnSelection: !!clearOnSelection,
-    onOptionSelected,
     displayOption,
     formInputOption,
     inputDisplayOption,

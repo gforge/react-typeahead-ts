@@ -2,13 +2,11 @@ import * as React from 'react';
 import _ from 'lodash';
 import sinon from 'sinon';
 import ReactDOM from 'react-dom';
-import Typeahead from '../src/Typeahead';
+import TestUtils from 'react-dom/test-utils';
 import TypeaheadOption from '../src/Typeahead/TypeaheadOption';
-import TypeaheadSelector from '../src/Typeahead/TypeaheadSelector';
 import Tokenizer from '../src/Tokenizer';
 import Token from '../src/Tokenizer/Token';
 import Keyevent from '../src/keyevent';
-import TestUtils from 'react-dom/test-utils';
 
 function simulateTextInput(component: Typeahead, value: string) {
   const node = component.inputElement;
@@ -105,7 +103,7 @@ describe('TypeaheadTokenizer Component', () => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyDown={function(e) {
+            onKeyDown={e => {
               expect(e.keyCode).toEqual(87);
               done();
             }}
@@ -121,7 +119,7 @@ describe('TypeaheadTokenizer Component', () => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyPress={function(e) {
+            onKeyPress={e => {
               expect(e.keyCode).toEqual(87);
               done();
             }}
@@ -138,7 +136,7 @@ describe('TypeaheadTokenizer Component', () => {
         const component = TestUtils.renderIntoDocument(
           <Tokenizer
             options={BEATLES}
-            onKeyUp={function(e) {
+            onKeyUp={e => {
               expect(e.keyCode).toEqual(87);
               done();
             }}
@@ -179,7 +177,7 @@ describe('TypeaheadTokenizer Component', () => {
             <Tokenizer
               options={BEATLES_COMPLEX}
               filterOption="firstName"
-              displayOption={function(o, i) {
+              displayOption={(o, i) => {
                 return i + ' ' + o.firstName + ' ' + o.lastName;
               }}
             />
@@ -200,7 +198,6 @@ describe('TypeaheadTokenizer Component', () => {
               displayOption="nameWithTitle"
             />
           );
-          const results = simulateTokenInput(component, 'john');
 
           const entry = component.refs.typeahead.refs.entry;
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
@@ -224,7 +221,7 @@ describe('TypeaheadTokenizer Component', () => {
               formInputOption="lastName"
             />
           );
-          const results = simulateTokenInput(component, 'john');
+          simulateTokenInput(component, 'john');
 
           const entry = component.refs.typeahead.refs.entry;
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
@@ -245,9 +242,7 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-              formInputOption={function(o, i) {
-                return o.firstName + ' ' + o.lastName;
-              }}
+              formInputOption={o => o.firstName + ' ' + o.lastName}
             />
           );
           results = simulateTokenInput(component, 'john');
@@ -415,7 +410,6 @@ describe('TypeaheadTokenizer Component', () => {
 
     // tslint:disable-next-line:max-line-length
     test('should not allow custom tokens that are less than specified allowCustomValues length', () => {
-      const tokens = getTokens(testContext.component);
       const results = simulateTokenInput(testContext.component, 'abz');
       expect(0).toEqual(results.length);
     });
@@ -455,7 +449,6 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     test('should allow selection of custom token', () => {
-      const results = simulateTokenInput(testContext.component, 'abzz');
       const input = testContext.component.refs.typeahead.refs.entry;
       let tokens = getTokens(testContext.component);
 
@@ -467,9 +460,7 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     test('should call onTokenAdd for custom token', () => {
-      const results = simulateTokenInput(testContext.component, 'abzz');
       const input = testContext.component.refs.typeahead.refs.entry;
-      const tokens = getTokens(testContext.component);
 
       TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_DOWN });
       TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_RETURN });
@@ -479,7 +470,6 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     test('should call onTokenRemove for custom token', () => {
-      const results = simulateTokenInput(testContext.component, 'abzz');
       const input = testContext.component.refs.typeahead.refs.entry;
       let tokens = getTokens(testContext.component);
 
@@ -500,7 +490,6 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     test('should not return undefined for a custom token when not selected', () => {
-      const results = simulateTokenInput(testContext.component, 'abzz');
       const input = testContext.component.refs.typeahead.refs.entry;
       const tokens = getTokens(testContext.component);
       TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_TAB });
@@ -513,9 +502,7 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     test('should not select value for a custom token when too short', () => {
-      const results = simulateTokenInput(testContext.component, 'abz');
       const input = testContext.component.refs.typeahead.refs.entry;
-      const tokens = getTokens(testContext.component);
       TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_TAB });
 
       const newTokens = getTokens(testContext.component);
