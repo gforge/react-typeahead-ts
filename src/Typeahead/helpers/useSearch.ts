@@ -37,6 +37,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mapper: (input: any) => string;
     if (typeof filterOption === 'string') {
+      // @ts-ignore
       mapper = Accessor.generateAccessor(filterOption);
     } else {
       mapper = Accessor.IDENTITY_FN;

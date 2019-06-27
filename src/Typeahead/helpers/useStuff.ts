@@ -2,9 +2,9 @@ import * as React from 'react';
 import {
   Option,
   OptionToStrFn,
-  OptionsObject,
   HandleOnOptionSelectArg,
   OptionsProps,
+  EventType,
 } from '../../types';
 import Accessor from '../../accessor';
 import useSearch from './useSearch';
@@ -63,7 +63,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     [selected, showOptionsWhenEmpty, isFocused]
   );
 
-  const { filteredOptions, searchFunction } = useSearch({
+  const { filteredOptions } = useSearch({
     searchOptionsFunction,
     filterOption,
     shouldSkipSearch,
@@ -111,10 +111,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
   );
 
   const handleOptionSelected: HandleOnOptionSelectArg = React.useCallback(
-    (
-      option?: Option | string | undefined,
-      event?: React.SyntheticEvent<HTMLInputElement>
-    ) => {
+    (option?: Option | string | undefined, event?: EventType) => {
       if (!option) {
         setSelection('');
         setShowResults(true);

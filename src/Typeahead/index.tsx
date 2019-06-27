@@ -4,7 +4,6 @@ import {
   CustomClasses,
   Option,
   OptionToStrFn,
-  OptionsObject,
   OptionsProps,
   TrueOptionProp,
   FalseOptionProp,

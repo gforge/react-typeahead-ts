@@ -14,19 +14,23 @@ export interface TokenCustomClasses extends CustomClasses {
   typeahead?: string;
 }
 
+export type EventType =
+  | React.MouseEvent<HTMLLIElement>
+  | React.KeyboardEvent<HTMLInputElement>;
+
 export type SelectorOptionSelector<Opt extends Option> = (
   result: Opt,
-  event: React.MouseEvent<HTMLInputElement>
+  event: EventType
 ) => void;
 
 export type OptionSelect<T extends Option> = (
   option: T | undefined,
-  event?: React.SyntheticEvent<HTMLInputElement>
+  event?: EventType
 ) => void;
 
 export type HandleOnOptionSelectArg = (
   option?: Option | string | undefined,
-  event?: React.SyntheticEvent<HTMLInputElement>
+  event?: EventType
 ) => void;
 
 export interface OptionsObject {

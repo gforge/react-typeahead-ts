@@ -6,6 +6,7 @@
  */
 import enzyme from 'enzyme';
 // tslint:disable-next-line:variable-name
+// @ts-ignore
 import Adapter from 'enzyme-adapter-react-16';
 
 enzyme.configure({ adapter: new Adapter() });

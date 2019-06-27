@@ -1,10 +1,5 @@
 import * as React from 'react';
-import {
-  OptionToStrFn,
-  OptionsObject,
-  HandleOnOptionSelectArg,
-  Option,
-} from '../types';
+import { OptionToStrFn, HandleOnOptionSelectArg, Option } from '../types';
 import { CustomClasses } from './TypeaheadOption';
 import Accessor from '../accessor';
 import TypeaheadSelector from './TypeaheadSelector';
@@ -14,7 +9,7 @@ interface Props<Opt extends Option> {
   selection: string | number | undefined;
   maxVisible: number | undefined;
   handleOptionSelected: HandleOnOptionSelectArg;
-  displayOption: string | OptionToStrFn<OptionsObject> | undefined;
+  displayOption: string | OptionToStrFn<any> | undefined;
   allowCustomValues: boolean | undefined;
   resultsTruncatedMessage: string | undefined;
   customClasses: CustomClasses | undefined;

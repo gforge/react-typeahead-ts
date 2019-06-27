@@ -47,7 +47,7 @@ export default <T extends Option>(props: Props<T>) => {
 
       return handleOptionSelected(selection, event);
     },
-    [onKeyDown, getSelection, handleOptionSelected, selection]
+    [onKeyDown, handleOptionSelected, selection]
   );
 
   const onTab = useCallback(
@@ -65,7 +65,7 @@ export default <T extends Option>(props: Props<T>) => {
         return handleOptionSelected(option, event);
       }
     },
-    [filteredOptions, getSelection, handleOptionSelected]
+    [filteredOptions, handleOptionSelected]
   );
 
   const handleKeyDown = useCallback(

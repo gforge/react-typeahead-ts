@@ -21,8 +21,8 @@ export default class Accessor {
     };
   }
 
-  static generateOptionToStringFor<T extends OptionsObject>(
-    prop?: string | OptionToStrFn<T>
+  static generateOptionToStringFor(
+    prop?: string | OptionToStrFn<any>
   ): (opt: Option) => string | number {
     if (typeof prop === 'string') {
       return Accessor.generateAccessor(prop) as (opt: Option) => string;

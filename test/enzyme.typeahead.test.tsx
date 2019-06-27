@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import Typeahead, { Props as TProps } from '../src/Typeahead';
 import Keyevent from '../src/keyevent';
-import { Option, OptionsObject } from '../src/types';
+import { OptionsObject } from '../src/types';
 
 // @ts-ignore
 const getInput = (component: ReactWrapper<TProps<unknown>>) => {
