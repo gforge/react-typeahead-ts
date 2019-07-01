@@ -1,45 +1,13 @@
 import * as React from 'react';
 import _ from 'lodash';
-// @ts-ignore
-import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
 import sinon from 'sinon';
-import Typeahead, { Props as TProps } from '../src/Typeahead';
+import Typeahead from '../src/Typeahead';
 import Keyevent from '../src/keyevent';
 import { OptionsObject } from '../src/types';
-
-// @ts-ignore
-const getInput = (component: ReactWrapper<TProps<unknown>>) => {
-  let controlComponent = component.find('input.form-control');
-  if (controlComponent.length === 0) {
-    controlComponent = component.find('input').first();
-  }
-
-  return controlComponent;
-};
-
-const simulateTextInput = (
-  mountedComponent: ReactWrapper<TProps<unknown>>,
-  value: string
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate('change', { target: { value } });
-
-  return mountedComponent;
-};
-
-const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<unknown>>,
-  code: string | number,
-  eventName: string = 'keyDown'
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate(eventName, { keyCode: code });
-
-  return mountedComponent;
-};
+import simulateTextInput from './helpers/simulateTextInput';
+import simulateKeyEvent from './helpers/simulateKeyEvent';
+import getInput from './helpers/getInput';
 
 const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
 
@@ -81,7 +49,9 @@ describe('TypeaheadTokenizer Component', () => {
 
   describe('basic tokenizer', () => {
     beforeEach(() => {
-      testContext.component = mount(<Typeahead options={BEATLES} />);
+      testContext.component = mount(
+        <Typeahead options={BEATLES} className="test-class" />
+      );
     });
 
     test('should fuzzy search and render matching results', () => {

@@ -1,43 +1,10 @@
 import * as React from 'react';
-// @ts-ignore
-import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
-import { Props as TProps } from '../src/Typeahead';
 import Tokenizer from '../src/Tokenizer';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
-
-const getInput = (component: ReactWrapper<TProps<unknown>>) => {
-  let controlComponent = component.find('input.form-control');
-  if (controlComponent.length === 0) {
-    controlComponent = component.find('input').first();
-  }
-
-  return controlComponent;
-};
-
-const simulateTextInput = (
-  mountedComponent: ReactWrapper<TProps<unknown>>,
-  value: string
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate('change', { target: { value } });
-
-  return mountedComponent;
-};
-
-const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<unknown>>,
-  code: string | number,
-  eventName: string = 'keyDown'
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate(eventName, { keyCode: code });
-
-  return mountedComponent;
-};
+import simulateTextInput from './helpers/simulateTextInput';
+import simulateKeyEvent from './helpers/simulateKeyEvent';
 
 const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
 
@@ -79,13 +46,15 @@ describe('TypeaheadTokenizer Component', () => {
     test('Basic mount', () => {
       const ret = mount(<Tokenizer options={BEATLES} />);
 
-      expect(ret.html()).toMatchSnapshot();
+      const html = ret.html();
+      expect(html).toMatchSnapshot();
     });
 
     test('Complex mount', () => {
       const ret = mount(<Tokenizer options={BEATLES_COMPLEX} />);
 
-      expect(ret.html()).toMatchSnapshot();
+      const html = ret.html();
+      expect(html).toMatchSnapshot();
     });
 
     test('should have custom and default token classes', () => {
