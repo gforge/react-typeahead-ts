@@ -52,29 +52,29 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.6",
-    "@types/enzyme": "^3.1.13",
+    "@types/enzyme": "^3.9.4",
     "@types/jest": "^24.0.15",
-    "@types/lodash": "^4.14.116",
-    "@types/react": "^16.4.7",
+    "@types/lodash": "^4.14.135",
+    "@types/react": "^16.8.22",
     "@types/react-dom": "^16.0.6",
     "@types/reactstrap": "^8.0.1",
     "@types/sinon": "^7.0.13",
-    "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
     "bootstrap": "^4.1.3",
     "create-react-class": "^15.6.3",
     "cross-env": "^5.2.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.4",
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "eslint-config-airbnb-typescript": "^4.0.0",
-    "eslint-config-prettier": "^5.0.0",
-    "eslint-plugin-import": "^2.17.3",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.13.0",
-    "eslint-plugin-react-hooks": "^1.6.0",
+    "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^1.6.1",
     "flowgen": "^1.2.2",
     "formik": "^1.0.2",
     "gh-pages": "^2.0.0",
@@ -85,18 +85,18 @@
     "parcel": "^1.9.7",
     "prettier": "1.18.2",
     "raf": "^3.4.0",
-    "react": "^16.4",
-    "react-dom": "^16.4",
-    "react-syntax-highlighter": "^10.3.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-syntax-highlighter": "^11.0.1",
     "react-test-renderer": "^16.4.2",
     "reactstrap": "^8.0.0",
     "rimraf": "^2.6.2",
-    "rollup": "^1.15.6",
-    "rollup-plugin-commonjs": "10.0.0",
-    "rollup-plugin-filesize": "6.1.0",
+    "rollup": "^1.16.2",
+    "rollup-plugin-commonjs": "10.0.1",
+    "rollup-plugin-filesize": "6.1.1",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "5.0.3",
+    "rollup-plugin-node-resolve": "5.1.0",
     "rollup-plugin-replace": "2.2.0",
     "rollup-plugin-sourcemaps": "0.4.2",
     "rollup-plugin-terser": "^5.0.0",
@@ -107,8 +107,8 @@
     "typescript": "^3.0.1"
   },
   "peerDependencies": {
-    "react": "^16.x",
-    "react-dom": "^16.x"
+    "react": ">= 16.8 < 17",
+    "react-dom": ">=16.8 < 17"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [
@@ -120,35 +120,5 @@
     "trailingComma": "es5",
     "singleQuote": true,
     "semi": true
-  },
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/",
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/test/setupTest.ts"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testMatch": [
-      "<rootDir>/test/**/?(*.)(spec|test).(ts|js)?(x)"
-    ],
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
   }
 }
