@@ -6,11 +6,11 @@ import Token from './Token';
 
 export interface Props<Opt extends Option>
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  name?: string;
+  name: string | undefined;
   selectedOptions: Opt[];
-  token?: TokenCustomClasses['token'];
-  displayOption?: SelectorType;
-  formInputOption?: SelectorType;
+  token: TokenCustomClasses['token'] | undefined;
+  displayOption: SelectorType | undefined;
+  formInputOption: SelectorType | undefined;
   removeTokenForValue: (value: any) => void;
 }
 

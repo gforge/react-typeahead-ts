@@ -38,28 +38,33 @@ export interface OptionsObject {
 }
 export type Option = string | number | OptionsObject;
 
-export type OptionToStrFn<T extends Option = Option> = (
+export type OptionToStrFn<T extends Option> = (
   option: T,
   index?: number
 ) => string | number;
 
-export type SelectorType = string | OptionToStrFn;
+export type SelectorType<T extends Option> = string | OptionToStrFn<T>;
 
-export interface TrueOptionProp<Opt extends Option> {
+// TODO: in future typescript versions we want to use
+// OptionsProps<T extends Option> = TrueOptionProp<T> | FalseOptionProp<T>
+// but this isn't possible at the moment
+export type TrueOptionProp<Opt extends Option> = {
   options: Opt[];
   allowCustomValues: true;
   onOptionSelected?: OptionSelect<string | number>;
-}
+};
 
-export interface FalseOptionProp<Opt extends Option> {
+export type FalseOptionProp<Opt extends Option> = {
   options: Opt[];
   allowCustomValues?: false;
   onOptionSelected?: OptionSelect<Opt>;
-}
+};
 
-export type OptionsProps<Opt extends Option> =
-  | FalseOptionProp<Opt>
-  | TrueOptionProp<Opt>;
+export interface OptionsProps<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues?: boolean;
+  onOptionSelected?: OptionSelect<string | number>;
+}
 
 // type StringOrObject = string | { [key: string]: string };
 

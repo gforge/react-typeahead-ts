@@ -1,13 +1,6 @@
 import * as React from 'react';
 import { Props as TypelistProps } from './TypeaheadSelector';
-import {
-  CustomClasses,
-  Option,
-  OptionToStrFn,
-  OptionsProps,
-  TrueOptionProp,
-  FalseOptionProp,
-} from '../types';
+import { CustomClasses, Option, OptionToStrFn, OptionsProps } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
 import useStuff from './helpers/useStuff';
@@ -21,15 +14,16 @@ export type AnyReactWithProps<Opt extends Option> =
 
 export interface Props<Opt extends Option>
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    | 'onChange'
-    | 'className'
-    | 'onBlur'
-    | 'onFocus'
-    | 'onKeyPress'
-    | 'onKeyUp'
-    | 'onKeyDown'
-  > {
+      React.InputHTMLAttributes<HTMLInputElement>,
+      | 'onChange'
+      | 'className'
+      | 'onBlur'
+      | 'onFocus'
+      | 'onKeyPress'
+      | 'onKeyUp'
+      | 'onKeyDown'
+    >,
+    OptionsProps<Opt> {
   name?: string;
   maxVisible?: number;
   clearOnSelection?: boolean;
@@ -39,12 +33,13 @@ export interface Props<Opt extends Option>
   placeholder?: string;
   disabled?: boolean;
   textarea?: boolean;
+  allowCustomValues?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   filterOption?: string | ((value: string, option: Opt) => boolean);
   searchOptions?: (value: string, option: Opt[]) => Opt[];
-  displayOption?: string | OptionToStrFn<Opt>;
-  inputDisplayOption?: string | OptionToStrFn<Opt>;
-  formInputOption?: string | OptionToStrFn<Opt>;
+  displayOption?: string | OptionToStrFn<Opt> | undefined;
+  inputDisplayOption?: string | OptionToStrFn<Opt> | undefined;
+  formInputOption?: string | OptionToStrFn<Opt> | undefined;
   customClasses?: CustomClasses;
   defaultClassNames?: boolean;
   customListComponent?: AnyReactWithProps<Opt>;
@@ -58,7 +53,7 @@ export interface Props<Opt extends Option>
  * Renders an text input that shows options nearby that you can use the
  * keyboard or mouse to select.  Requires CSS for MASSIVE DAMAGE.
  */
-function Typeahead<T extends Option>(props: Props<T> & OptionsProps<T>) {
+function Typeahead<T extends Option>(props: Props<T>) {
   const {
     options,
     allowCustomValues,
@@ -88,6 +83,7 @@ function Typeahead<T extends Option>(props: Props<T> & OptionsProps<T>) {
     filterOption,
     resultsTruncatedMessage,
     showOptionsWhenEmpty,
+    name,
   } = props;
   // The options matching the entry value
 
@@ -110,16 +106,14 @@ function Typeahead<T extends Option>(props: Props<T> & OptionsProps<T>) {
     [inputElement, innerRef]
   );
 
-  let trueFalseOptions: TrueOptionProp<T> | FalseOptionProp<T>;
+  let trueFalseOptions: OptionsProps<T>;
   if (allowCustomValues) {
-    // @ts-ignore
     trueFalseOptions = {
       allowCustomValues: true as const,
       options,
       onOptionSelected,
     };
   } else {
-    // @ts-ignore
     trueFalseOptions = {
       allowCustomValues: false as const,
       options,
@@ -206,4 +200,4 @@ function Typeahead<T extends Option>(props: Props<T> & OptionsProps<T>) {
   );
 }
 
-export default Typeahead;
+export default React.memo(Typeahead);

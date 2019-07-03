@@ -12,12 +12,22 @@ interface Props<Opt extends Option> {
 }
 
 export default <T extends Option>(props: Props<T>) => {
-  const { selectedOptions, setSelected, typeaheadElement, onTokenAdd, getInputOptionToStringMapper, onTokenRemove } = props
-  const getSelectedIndex = useCallback((value: T) => {
-    const mapper = getInputOptionToStringMapper;
-    const searchStr: string = mapper(value);
-    return selectedOptions.map(mapper).indexOf(searchStr);
-  }, [getInputOptionToStringMapper, selectedOptions]);
+  const {
+    selectedOptions,
+    setSelected,
+    typeaheadElement,
+    onTokenAdd,
+    getInputOptionToStringMapper,
+    onTokenRemove,
+  } = props;
+  const getSelectedIndex = useCallback(
+    (value: T) => {
+      const mapper = getInputOptionToStringMapper;
+      const searchStr: string = mapper(value);
+      return selectedOptions.map(mapper).indexOf(searchStr);
+    },
+    [getInputOptionToStringMapper, selectedOptions]
+  );
 
   const removeTokenForValue = useCallback(
     (value: T) => {
@@ -31,7 +41,8 @@ export default <T extends Option>(props: Props<T>) => {
       onTokenRemove && onTokenRemove(value);
       return;
     },
-    [getSelectedIndex, setSelected, selectedOptions, onTokenRemove]);
+    [getSelectedIndex, setSelected, selectedOptions, onTokenRemove]
+  );
 
   const addTokenForValue = useCallback(
     (value: T) => {
@@ -46,10 +57,11 @@ export default <T extends Option>(props: Props<T>) => {
       typeaheadElement.current.value = '';
       onTokenAdd && onTokenAdd(value);
     },
-    [getSelectedIndex, setSelected, selectedOptions, onTokenAdd]);
+    [getSelectedIndex, setSelected, selectedOptions, onTokenAdd]
+  );
 
   return {
     removeTokenForValue,
     addTokenForValue,
-  }
-}
+  };
+};
