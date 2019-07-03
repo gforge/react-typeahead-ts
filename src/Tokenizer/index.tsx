@@ -72,36 +72,44 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     onKeyDown,
     onTokenAdd,
     onTokenRemove,
+    className,
+    initialValue = '',
+    maxVisible,
+    resultsTruncatedMessage,
+    placeholder,
+    onKeyPress,
+    onKeyUp,
+    onFocus,
+    onBlur,
+    filterOption,
+    searchOptions,
+    renderAbove,
+    name,
   } = props;
-  const [selected, setSelected] = React.useState<T[]>([]);
-  const [lastDefaultSelected, setLastDefaultSelected] = React.useState<T[]>();
-  React.useEffect(() => {
-    if (!lastDefaultSelected || arraysAreDifferent(defaultSelected, selected)) {
-      setSelected(defaultSelected.slice(0));
-    }
-    setLastDefaultSelected(defaultSelected);
-  }, [
-    setSelected,
-    selected,
-    defaultSelected,
-    lastDefaultSelected,
-    setLastDefaultSelected,
-  ]);
 
+  // Memo section
+  // First section gets default values
+  const defaultSelected = React.useMemo(() => ds || [], [ds]);
+  const customClasses = React.useMemo(() => cs || {}, [cs]);
+  const inputProps = React.useMemo(() => ip || {}, [ip]);
+
+  // Contains the selected values
+  const [selected, setSelected] = React.useState<T[]>(defaultSelected);
+
+  // More complex memo
   const getInputOptionToStringMapper = React.useMemo(() => {
     if (typeof options[0] === 'string') return Accessor.IDENTITY_FN;
     const anyToStrFn = formInputOption || displayOption;
     return Accessor.generateOptionToStringFor(anyToStrFn);
   }, [formInputOption, displayOption, options]) as (arg: T) => string;
-
-  const typeaheadElement = React.useRef<HTMLInputElement>();
-
   const cleanOptions = React.useMemo(() => {
     return options.filter((opt: T) => {
       const value: string = getInputOptionToStringMapper(opt);
       return !selected.map(getInputOptionToStringMapper).includes(value);
     });
   }, [getInputOptionToStringMapper, selected, options]);
+
+  const typeaheadElement = React.useRef<HTMLInputElement>();
 
   const { removeTokenForValue, addTokenForValue } = useTokenManager({
     selectedOptions: selected,
