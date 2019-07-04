@@ -3,7 +3,7 @@ import { Props as TypelistProps } from './TypeaheadSelector';
 import { CustomClasses, Option, OptionToStrFn, OptionsProps } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
-import useStuff from './helpers/useHandlersf';
+import useHandlers from './helpers/useHandlers';
 import useOnKey from './helpers/useOnKey';
 import IncrementalSearchResults from './IncrementalSearchResults';
 import useHint from './helpers/useHint';
@@ -20,13 +20,13 @@ export type AnyReactWithProps<Opt extends Option> =
 export interface Props<Opt extends Option>
   extends Pick<
       React.InputHTMLAttributes<HTMLInputElement>,
-      | 'onChange'
-      | 'className'
-      | 'onBlur'
-      | 'onFocus'
+      | 'onKeyDown'
       | 'onKeyPress'
       | 'onKeyUp'
-      | 'onKeyDown'
+      | 'onBlur'
+      | 'onFocus'
+      | 'onChange'
+      | 'className'
     >,
     OptionsProps<Opt> {
   name?: string;
@@ -40,13 +40,13 @@ export interface Props<Opt extends Option>
   textarea?: boolean;
   allowCustomValues?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  filterOption?: string | ((value: string, option: Opt) => boolean);
-  searchOptions?: (value: string, option: Opt[]) => Opt[];
   displayOption?: string | OptionToStrFn<Opt> | undefined;
+  filterOption?: string | ((value: string, option: Opt) => boolean);
   inputDisplayOption?: string | OptionToStrFn<Opt> | undefined;
   formInputOption?: string | OptionToStrFn<Opt> | undefined;
-  customClasses?: CustomClasses;
+  searchOptions?: (value: string, option: Opt[]) => Opt[];
   defaultClassNames?: boolean;
+  customClasses?: CustomClasses;
   customListComponent?: AnyReactWithProps<Opt>;
   showOptionsWhenEmpty?: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
@@ -163,7 +163,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     handleOptionSelected,
     handleFocus,
     handleBlur,
-  } = useStuff({
+  } = useHandlers({
     ...trueFalseOptions,
     inputElement,
     initialValue,

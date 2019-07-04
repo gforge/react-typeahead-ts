@@ -36,6 +36,7 @@ export type HandleOnOptionSelectArg = (
 export interface OptionsObject {
   [propName: string]: unknown;
 }
+
 export type Option = string | number | OptionsObject;
 
 export type OptionToStrFn<T extends Option> = (
@@ -48,17 +49,17 @@ export type SelectorType<T extends Option> = string | OptionToStrFn<T>;
 // TODO: in future typescript versions we want to use
 // OptionsProps<T extends Option> = TrueOptionProp<T> | FalseOptionProp<T>
 // but this isn't possible at the moment
-export type TrueOptionProp<Opt extends Option> = {
+export interface TrueOptionProp<Opt extends Option> {
   options: Opt[];
   allowCustomValues: true;
   onOptionSelected?: OptionSelect<string | number>;
-};
+}
 
-export type FalseOptionProp<Opt extends Option> = {
+export interface FalseOptionProp<Opt extends Option> {
   options: Opt[];
   allowCustomValues?: false;
   onOptionSelected?: OptionSelect<Opt>;
-};
+}
 
 export interface OptionsProps<Opt extends Option> {
   options: Opt[];

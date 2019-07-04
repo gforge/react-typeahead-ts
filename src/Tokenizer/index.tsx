@@ -1,7 +1,7 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import Accessor from '../accessor';
 import Typeahead, { Props as TypeaheadProps } from '../Typeahead';
-import classNames from 'classnames';
 import { TokenCustomClasses, Option, OptionsProps } from '../types';
 import Tokens from './Tokens';
 import useTokenManager from './helpers/useTokenManager';
@@ -29,13 +29,13 @@ export interface Props<Opt extends Option>
       | 'showOptionsWhenEmpty'
       | 'maxVisible'
       | 'inputProps'
+      | 'resultsTruncatedMessage'
     >,
     OptionsProps<Opt> {
   customClasses?: TokenCustomClasses;
   defaultSelected?: Opt[];
   onTokenRemove?: (value: Opt) => any;
   onTokenAdd?: (value: Opt) => any;
-  resultsTruncatedMessage?: string;
   renderAbove?: boolean;
 }
 
@@ -127,7 +127,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
       tokenizerClasses.push(className);
     }
     return classNames(tokenizerClasses);
-  }, [customClasses]);
+  }, [className, defaultClassNames]);
 
   const args2Pass = {
     placeholder,

@@ -133,6 +133,8 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
       displayOption,
       inputDisplayOption,
       option2string,
+      setSelected,
+      setShowResults,
     ]
   );
 

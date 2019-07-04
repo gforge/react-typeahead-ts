@@ -60,7 +60,7 @@ describe('Typeahead Component', () => {
         const component = TestUtils.renderIntoDocument(
           <Typeahead
             options={BEATLES.map(createObject)}
-            displayOption={o => 'Score: ' + o.len + ' ' + o.orig}
+            displayOption={o => `Score: ${  o.len  } ${  o.orig}`}
             inputDisplayOption={o => o.orig}
           />
         );
@@ -76,7 +76,7 @@ describe('Typeahead Component', () => {
 
     describe('allowCustomValues', () => {
       beforeEach(() => {
-        testContext.sinon = sinon.sandbox.create();
+        testContext.sinon = sinon.createSandbox();
         testContext.selectSpy = testContext.sinon.spy();
         testContext.component = TestUtils.renderIntoDocument(
           <Typeahead
@@ -416,7 +416,7 @@ describe('Typeahead Component', () => {
             filterOption: 'firstName',
             displayOption: 'nameWithTitle',
             formInputOption: (o: { firstName: string; lastName: string }) =>
-              o.firstName + ' ' + o.lastName,
+              `${o.firstName  } ${  o.lastName}`,
           },
           output: 'John Lennon',
         },

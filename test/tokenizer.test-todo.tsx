@@ -86,7 +86,7 @@ describe('TypeaheadTokenizer Component', () => {
 
     test('should have custom and default token classes', () => {
       simulateTokenInput(testContext.component, 'o');
-      const entry = testContext.component.refs.typeahead.refs.entry;
+      const { entry } = testContext.component.refs.typeahead.refs;
       TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
       TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
@@ -178,7 +178,7 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption={(o, i) => {
-                return i + ' ' + o.firstName + ' ' + o.lastName;
+                return `${i} ${o.firstName} ${o.lastName}`;
               }}
             />
           );
@@ -199,7 +199,7 @@ describe('TypeaheadTokenizer Component', () => {
             />
           );
 
-          const entry = component.refs.typeahead.refs.entry;
+          const { entry } = component.refs.typeahead.refs;
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
           TestUtils.Simulate.keyDown(entry, {
             keyCode: Keyevent.DOM_VK_RETURN,
@@ -223,7 +223,7 @@ describe('TypeaheadTokenizer Component', () => {
           );
           simulateTokenInput(component, 'john');
 
-          const entry = component.refs.typeahead.refs.entry;
+          const { entry } = component.refs.typeahead.refs;
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
           TestUtils.Simulate.keyDown(entry, {
             keyCode: Keyevent.DOM_VK_RETURN,
@@ -242,12 +242,12 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-              formInputOption={o => o.firstName + ' ' + o.lastName}
+              formInputOption={o => `${o.firstName} ${o.lastName}`}
             />
           );
           results = simulateTokenInput(component, 'john');
 
-          const entry = component.refs.typeahead.refs.entry;
+          const { entry } = component.refs.typeahead.refs;
           TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
           TestUtils.Simulate.keyDown(entry, {
             keyCode: Keyevent.DOM_VK_RETURN,
@@ -264,7 +264,7 @@ describe('TypeaheadTokenizer Component', () => {
 
     describe('component functions', () => {
       beforeEach(() => {
-        testContext.sinon = sinon.sandbox.create();
+        testContext.sinon = sinon.createSandbox();
       });
       afterEach(() => {
         testContext.sinon.restore();
@@ -277,16 +277,6 @@ describe('TypeaheadTokenizer Component', () => {
           true
         );
       });
-    });
-
-    test('should provide an exposed component function to get the selected tokens', () => {
-      simulateTokenInput(testContext.component, 'o');
-      const entry = testContext.component.refs.typeahead.refs.entry;
-      TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
-      TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
-
-      expect(testContext.component.getSelectedTokens().length).toEqual(1);
-      expect(testContext.component.getSelectedTokens()[0]).toEqual('John');
     });
 
     describe('keyboard controls', () => {
@@ -316,7 +306,7 @@ describe('TypeaheadTokenizer Component', () => {
       test('should remove a token when BKSPC is pressed on an empty input', () => {
         // Select two items
         simulateTokenInput(testContext.component, 'o');
-        const entry = testContext.component.refs.typeahead.refs.entry;
+        const { entry } = testContext.component.refs.typeahead.refs;
         TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_DOWN });
         TestUtils.Simulate.keyDown(entry, { keyCode: Keyevent.DOM_VK_RETURN });
 
@@ -387,7 +377,7 @@ describe('TypeaheadTokenizer Component', () => {
     const tokenLength = 4;
 
     beforeEach(() => {
-      testContext.sinon = sinon.sandbox.create();
+      testContext.sinon = sinon.createSandbox();
       testContext.tokenAdd = testContext.sinon.spy();
       testContext.tokenRemove = testContext.sinon.spy();
 

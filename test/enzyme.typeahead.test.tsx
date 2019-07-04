@@ -41,6 +41,7 @@ const BEATLES_COMPLEX: ComplexOption[] = [
 ];
 
 describe('TypeaheadTokenizer Component', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let testContext: any;
 
   beforeEach(() => {
@@ -159,7 +160,7 @@ describe('TypeaheadTokenizer Component', () => {
 
     describe('component functions', () => {
       beforeEach(() => {
-        testContext.sinon = sinon.sandbox.create();
+        testContext.sinon = sinon.createSandbox();
       });
       afterEach(() => {
         testContext.sinon.restore();
