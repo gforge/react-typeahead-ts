@@ -200,4 +200,4 @@ function Typeahead<T extends Option>(props: Props<T>) {
   );
 }
 
-export default React.memo(Typeahead);
+export default Typeahead;

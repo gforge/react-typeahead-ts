@@ -192,4 +192,4 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   );
 };
 
-export default React.memo(TypeaheadTokenizer);
+export default TypeaheadTokenizer;
