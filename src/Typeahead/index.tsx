@@ -3,9 +3,14 @@ import { Props as TypelistProps } from './TypeaheadSelector';
 import { CustomClasses, Option, OptionToStrFn, OptionsProps } from '../types';
 import HiddenInput from '../Tokenizer/Token/HiddenInput';
 import useClassNames from './helpers/useClassNames';
-import useStuff from './helpers/useStuff';
+import useStuff from './helpers/useHandlersf';
 import useOnKey from './helpers/useOnKey';
 import IncrementalSearchResults from './IncrementalSearchResults';
+import useHint from './helpers/useHint';
+import useShouldSkipSearch from './helpers/useShouldSkipSearch';
+import useSearch from './helpers/useSearch';
+import useHasCustomValue from './helpers/useHasCustomValue';
+import Accessor from '../accessor';
 
 export type AnyReactWithProps<Opt extends Option> =
   | React.Component<TypelistProps<Opt>>
@@ -51,7 +56,7 @@ export interface Props<Opt extends Option>
  * A "typeahead", an auto-completing text input
  *
  * Renders an text input that shows options nearby that you can use the
- * keyboard or mouse to select.  Requires CSS for MASSIVE DAMAGE.
+ * keyboard or mouse to select.  Requires CSS for rendering nicely.
  */
 function Typeahead<T extends Option>(props: Props<T>) {
   const {
@@ -96,6 +101,25 @@ function Typeahead<T extends Option>(props: Props<T>) {
     className,
     defaultClassNames,
   });
+
+  const [isFocused, setIsFocused] = React.useState(false);
+  const [showResults, setShowResults] = React.useState(false);
+  const [selected, setSelected] = React.useState(false);
+
+  const { shouldSkipSearch } = useShouldSkipSearch({
+    isFocused,
+    selected,
+    showOptionsWhenEmpty,
+  });
+
+  const { filteredOptions } = useSearch({
+    searchOptionsFunction,
+    filterOption,
+    shouldSkipSearch,
+    entryValue,
+    options,
+  });
+
   const setRef = React.useCallback(
     (c: HTMLInputElement) => {
       inputElement.current = c;
@@ -120,36 +144,44 @@ function Typeahead<T extends Option>(props: Props<T>) {
       onOptionSelected,
     };
   }
+
+  const option2string = React.useMemo(() => {
+    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
+    return Accessor.generateOptionToStringFor(anyToStrFn) as ((
+      opt: T
+    ) => string | number);
+  }, [formInputOption, inputDisplayOption, displayOption]);
+
+  const { hasCustomValue } = useHasCustomValue({
+    allowCustomValues: !!allowCustomValues,
+    entryValue,
+    filteredOptions,
+    option2string,
+  });
   const {
     handleChange,
     handleOptionSelected,
     handleFocus,
     handleBlur,
-    showResults,
-    shouldSkipSearch,
-    hasHint,
-    hasCustomValue,
-    filteredOptions,
-    selected,
   } = useStuff({
     ...trueFalseOptions,
-    entryValue,
     inputElement,
     initialValue,
     setSelection,
     setEntryValue,
-    searchOptionsFunction,
     onBlur,
     onFocus,
     onChange,
     clearOnSelection: !!clearOnSelection,
     displayOption,
-    formInputOption,
     inputDisplayOption,
-    filterOption,
     setSelectionIndex,
-    showOptionsWhenEmpty,
+    setShowResults,
+    setIsFocused,
+    setSelected,
+    option2string,
   });
+  const { hasHint } = useHint({ filteredOptions, hasCustomValue });
   const { handleKeyDown } = useOnKey({
     onKeyDown,
     handleOptionSelected,

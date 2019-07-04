@@ -7,38 +7,35 @@ import {
   EventType,
 } from '../../types';
 import Accessor from '../../accessor';
-import useSearch from './useSearch';
+import useInputHandlers from './useInputHandlers';
 
 interface Props<Opt extends Option> {
-  entryValue: string;
-  showOptionsWhenEmpty: boolean | undefined;
   setSelection: (value: string | number) => void;
   setSelectionIndex: (value: number | undefined) => void;
   setEntryValue: (value: string) => void;
   inputElement: React.MutableRefObject<HTMLInputElement | undefined>;
   initialValue: string;
-  filterOption: string | ((value: string, option: Opt) => boolean) | undefined;
-  searchOptionsFunction: ((value: string, option: Opt[]) => Opt[]) | undefined;
   displayOption: string | OptionToStrFn<Opt> | undefined;
   inputDisplayOption: string | OptionToStrFn<Opt> | undefined;
-  formInputOption: string | OptionToStrFn<Opt> | undefined;
   onBlur: React.InputHTMLAttributes<HTMLInputElement>['onBlur'];
   onFocus: React.InputHTMLAttributes<HTMLInputElement>['onFocus'];
   onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearOnSelection: boolean;
+  setShowResults: (show: boolean) => void;
+  setSelected: (selected: boolean) => void;
+  setIsFocused: (focused: boolean) => void;
+  option2string: (value: Opt) => string | number;
 }
 
 export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
   const {
-    entryValue,
     options,
-    showOptionsWhenEmpty,
     setSelection,
     setEntryValue,
+    setShowResults,
+    setSelected,
+    setIsFocused,
     inputElement,
-    searchOptionsFunction,
-    filterOption,
-    formInputOption,
     inputDisplayOption,
     displayOption,
     onBlur,
@@ -48,45 +45,8 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     setSelectionIndex,
     clearOnSelection,
     onOptionSelected,
+    option2string,
   } = props;
-  const [isFocused, setIsFocused] = React.useState(false);
-  const [showResults, setShowResults] = React.useState(false);
-  const [selected, setSelected] = React.useState(false);
-
-  const shouldSkipSearch = React.useCallback(
-    (input?: string) => {
-      if (selected) return true;
-      const emptyValue = !input || input.trim().length === 0;
-
-      return !(showOptionsWhenEmpty && isFocused) && emptyValue;
-    },
-    [selected, showOptionsWhenEmpty, isFocused]
-  );
-
-  const { filteredOptions } = useSearch({
-    searchOptionsFunction,
-    filterOption,
-    shouldSkipSearch,
-    entryValue,
-    options,
-  });
-
-  const option2string = React.useMemo(() => {
-    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
-    return Accessor.generateOptionToStringFor(anyToStrFn);
-  }, [formInputOption, inputDisplayOption, displayOption]);
-
-  const hasCustomValue = React.useMemo(() => {
-    if (
-      !allowCustomValues ||
-      allowCustomValues ||
-      entryValue.length >= 1 // TODO: add minCustomValueLength
-    ) {
-      return false;
-    }
-
-    return filteredOptions.map(option2string).indexOf(entryValue) < 0;
-  }, [allowCustomValues, entryValue, filteredOptions, option2string]);
 
   const onTextEntryUpdated = React.useCallback(
     (newValue?: string) => {
@@ -100,7 +60,6 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     [inputElement, setSelection, setEntryValue]
   );
 
-  // @ts-ignore
   const optionsProps: OptionsProps<T> = React.useMemo(
     () => ({
       allowCustomValues,
@@ -131,7 +90,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
           );
           optionString = displayOption2string(option);
 
-          formInputOptionString = option2string(option);
+          formInputOptionString = option2string(option as T);
         }
         if (clearOnSelection) {
           setSelected(false);
@@ -157,7 +116,10 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
           optionsProps.allowCustomValues === false &&
           optionsProps.onOptionSelected
         ) {
-          optionsProps.onOptionSelected(orgOption, event);
+          optionsProps.onOptionSelected(
+            orgOption as string | number | undefined,
+            event
+          );
         }
       }
     },
@@ -174,51 +136,20 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     ]
   );
 
-  const handleChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (onChange) {
-        onChange(event);
-      }
-
-      handleOptionSelected(undefined);
-      onTextEntryUpdated(event.target.value);
-    },
-    [onChange, onTextEntryUpdated, handleOptionSelected]
-  );
-
-  const hasHint = React.useMemo(() => {
-    return filteredOptions.length > 0 || hasCustomValue;
-  }, [filteredOptions, hasCustomValue]);
-
-  const handleFocus = React.useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true);
-      setShowResults(true);
-      onTextEntryUpdated();
-      onFocus && onFocus(event);
-    },
-    [onFocus, setIsFocused, onTextEntryUpdated]
-  );
-
-  const handleBlur = React.useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
-      onTextEntryUpdated();
-      onBlur && onBlur(event);
-    },
-    [onBlur, setIsFocused, onTextEntryUpdated]
-  );
+  const { handleBlur, handleFocus, handleChange } = useInputHandlers({
+    onChange,
+    onBlur,
+    onFocus,
+    handleOptionSelected,
+    onTextEntryUpdated,
+    setIsFocused,
+    setShowResults,
+  });
 
   return {
     handleChange,
     handleOptionSelected,
     handleBlur,
     handleFocus,
-    showResults,
-    shouldSkipSearch,
-    hasHint,
-    filteredOptions,
-    selected,
-    hasCustomValue,
   };
 };

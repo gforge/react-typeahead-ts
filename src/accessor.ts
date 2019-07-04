@@ -39,7 +39,7 @@ export default class Accessor {
 
   static valueForOption<T extends Option>(
     object: T,
-    selector?: SelectorType
+    selector?: SelectorType<T>
   ): string | number | void;
   static valueForOption<T extends Option>(
     object: T,

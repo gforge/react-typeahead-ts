@@ -9,8 +9,8 @@ export interface Props<Opt extends Option>
   name: string | undefined;
   selectedOptions: Opt[];
   token: TokenCustomClasses['token'] | undefined;
-  displayOption: SelectorType | undefined;
-  formInputOption: SelectorType | undefined;
+  displayOption: SelectorType<Opt> | undefined;
+  formInputOption: SelectorType<Opt> | undefined;
   removeTokenForValue: (value: any) => void;
 }
 
