@@ -251,8 +251,8 @@ describe('TypeaheadTokenizer Component', () => {
             searchOptions={(value: string, opts: string[]) =>
               opts.filter(o => o.match(RegExp(value, 'i')))
             }
-            displayOption={(o: string) => `Score: ${o.length} ${o}`}
-            inputDisplayOption={(o: string) => o}
+            displayOption={o => `Score: ${o.length} ${o}`}
+            inputDisplayOption={o => o}
           />
         );
 
@@ -267,7 +267,7 @@ describe('TypeaheadTokenizer Component', () => {
             searchOptions={(value: string, opts: string[]) =>
               opts.sort().filter(o => o.match(RegExp(value, 'i')))
             }
-            displayOption={(o: string) => `Score: ${o.length} ${o}`}
+            displayOption={o => `Score: ${o.length} ${o}`}
           />
         );
 

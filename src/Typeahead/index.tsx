@@ -58,7 +58,7 @@ export interface Props<Opt extends Option>
  * Renders an text input that shows options nearby that you can use the
  * keyboard or mouse to select.  Requires CSS for rendering nicely.
  */
-function Typeahead<T extends Option>(props: Props<T>) {
+const Typeahead = <T extends Option>(props: Props<T>) => {
   const {
     options,
     allowCustomValues,
@@ -230,6 +230,13 @@ function Typeahead<T extends Option>(props: Props<T>) {
       />
     </div>
   );
+};
+
+interface MemoHelper {
+  <T extends Option>(arg: Props<T>): JSX.Element;
 }
 
-export default Typeahead;
+// @ts-ignore - complains string != Option
+const MemoTypeahead: MemoHelper = React.memo(Typeahead);
+
+export default MemoTypeahead;

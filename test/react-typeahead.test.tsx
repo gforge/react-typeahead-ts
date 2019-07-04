@@ -10,6 +10,6 @@ describe('Main entry point', () => {
 
   test('exports a Tokenizer component that contains a Typeahead', () => {
     const tokenizer = shallow(<Tokenizer options={['a', 'b']} />);
-    expect(tokenizer.find('Typeahead')).toHaveLength(1);
+    expect(tokenizer.html()).toMatchSnapshot();
   });
 });

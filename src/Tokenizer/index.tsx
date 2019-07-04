@@ -192,4 +192,11 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   );
 };
 
-export default TypeaheadTokenizer;
+interface MemoHelper {
+  <T extends Option>(arg: Props<T>): JSX.Element;
+}
+
+// @ts-ignore - complains string != Option
+const MemoTypeaheadTokenizer: MemoHelper = React.memo(TypeaheadTokenizer);
+
+export default MemoTypeaheadTokenizer;
