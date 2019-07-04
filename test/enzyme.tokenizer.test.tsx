@@ -1,44 +1,10 @@
-/// <reference path="../node_modules/@types/jest/index.d.ts"/>.
 import * as React from 'react';
-// @ts-ignore
-import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
-import { Props as TProps } from '../src/typeahead';
-import Tokenizer from '../src/tokenizer';
+import Tokenizer from '../src/Tokenizer';
 import Keyevent from '../src/keyevent';
 import { Option } from '../src/types';
-
-//  @ts-ignore
-const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
-  let controlComponent = component.find('input.form-control');
-  if (controlComponent.length === 0) {
-    controlComponent = component.find('input').first();
-  }
-
-  return controlComponent;
-};
-
-const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, value: string) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement
-    .simulate('focus')
-    .simulate('change', { target: { value } });
-
-  return mountedComponent;
-};
-
-const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
-  code: string | number,
-  eventName: string = 'keyDown',
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate(eventName, { keyCode: code });
-
-  return mountedComponent;
-};
+import simulateTextInput from './helpers/simulateTextInput';
+import simulateKeyEvent from './helpers/simulateKeyEvent';
 
 const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
 
@@ -66,6 +32,7 @@ const BEATLES_COMPLEX: Option[] = [
 ];
 
 describe('TypeaheadTokenizer Component', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let testContext: any;
 
   beforeEach(() => {
@@ -74,30 +41,22 @@ describe('TypeaheadTokenizer Component', () => {
 
   describe('basic tokenizer', () => {
     beforeEach(() => {
-      testContext.component = mount(
-        <Tokenizer
-          options={BEATLES}
-        />);
+      testContext.component = mount(<Tokenizer options={BEATLES} />);
     });
 
     test('Basic mount', () => {
-      const ret = mount(
-        <Tokenizer
-          options={BEATLES}
-        />);
+      const ret = mount(<Tokenizer options={BEATLES} />);
 
-      expect(ret.html()).toMatchSnapshot();
+      const html = ret.html();
+      expect(html).toMatchSnapshot();
     });
 
     test('Complex mount', () => {
-      const ret = mount(
-        <Tokenizer
-          options={BEATLES_COMPLEX}
-        />);
+      const ret = mount(<Tokenizer options={BEATLES_COMPLEX} />);
 
-      expect(ret.html()).toMatchSnapshot();
+      const html = ret.html();
+      expect(html).toMatchSnapshot();
     });
-
 
     test('should have custom and default token classes', () => {
       simulateTextInput(testContext.component, 'o');

@@ -11,6 +11,8 @@ typeahead, or autocomplete text entry, as well as a "typeahead tokenizer",
 a typeahead that allows you to select multiple results. It can be used
 with regular JavaScript usin standard syntax although TypeScript is
 recommended as the library has dropped the deprecated `prop-types`.
+The project is a fork from the [react-typeahead](https://github.com/fmoo/react-typeahead)
+as suggested by the name.
 
 ## Usage
 
@@ -19,10 +21,7 @@ For a typeahead input:
 ```javascript
 import { Typeahead } from '@gforge/react-typeahead-ts';
 React.render(
-  <Typeahead
-    options={['John', 'Paul', 'George', 'Ringo']}
-    maxVisible={2}
-  />
+  <Typeahead options={['John', 'Paul', 'George', 'Ringo']} maxVisible={2} />
 );
 ```
 
@@ -42,15 +41,13 @@ React.render(
 
 ## Examples
 
-* [Basic Typeahead][1]
-
-![](https://i.cloudup.com/CeLPJjWvFK.gif)
+- [Package demo][1]
 
 [1]: http://gforge.github.com/react-typeahead-ts
 
 ## API
 
-It is strongly recommended to look at the typescipt files in order to understand the API and what input is expected. The library is fully typed in the API and has a minimal reliance on `any`
+It is strongly recommended to look at the typescipt files in order to understand the API and what input is expected. The library is fully typed in the API and has a minimal reliance on `any`.
 
 ### Typeahead(props)
 
@@ -58,289 +55,82 @@ Type: React Component
 
 Basic typeahead input and results list.
 
-#### props.options
-
-Type: `Array`
-Default: []
-
-An array supplied to the filtering function. Can be a list of strings or a list of arbitrary objects. In the latter case, `filterOption` and `displayOption` should be provided.
-
-#### props.defaultValue
-
-Type: `String`
-
-A default value used when the component has no value. If it matches any options a option list will show.
-
-#### props.value
-
-Type: `String`
-
-Specify a value for the text input.
-
-#### props.maxVisible
-
-Type: `Number`
-
-Limit the number of options rendered in the results list.
-
-#### props.resultsTruncatedMessage
-
-Type: `String`
-
-If `maxVisible` is set, display this custom message at the bottom of the list of results when the result are truncated.
-
-#### props.customClasses
-
-Type: `Object`
-Allowed Keys: `input`, `results`, `listItem`, `listAnchor`, `hover`, `typeahead`, `resultsTruncated`
-
-An object containing custom class names for child elements. Useful for
-integrating with 3rd party UI kits.
-
-#### props.placeholder
-
-Type: `String`
-
-Placeholder text for the typeahead input.
-
-#### props.disabled
-
-Type: `Boolean`
-
-Set to `true` to add disable attribute in the `<input>` or `<textarea>` element
-
-#### props.textarea
-
-Type: `Boolean`
-
-Set to `true` to use a `<textarea>` element rather than an `<input>` element
-
-#### props.inputProps
-
-Type: `Object`
-
-Props to pass directly to the `<input>` element.
-
-#### props.onKeyDown
-
-Type: `Function`
-
-Event handler for the `keyDown` event on the typeahead input.
-
-#### props.onKeyPress
-
-Type: `Function`
-
-Event handler for the `keyPress` event on the typeahead input.
-
-#### props.onKeyUp
-
-Type: `Function`
-
-Event handler for the `keyUp` event on the typeahead input.
-
-#### props.onBlur
-
-Type: `Function`
-
-Event handler for the `blur` event on the typeahead input.
-
-#### props.onFocus
-
-Type: `Function`
-
-Event handler for the `focus` event on the typeahead input.
-
-#### props.onOptionSelected
-
-Type: `Function`
-
-Event handler triggered whenever a user picks an option.
-
-#### props.filterOption
-
-Type: `String` or `Function`
-
-A function to filter the provided `options` based on the current input value. For each option, receives `(inputValue, option)`. If not supplied, defaults to [fuzzy string matching](https://github.com/mattyork/fuzzy).
-
-If provided as a string, it will interpret it as a field name and fuzzy filter on that field of each option object.
-
-#### props.displayOption
-
-Type: `String` or `Function`
-
-A function to map an option onto a string for display in the list. Receives `(option, index)` where index is relative to the results list, not all the options. Must return a string.
-
-If provided as a string, it will interpret it as a field name and use that field from each option object.
-
-#### props.formInputOption
-
-Type: `String` or `Function`
-
-A function to map an option onto a string to include in HTML forms (see `props.name`). Receives `(option)` as arguments. Must return a string.
-
-If specified as a string, it will interpret it as a field name and use that field from each option object.
-
-If not specified, it will fall back onto the semantics described in `props.displayOption`.
-
-This option is ignored if you don't specify the `name` prop. It is required if you both specify the `name` prop and are using non-string options. It is optional otherwise.
-
-#### props.defaultClassNames
-
-Type: `boolean`
-Default: true
-
-If false, the default classNames are removed from the typeahead.
-
-#### props.customListComponent
-
-Type: `React Component`
-
-A React Component that renders the list of typeahead results. This replaces the default list of results.
-
-This component receives the following props :
-
-##### Passed through
-
-- `props.displayOptions`
-- `props.customClasses`
-- `props.onOptionSelected`
-
-##### Created or modified
-- `props.options`
-  - This is the Typeahead's `props.options` filtered and limited to `Typeahead.props.maxVisible`.
-- `props.selectionIndex`
-  - The index of the highlighted option for rendering
-
-#### props.showOptionsWhenEmpty
-
-Type: `boolean`
-Default: false
-
-If true, options will still be rendered when there is no value.
-
-#### props.allowCustomValues
-
-Type: `boolean`
-
-If true, custom tags can be added without a matching typeahead selection
-
-### Typeahead ([Exposed Component Functions][reactecf])
-
-#### typeahead.focus
-
-Focuses the typeahead input.
-
----
+| Name                    | Type                   | Description                                                                                                                                                                                    |
+| ----------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                    | `String`               | If provided there will be a hidden input wiht a name with the selected value                                                                                                                   |
+| options                 | `Array`                | An array supplied to the filtering function. Can be a list of strings or a list of arbitrary objects. In the latter case, `filterOption` and `displayOption` should be provided.               |
+| defaultValue            | `String`               | A default value used when the component has no value. If it matches any options a option list will show.                                                                                       |
+| value                   | `String`               | Specify a value for the text input.                                                                                                                                                            |
+| initialValue            | `String`               | The value when mounting                                                                                                                                                                        |
+| maxVisible              | `Number`               | Limit the number of options rendered in the results list.                                                                                                                                      |
+| resultsTruncatedMessage | `String`               | If `maxVisible` is set, display this custom message at the bottom of the list of results when the result are truncated.                                                                        |
+| customClasses           | `Object`               | An object containing custom class names for child elements (see [description below](#the-customclasses-argument))                                                                              |
+| placeholder             | `String`               | Placeholder text for the typeahead input.                                                                                                                                                      |
+| disabled                | `Boolean`              | Set to `true` to add disable attribute in the `<input>` or `<textarea>` element                                                                                                                |
+| textarea                | `Boolean`              | Set to `true` to use a `<textarea>` element rather than an `<input>` element                                                                                                                   |
+| inputProps              | `Object`               | Props to pass directly to the `<input>` element.                                                                                                                                               |
+| onKeyDown               | `Function`             | Event handler for the `keyDown` event on the typeahead input.                                                                                                                                  |
+| onKeyPress              | `Function`             | Event handler for the `keyPress` event on the typeahead input.                                                                                                                                 |
+| onKeyUp                 | `Function`             | Event handler for the `keyUp` event on the typeahead input.                                                                                                                                    |
+| onBlur                  | `Function`             | Event handler for the `blur` event on the typeahead input.                                                                                                                                     |
+| onFocus                 | `Function`             | Event handler for the `focus` event on the typeahead input.                                                                                                                                    |
+| onChange                | `Function`             | Event handler for the `change` event on the typeahead input.                                                                                                                                   |
+| onOptionSelected        | `Function`             | Event handler triggered whenever a user picks an option.                                                                                                                                       |
+| displayOption           | `String` or `Function` | A function to map an option onto a string for display in the list (see [description below](#the-displayoption-argument)).                                                                      |
+| filterOption            | `String` or `Function` | A function to filter the provided `options` based on the current input value (see [description below](#the-filteroption-argument)).                                                            |
+| inputDisplayOption      | `String` or `Function` | A function that maps the internal state of the visible options into the value stored in the text value field of the visible input (see [description below](#the-inputdisplayoption-argument)). |
+| formInputOption         | `String` or `Function` | A function to map an option onto a string to include in HTML forms as a hidden field (see `name` and [description below](#the-forminputoption-argument))                                       |
+| searchOptions           | `Function`             | Search the provided `options` based on the current input value (see [description below](#the-searchoptions-argument), defaults to [fuzzy string matching](https://github.com/mattyork/fuzzy)). |
+| defaultClassNames       | `Boolean`              | If false, the default classNames are removed from the typeahead.                                                                                                                               |
+| customListComponent     | `React Component`      | A React Component that renders the list of typeahead results. This replaces the default list of results (see below [description below](#the-customlistcomponent-argument))                     |
+| showOptionsWhenEmpty    | `Boolean`              | If true, options will still be rendered when there is no value.                                                                                                                                |
+| allowCustomValues       | `Boolean`              | If true, custom tags can be added without a matching typeahead selection                                                                                                                       |
+| clearOnSelection        | `Boolean`              | Clear value after selecting. Primarily used with Tokenizer.                                                                                                                                    |
+| className               | `String`               | String with class name                                                                                                                                                                         |
+| innerRef                | `React reference`      | A `createRef` object                                                                                                                                                                           |
 
 ### Tokenizer(props)
 
 Type: React Component
 
-Typeahead component that allows for multiple options to be selected.
+Typeahead component that allows for multiple options to be selected. The following properties are identical as for the `Typeahead`:
 
-#### props.options
+- `name`
+- `options`
+- `initialValue`
+- `maxVisible`
+- `resultsTruncatedMessage`
+- `customClasses`
+- `placeholder`
+- `disabled`
+- `inputProps`
+- `onKeyDown`
+- `onKeyPress`
+- `onKeyUp`
+- `onBlur`
+- `onFocus`
+- `onChange`
+- `displayOption`
+- `filterOption`
+- `formInputOption`
+- `searchOptions`
+- `defaultClassNames`
+- `showOptionsWhenEmpty`
+- `className`
+- `innerRef`
 
-Type: `Array`
-Default: []
+The new additional arguments are:
 
-An array supplied to the filter function.
+| Name                 | Type       | Description                                                     |
+| -------------------- | ---------- | --------------------------------------------------------------- |
+| defaultSelected      | `Array`    | A set of values of tokens to be loaded on first render.         |
+| onTokenRemove        | `Function` | Event handler triggered whenever a token is removed.            |
+| onTokenAdd           | `Function` | Event handler triggered whenever a token is added.              |
+| showOptionsWhenEmpty | `Boolean`  | If true, options will still be rendered when there is no value. |
 
-#### props.maxVisible
+### Specific props details
 
-Type: `Number`
-
-Limit the number of options rendered in the results list.
-
-#### props.resultsTruncatedMessage
-
-Type: `String`
-
-If `maxVisible` is set, display this custom message at the bottom of the list of results when the result are truncated.
-
-#### props.name
-
-Type: `String`
-
-The name for HTML forms to be used for submitting the tokens' values array.
-
-#### props.customClasses
-
-Type: `Object`
-Allowed Keys: `input`, `results`, `listItem`, `listAnchor`, `hover`, `typeahead`, `resultsTruncated`, `token`
-
-An object containing custom class names for child elements. Useful for
-integrating with 3rd party UI kits.
-
-#### props.placeholder
-
-Type: `String`
-
-Placeholder text for the typeahead input.
-
-#### props.disabled
-
-Type: `Boolean`
-
-Set to `true` to add disable attribute in the `<input>` or `<textarea>` element
-
-#### props.inputProps
-
-Type: `Object`
-
-Props to pass directly to the `<input>` element.
-
-#### props.onKeyDown
-
-Type: `Function`
-
-Event handler for the `keyDown` event on the typeahead input.
-
-#### props.onKeyPress
-
-Type: `Function`
-
-Event handler for the `keyPress` event on the typeahead input.
-
-#### props.onKeyUp
-
-Type: `Function`
-
-Event handler for the `keyUp` event on the typeahead input.
-
-#### props.onBlur
-
-Type: `Function`
-
-Event handler for the `blur` event on the typeahead input.
-
-#### props.onFocus
-
-Type: `Function`
-
-Event handler for the `focus` event on the typeahead input.
-
-#### props.defaultSelected
-
-Type: `Array`
-
-A set of values of tokens to be loaded on first render.
-
-#### props.onTokenRemove
-
-Type: `Function`
-Params: `(removedToken)`
-
-Event handler triggered whenever a token is removed.
-
-#### props.onTokenAdd
-
-Type: `Function`
-Params: `(addedToken)`
-
-Event handler triggered whenever a token is added.
-
-#### props.displayOption
+#### The displayOption argument
 
 Type: `String` or `Function`
 
@@ -348,7 +138,7 @@ A function to map an option onto a string for display in the list. Receives `(op
 
 If provided as a string, it will interpret it as a field name and use that field from each option object.
 
-#### props.filterOption
+#### The filterOption argument
 
 Type: `String` or `Function`
 
@@ -356,18 +146,19 @@ A function to filter the provided `options` based on the current input value. Fo
 
 If provided as a string, it will interpret it as a field name and use that field from each option object.
 
-#### props.searchOptions
+#### The searchOptions argument
 
 Type: `Function`
 
 A function to filter, map, and/or sort the provided `options` based on the current input value.
 Receives `(inputValue, options)`.
+
 If not supplied, defaults to [fuzzy string matching](https://github.com/mattyork/fuzzy).
 
-Note: the function can be used to store other information besides the string in the internal state of the component.
+_Note:_ the function can be used to store other information besides the string in the internal state of the component.
 Make sure to use the `displayOption`, `inputDisplayOption`, and `formInputOption` props to extract/generate the correct format of data that each expects if you do this.
 
-#### props.inputDisplayOption
+#### The inputDisplayOption argument
 
 Type: `String` or `Function`
 
@@ -379,7 +170,7 @@ If provided as a string, it will interpret it as a field name and use that field
 
 If no value is set, the input will be set using `displayOption` when an option is selected.
 
-#### props.formInputOption
+#### The formInputOption argument
 
 Type: `String` or `Function`
 
@@ -389,51 +180,54 @@ If specified as a string, it will interpret it as a field name and use that fiel
 
 If not specified, it will fall back onto the semantics described in `props.displayOption`.
 
-#### props.defaultClassNames
+#### The customClasses argument
 
-Type: `boolean`
-Default: true
+Type: `Object`
 
-If false, the default classNames are removed from the tokenizer and the typeahead.
+Allowed Keys: `input`, `results`, `listItem`, `listAnchor`, `hover`, `resultsTruncated`. For the **Tokenizer** you can also provide `token`, `typeahead`.
 
-#### props.showOptionsWhenEmpty
+An object containing custom class names for child elements. Useful for
+integrating with 3rd party UI kits.
 
-Type: `boolean`
-Default: false
+#### The customListComponent argument
 
-If true, options will still be rendered when there is no value.
+A React Component that renders the list of typeahead results. This replaces the default list of results.
 
-### Tokenizer ([Exposed Component Functions][reactecf])
+This component receives the following props :
 
-#### tokenizer.focus
+##### Passed through
 
-Focuses the tokenizer input.
+- `displayOptions`
+- `customClasses`
+- `onOptionSelected`
 
-#### tokenizer.getSelectedTokens
+##### Created or modified
 
-Type: `Function`
+- `options`
+  - This is the Typeahead's `options` filtered and limited to `Typeahead.maxVisible`.
+- `selectionIndex`
+  - The index of the highlighted option for rendering
 
-A function to return the currently selected tokens.
+---
 
 ## Developing
 
 ### Setting Up
 
-You will need `npm` to develop on react-typeahead-ts.  [Installing npm][4].
+You will need `npm` to develop on react-typeahead-ts. [Installing npm][4].
 
 Once that's done, to get started, run `npm install` in your checkout directory.
 This will install all the local development dependences, such as `gulp` and `mocha`
 
 ### Testing
 
-react-typeahead-ts uses jest and enzyme for unit tests.  Large changes should
+react-typeahead-ts uses jest and enzyme for unit tests. Large changes should
 include unittests. After updating or creating new tests, run `npm run test` to regenerate the
 test package.
 
-
 ### Contributing
 
-Basically, fork the repository and send a pull request.  It can be difficult to review these, so
+Basically, fork the repository and send a pull request. It can be difficult to review these, so
 here are some general rules to follow for getting your PR accepted more quickly:
 
 - All new properties and exposed component function should be documented in the README.md
@@ -442,5 +236,3 @@ here are some general rules to follow for getting your PR accepted more quickly:
 - Feel free to rebase, merge, and rewrite commits to make them more readible.
 - Add comments explaining anything that's not painfully obvious.
 - Add unittests for your change if possible.
-
-[reactecf]: https://facebook.github.io/react/tips/expose-component-functions.html

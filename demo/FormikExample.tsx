@@ -1,11 +1,22 @@
 import * as React from 'react';
-import { Formik, Form, Field, FieldArray, FieldProps, FormikProps } from 'formik';
+import {
+  Formik,
+  Form,
+  Field,
+  FieldArray,
+  FieldProps,
+  FormikProps,
+} from 'formik';
 import { ButtonGroup, Button, Label } from 'reactstrap';
 import Example from './Example';
 import { Typeahead, Tokenizer } from '../src';
+import { OptionsObject } from '../src/types';
 
-export interface BeatleWithId { id: number; name: string; }
-type Values = { typeahead_field: string, tokenizer_field: number[] };
+export interface BeatleWithId extends OptionsObject {
+  id: number;
+  name: string;
+}
+type Values = { typeahead_field: string; tokenizer_field: number[] };
 export default () => {
   const options: BeatleWithId[] = [
     { id: 1, name: 'John' },
@@ -22,7 +33,13 @@ export default () => {
         setSubmitting(false);
       }}
     >
-      {({ errors, touched, isSubmitting, handleReset, values }: FormikProps<Values>) => (
+      {({
+        errors,
+        touched,
+        isSubmitting,
+        handleReset,
+        values,
+      }: FormikProps<Values>) => (
         <Form>
           <Example
             title="Typeahead"
@@ -59,10 +76,7 @@ export default () => {
               </Field>
             `}
           >
-            <Field
-              type="text"
-              name="typeahead_field"
-            >
+            <Field type="text" name="typeahead_field">
               {({
                 form: { setFieldValue, setFieldTouched },
                 field: { name },
@@ -89,9 +103,9 @@ export default () => {
                 />
               )}
             </Field>
-            {errors.typeahead_field
-              && touched.typeahead_field
-              && <div>{errors.typeahead_field}</div>}
+            {errors.typeahead_field && touched.typeahead_field && (
+              <div>{errors.typeahead_field}</div>
+            )}
           </Example>
           <br />
           <Example
@@ -129,9 +143,7 @@ export default () => {
               }}
             </FieldArray>`}
           >
-            <FieldArray
-              name="tokenizer_field"
-            >
+            <FieldArray name="tokenizer_field">
               {({ push, remove }) => {
                 return (
                   <Tokenizer
@@ -148,7 +160,9 @@ export default () => {
                     onTokenRemove={(value: BeatleWithId) => {
                       // tslint:disable-next-line:no-console
                       console.log(value, 'value in Remove');
-                      remove(values.tokenizer_field.findIndex(id => id === value.id));
+                      remove(
+                        values.tokenizer_field.findIndex(id => id === value.id)
+                      );
                     }}
                     className="inputStyle"
                     customClasses={{
@@ -160,9 +174,9 @@ export default () => {
                 );
               }}
             </FieldArray>
-            {errors.typeahead_field
-              && touched.typeahead_field
-              && <div>{errors.typeahead_field}</div>}
+            {errors.typeahead_field && touched.typeahead_field && (
+              <div>{errors.typeahead_field}</div>
+            )}
           </Example>
 
           <br />
@@ -173,5 +187,6 @@ export default () => {
           </ButtonGroup>
         </Form>
       )}
-    </Formik>);
+    </Formik>
+  );
 };

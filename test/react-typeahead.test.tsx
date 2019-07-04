@@ -1,17 +1,15 @@
 import * as React from 'react';
-import TestUtils from 'react-dom/test-utils';
-import { Typeahead as ReactTypeahead, Tokenizer as ReactTokenizer } from '../src';
+import { shallow } from 'enzyme';
+import { Typeahead, Tokenizer } from '../src';
 
 describe('Main entry point', () => {
-  test('exports a Typeahead component', () => {
-    const typeahead = TestUtils.renderIntoDocument(<ReactTypeahead options={['a', 'b']} />);
-    if (!typeahead) throw new Error('Typeahead not created!');
-    expect(TestUtils.isCompositeComponent(typeahead)).toBeTruthy();
+  test('exports a Typeahead component with an input', () => {
+    const typeahead = shallow(<Typeahead options={['a', 'b']} />);
+    expect(typeahead.find('input')).toHaveLength(1);
   });
 
-  test('exports a Tokenizer component', () => {
-    const tokenizer = TestUtils.renderIntoDocument(<ReactTokenizer options={['a', 'b']} />);
-    if (!tokenizer) throw new Error('Tokenizer not created!');
-    expect(TestUtils.isCompositeComponent(tokenizer)).toBeTruthy();
+  test('exports a Tokenizer component that contains a Typeahead', () => {
+    const tokenizer = shallow(<Tokenizer options={['a', 'b']} />);
+    expect(tokenizer.html()).toMatchSnapshot();
   });
 });

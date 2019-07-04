@@ -14,12 +14,55 @@ export interface TokenCustomClasses extends CustomClasses {
   typeahead?: string;
 }
 
-export type SelectorOptionSelector<Opt extends Option> =
-  (result: Opt, event: React.MouseEvent<HTMLDivElement>) => any;
+export type EventType =
+  | React.MouseEvent<HTMLLIElement>
+  | React.KeyboardEvent<HTMLInputElement>;
 
-export type OnOptionSelectArg<Opt extends Option> =
-  ((option?: Opt | string, event?: React.SyntheticEvent<any>) => any);
+export type SelectorOptionSelector<Opt extends Option> = (
+  result: Opt,
+  event: EventType
+) => void;
 
-export type Option = string | { [propName: string]: any };
+export type OptionSelect<T extends Option> = (
+  option: T | undefined,
+  event?: EventType
+) => void;
 
-export type OptionToStrFn<T> = (option: T, index?: number) => string;
+export type HandleOnOptionSelectArg = (
+  option?: Option | string | undefined,
+  event?: EventType
+) => void;
+
+export interface OptionsObject {
+  [propName: string]: unknown;
+}
+
+export type Option = string | number | OptionsObject;
+
+export type OptionToStrFn<T extends Option> = (
+  option: T,
+  index?: number
+) => string | number;
+
+export type SelectorType<T extends Option> = string | OptionToStrFn<T>;
+
+// TODO: in future typescript versions we want to use
+// OptionsProps<T extends Option> = TrueOptionProp<T> | FalseOptionProp<T>
+// but this isn't possible at the moment
+export interface TrueOptionProp<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues: true;
+  onOptionSelected?: OptionSelect<string | number>;
+}
+
+export interface FalseOptionProp<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues?: false;
+  onOptionSelected?: OptionSelect<Opt>;
+}
+
+export interface OptionsProps<Opt extends Option> {
+  options: Opt[];
+  allowCustomValues?: boolean;
+  onOptionSelected?: OptionSelect<string | number>;
+}

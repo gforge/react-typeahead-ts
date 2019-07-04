@@ -3,7 +3,6 @@ import { Card, CardHeader, CardBody } from 'reactstrap';
 import { Typeahead, Tokenizer } from '../src';
 import FormikExample from './FormikExample';
 import Example from './Example';
-import Code from './Code';
 import './App.css';
 
 class App extends React.Component {
@@ -24,9 +23,7 @@ class App extends React.Component {
             options={['John', 'Paul', 'George', 'Ringo']}
           />`}
       >
-        <Typeahead
-          options={['John', 'Paul', 'George', 'Ringo']}
-        />
+        <Typeahead options={['John', 'Paul', 'George', 'Ringo']} />
       </Example>
     );
   }
@@ -118,12 +115,10 @@ class App extends React.Component {
           A simple typeahead (e.g. autocomplete) component
         </h1>
         <p className="App-intro">
-          This is a rewrite of the the <a href="https://github.com/fmoo/react-typeahead">
-            react-typeahead
-          </a> component that seems to have a somewhat old code-base by with
-          {' '}<code>
-            create-react-class
-          </code>.
+          This is a rewrite of the the{' '}
+          <a href="https://github.com/fmoo/react-typeahead">react-typeahead</a>{' '}
+          component that seems to have a somewhat old code-base by with{' '}
+          <code>create-react-class</code>.
         </p>
         {this.renderFormikExample()}
         <br />
@@ -134,7 +129,8 @@ class App extends React.Component {
         {this.renderBootstrapClasses()}
         <br />
         {this.renderArrayOptions()}
-    </div>);
+      </div>
+    );
   }
 }
 

@@ -13,36 +13,30 @@ const shared = {
   external: ['react', 'tslib', 'reactstrap'],
 };
 
-
 const nodeResolver = nodeResolve({
   jsnext: true,
-  main: true
+  main: true,
 });
 
 const commonJsResolver = commonjs({
   // non-CommonJS modules will be ignored, but you can also
   // specifically include/exclude files
-  include: 'node_modules/**',  // Default: undefined
+  include: 'node_modules/**', // Default: undefined
   // these values can also be regular expressions
   // include: /node_modules/
 
   // search for files other than .js files (must already
   // be transpiled by a previous plugin!)
-  extensions: ['.js', '.coffee', '.json'],  // Default: [ '.js' ]
+  extensions: ['.js', '.coffee', '.json'], // Default: [ '.js' ]
 
   // if true then uses of `global` won't be dealt with by this plugin
-  ignoreGlobal: true,  // Default: false
+  ignoreGlobal: true, // Default: false
 
   // if false then skip sourceMap generation for CommonJS modules
-  sourceMap: true,  // Default: true
+  sourceMap: true, // Default: true
 });
 
-const sharedPlugins = [
-  json(),
-  builtins(),
-  commonJsResolver,
-  nodeResolver,
-]
+const sharedPlugins = [json(), builtins(), commonJsResolver, nodeResolver];
 
 export default [
   Object.assign({}, shared, {

@@ -1,50 +1,23 @@
-/// <reference path="../node_modules/@types/jest/index.d.ts"/>.
 import * as React from 'react';
 import _ from 'lodash';
-// @ts-ignore
-import { ReactWrapper } from 'jest';
 import { mount } from 'enzyme';
 import sinon from 'sinon';
-import Typeahead, { Props as TProps } from '../src/typeahead';
+import Typeahead from '../src/Typeahead';
 import Keyevent from '../src/keyevent';
-import { Option } from '../src/types';
-
-// @ts-ignore
-const getInput = (component: ReactWrapper<Tprops<any, any>>) => {
-  let controlComponent = component.find('input.form-control');
-  if (controlComponent.length === 0) {
-    controlComponent = component.find('input').first();
-  }
-
-  return controlComponent;
-};
-
-const simulateTextInput = (mountedComponent: ReactWrapper<TProps<any, any>>, value: string) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement
-    .simulate('focus')
-    .simulate('change', { target: { value } });
-
-  return mountedComponent;
-};
-
-
-const simulateKeyEvent = (
-  mountedComponent: ReactWrapper<TProps<any, any>>,
-  code: string | number,
-  eventName: string = 'keyDown',
-) => {
-  const inputElement = getInput(mountedComponent);
-
-  inputElement.simulate('focus').simulate(eventName, { keyCode: code });
-
-  return mountedComponent;
-};
+import { OptionsObject } from '../src/types';
+import simulateTextInput from './helpers/simulateTextInput';
+import simulateKeyEvent from './helpers/simulateKeyEvent';
+import getInput from './helpers/getInput';
 
 const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
 
-const BEATLES_COMPLEX: Option[] = [
+interface ComplexOption extends OptionsObject {
+  firstName: string;
+  lastName: string;
+  nameWithTitle: string;
+}
+
+const BEATLES_COMPLEX: ComplexOption[] = [
   {
     firstName: 'John',
     lastName: 'Lennon',
@@ -68,6 +41,7 @@ const BEATLES_COMPLEX: Option[] = [
 ];
 
 describe('TypeaheadTokenizer Component', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let testContext: any;
 
   beforeEach(() => {
@@ -77,9 +51,8 @@ describe('TypeaheadTokenizer Component', () => {
   describe('basic tokenizer', () => {
     beforeEach(() => {
       testContext.component = mount(
-        <Typeahead
-          options={BEATLES}
-        />);
+        <Typeahead options={BEATLES} className="test-class" />
+      );
     });
 
     test('should fuzzy search and render matching results', () => {
@@ -92,13 +65,10 @@ describe('TypeaheadTokenizer Component', () => {
         xxx: 0,
       };
 
-      _.each(
-        testplan,
-        (expected, value) => {
-
-          const results = simulateTextInput(testContext.component, value);
-          expect(results.find('.typeahead-option').length).toEqual(expected);
-        });
+      _.each(testplan, (expected, value) => {
+        const results = simulateTextInput(testContext.component, value);
+        expect(results.find('.typeahead-option').length).toEqual(expected);
+      });
     });
 
     test('does not change the url hash when clicking on options', () => {
@@ -114,8 +84,7 @@ describe('TypeaheadTokenizer Component', () => {
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_RETURN);
-        expect(getInput(results)
-          .prop('value')).toEqual(BEATLES[2]);
+        expect(getInput(results).prop('value')).toEqual(BEATLES[2]);
       });
 
       test('up arrow + return navigates and selects an option', () => {
@@ -124,54 +93,57 @@ describe('TypeaheadTokenizer Component', () => {
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_UP);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_RETURN);
-        expect(getInput(results)
-            .prop('value')).toEqual(BEATLES[0]);
+        expect(getInput(results).prop('value')).toEqual(BEATLES[0]);
       });
 
       test('navigation away + escape clears selection', () => {
         let results = simulateTextInput(testContext.component, 'o');
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
-        expect(results
+        expect(
+          results
             .find('ul li')
             .first()
-            .hasClass('hover')).toBeTruthy();
+            .hasClass('hover')
+        ).toBeTruthy();
         results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
-        expect(results
+        expect(
+          results
             .find('ul li')
             .first()
-            .hasClass('hover')).toBeFalsy();
+            .hasClass('hover')
+        ).toBeFalsy();
         results = simulateKeyEvent(results, Keyevent.DOM_VK_UP);
-        expect(results
+        expect(
+          results
             .find('ul li')
             .first()
-            .hasClass('hover')).toBeTruthy();
+            .hasClass('hover')
+        ).toBeTruthy();
         results = simulateKeyEvent(results, Keyevent.DOM_VK_ESCAPE);
-        expect(results
+        expect(
+          results
             .find('ul li')
             .first()
-            .hasClass('hover')).toBeFalsy();
+            .hasClass('hover')
+        ).toBeFalsy();
       });
 
       test('tab to choose first item', () => {
         let results = simulateTextInput(testContext.component, 'o');
         const first = results
-            .find('ul li')
-            .first()
-            .text();
+          .find('ul li')
+          .first()
+          .text();
 
         results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
-        expect(getInput(results)
-            .prop('value')).toEqual(first);
+        expect(getInput(results).prop('value')).toEqual(first);
       });
 
       test('tab on no selection should not be undefined', () => {
         let results = simulateTextInput(testContext.component, 'oz');
-        expect(results
-            .find('ul li')
-            .length).toEqual(0);
+        expect(results.find('ul li').length).toEqual(0);
         results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
-        expect(getInput(results)
-            .prop('value')).toEqual('oz');
+        expect(getInput(results).prop('value')).toEqual('oz');
       });
     });
 
@@ -186,10 +158,9 @@ describe('TypeaheadTokenizer Component', () => {
       });
     });
 
-
     describe('component functions', () => {
       beforeEach(() => {
-        testContext.sinon = sinon.sandbox.create();
+        testContext.sinon = sinon.createSandbox();
       });
       afterEach(() => {
         testContext.sinon.restore();
@@ -197,10 +168,8 @@ describe('TypeaheadTokenizer Component', () => {
       test('focuses the typeahead', () => {
         const focusSpy = sinon.spy();
         const component = mount(
-          <Typeahead
-            options={BEATLES}
-            onFocus={focusSpy}
-          />);
+          <Typeahead options={BEATLES} onFocus={focusSpy} />
+        );
         expect(focusSpy.calledOnce).toEqual(false);
         getInput(component).simulate('focus');
 
@@ -209,15 +178,10 @@ describe('TypeaheadTokenizer Component', () => {
     });
   });
 
-
   describe('props', () => {
     describe('maxVisible', () => {
       test('limits the result set based on the maxVisible option', () => {
-        let component = mount(
-          <Typeahead
-            options={BEATLES}
-            maxVisible={1}
-          />);
+        let component = mount(<Typeahead options={BEATLES} maxVisible={1} />);
 
         simulateTextInput(component, 'o');
         expect(component.find('a.typeahead-option').length).toEqual(1);
@@ -235,21 +199,21 @@ describe('TypeaheadTokenizer Component', () => {
             options={BEATLES}
             maxVisible={1}
             resultsTruncatedMessage="Results truncated"
-          />);
+          />
+        );
 
         simulateTextInput(component, 'o');
-        expect(component
+        expect(
+          component
             .find('ul li.results-truncated')
             .last()
-            .text()).toEqual('Results truncated');
+            .text()
+        ).toEqual('Results truncated');
       });
 
       describe('displayOption', () => {
         test('renders simple options verbatim when not specified', () => {
-          const component = mount(
-            <Typeahead
-              options={BEATLES}
-            />);
+          const component = mount(<Typeahead options={BEATLES} />);
           simulateTextInput(component, 'john');
           expect(component.text()).toEqual('John');
         });
@@ -260,19 +224,20 @@ describe('TypeaheadTokenizer Component', () => {
               options={BEATLES_COMPLEX}
               filterOption="firstName"
               displayOption="nameWithTitle"
-            />);
+            />
+          );
           simulateTextInput(component, 'john');
           expect(component.text()).toEqual('John Winston Ono Lennon MBE');
         });
 
         test('renders custom options when specified as a function', () => {
-          type Mapped = { firstName: string; lastName: string };
           const component = mount(
             <Typeahead
               options={BEATLES_COMPLEX}
               filterOption="firstName"
-              displayOption={(o: Mapped, i) => `${i} ${o.firstName} ${o.lastName}`}
-            />);
+              displayOption={(o, i) => `${i} ${o.firstName} ${o.lastName}`}
+            />
+          );
           simulateTextInput(component, 'john');
           expect(component.text()).toEqual('0 John Lennon');
         });
@@ -280,43 +245,32 @@ describe('TypeaheadTokenizer Component', () => {
     });
 
     describe('searchOptions', () => {
-      test('maps correctly when specified with map function', () => {
-        type Mapped = { len: number, orig: string };
-        const createObject = (o: string): Mapped => {
-          return { len: o.length, orig: o };
-        };
-
+      test('Simplesearch example', () => {
         const component = mount(
           <Typeahead
             options={BEATLES}
-            searchOptions={(value: string, opts: string[]) => opts
-                .map(createObject)
-                .filter(o => o.orig.match(RegExp(value, 'i')))}
-            displayOption={(o: Mapped) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={(o: Mapped) => o.orig}
-          />);
+            searchOptions={(value: string, opts: string[]) =>
+              opts.filter(o => o.match(RegExp(value, 'i')))
+            }
+            displayOption={o => `Score: ${o.length} ${o}`}
+            inputDisplayOption={o => o}
+          />
+        );
 
         simulateTextInput(component, 'john');
         expect(component.text()).toEqual('Score: 4 John');
       });
 
       test('can sort displayed items when specified with map function wrapped with sort', () => {
-        type Mapped = { len: number; orig: string };
-        const createObject = (o: string): Mapped => {
-          return { len: o.length, orig: o };
-        };
-
         const component = mount(
           <Typeahead
             options={BEATLES}
-            searchOptions={(value: string, opts: string[]) => opts
-              .sort()
-              .map(createObject)
-              .filter(o => o.orig.match(RegExp(value, 'i')))
+            searchOptions={(value: string, opts: string[]) =>
+              opts.sort().filter(o => o.match(RegExp(value, 'i')))
             }
-            displayOption={(o: Mapped) => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={(o: Mapped) => o.orig}
-          />);
+            displayOption={o => `Score: ${o.length} ${o}`}
+          />
+        );
 
         simulateTextInput(component, 'orgE');
         expect(component.text()).toEqual('Score: 6 George');

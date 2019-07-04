@@ -1,44 +1,73 @@
-import { OptionToStrFn, Option } from './types';
+import { OptionToStrFn, Option, OptionsObject, SelectorType } from './types';
 
 export default class Accessor {
   // tslint:disable-next-line
-  static IDENTITY_FN<T>(input: T): T { return input; }
-
-  static generateAccessor(field: string) {
-    return (object: { [propName: string]: string }) => object[field];
+  static IDENTITY_FN<T>(input: T): T {
+    return input;
   }
 
-  static generateOptionToStringFor<T>(prop?: string | Function): OptionToStrFn<T> {
+  static generateAccessor<T extends OptionsObject>(
+    field: string
+  ): OptionToStrFn<T> {
+    return (object: T) => {
+      const value = object[field];
+      if (typeof value !== 'string' && typeof value !== 'number') {
+        console.warn('Bad field', field, value, 'on', object);
+        throw new Error(
+          `The field ${field} does not result in a string on object, see console`
+        );
+      }
+      return value;
+    };
+  }
+
+  static generateOptionToStringFor(
+    prop?: string | OptionToStrFn<any>
+  ): (opt: Option) => string | number {
     if (typeof prop === 'string') {
-      // @ts-ignore
-      return Accessor.generateAccessor(prop);
-    } 
-    
-    if (typeof prop === 'function') {
-      return (prop as any);
+      return Accessor.generateAccessor(prop) as (opt: Option) => string;
     }
-    
-    return function (input: any) { return (input as string); };
+
+    if (typeof prop === 'function') {
+      return prop as (opt: Option) => string;
+    }
+
+    return function(input: Option) {
+      return input as string;
+    };
   }
 
   static valueForOption<T extends Option>(
     object: T,
-    selector?: string | OptionToStrFn<T> | undefined, 
-  ): string | void {
-    if (typeof selector === 'string') {
-      if (typeof object !== 'object') throw new Error(`Invalid object type ${typeof object}`);
-      // @ts-ignore
-      return object[selector];
-    } 
-    
-    if (typeof selector === 'function') {
-      return selector(object);
+    selector?: SelectorType<T>
+  ): string | number | void;
+  static valueForOption<T extends Option>(
+    object: T,
+    selector?: OptionToStrFn<OptionsObject> | string
+  ): string | number | void {
+    if (typeof object !== 'string') {
+      if (typeof object === 'string')
+        throw new Error(`Invalid object type ${typeof object}`);
+      if (!selector) throw new Error('Selector is required with object');
+
+      if (typeof selector === 'string') {
+        const value = (object as OptionsObject)[selector];
+        if (!['string', 'number'].includes(typeof value)) {
+          console.warn('Bad field', selector, value, 'on', object);
+          throw new Error(
+            `The field ${selector} does not result in a string on object, see console`
+          );
+        }
+        return value as string | number;
+      }
+
+      return selector(object as OptionsObject);
     }
 
     if (typeof object === 'string') {
       return object;
     }
-    
+
     throw new Error(`Invalid object type ${typeof object}`);
   }
 }
