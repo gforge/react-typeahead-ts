@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-type Props = {
+interface Props {
   name?: React.InputHTMLAttributes<HTMLInputElement>['name'];
   value: React.InputHTMLAttributes<HTMLInputElement>['value'];
-};
+}
 
 const HiddenInput = (props: Props) => {
   const { name, value } = props;
@@ -12,7 +12,7 @@ const HiddenInput = (props: Props) => {
     return null;
   }
 
-  return <input type="hidden" name={name + '[]'} value={value} />;
+  return <input type="hidden" name={`${name}[]`} value={value} />;
 };
 
 export default React.memo(HiddenInput);

@@ -11,7 +11,7 @@ export interface Props<Opt extends Option>
   token: TokenCustomClasses['token'] | undefined;
   displayOption: SelectorType<Opt> | undefined;
   formInputOption: SelectorType<Opt> | undefined;
-  removeTokenForValue: (value: any) => void;
+  removeTokenForValue: (value: Opt) => void;
 }
 
 const Tokens = <T extends Option>(props: Props<T>) => {
@@ -24,7 +24,7 @@ const Tokens = <T extends Option>(props: Props<T>) => {
     removeTokenForValue,
   } = props;
 
-  const tokenClasses: any = {};
+  const tokenClasses: { [key: string]: boolean } = {};
   if (token) tokenClasses[token] = true;
   const classList: string = classNames(tokenClasses);
 
@@ -39,7 +39,7 @@ const Tokens = <T extends Option>(props: Props<T>) => {
         if (!displayString || !value)
           throw new Error('Expected string and value to exist');
 
-        const key: string = `Token: ${displayString}`;
+        const key = `Token: ${displayString}`;
         return (
           <Token
             key={key}
@@ -57,4 +57,4 @@ const Tokens = <T extends Option>(props: Props<T>) => {
   );
 };
 
-export default React.memo(Tokens);
+export default Tokens;

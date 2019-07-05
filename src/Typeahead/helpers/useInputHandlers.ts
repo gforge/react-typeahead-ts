@@ -24,12 +24,11 @@ export default (props: Props) => {
 
   const handleChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      handleOptionSelected(undefined);
+      onTextEntryUpdated(event.target.value);
       if (onChange) {
         onChange(event);
       }
-
-      handleOptionSelected(undefined);
-      onTextEntryUpdated(event.target.value);
     },
     [onChange, onTextEntryUpdated, handleOptionSelected]
   );
@@ -39,7 +38,9 @@ export default (props: Props) => {
       setIsFocused(true);
       setShowResults(true);
       onTextEntryUpdated();
-      onFocus && onFocus(event);
+      if (onFocus) {
+        onFocus(event);
+      }
     },
     [onFocus, setIsFocused, onTextEntryUpdated, setShowResults]
   );
@@ -48,7 +49,9 @@ export default (props: Props) => {
     (event: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
       onTextEntryUpdated();
-      onBlur && onBlur(event);
+      if (onBlur) {
+        onBlur(event);
+      }
     },
     [onBlur, setIsFocused, onTextEntryUpdated]
   );

@@ -15,8 +15,8 @@ export interface TokenCustomClasses extends CustomClasses {
 }
 
 export type EventType =
-  | React.MouseEvent<HTMLLIElement>
-  | React.KeyboardEvent<HTMLInputElement>;
+  | React.MouseEvent<HTMLLIElement | HTMLButtonElement>
+  | React.KeyboardEvent<HTMLInputElement | HTMLLIElement | HTMLButtonElement>;
 
 export type SelectorOptionSelector<Opt extends Option> = (
   result: Opt,
@@ -64,5 +64,5 @@ export interface FalseOptionProp<Opt extends Option> {
 export interface OptionsProps<Opt extends Option> {
   options: Opt[];
   allowCustomValues?: boolean;
-  onOptionSelected?: OptionSelect<string | number>;
+  onOptionSelected?: OptionSelect<Option>;
 }

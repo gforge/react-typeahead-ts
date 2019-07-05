@@ -68,7 +68,7 @@ const TypeaheadSelector = <T extends Option>(props: Props<T>) => {
 
   const results = options.map((result, i) => {
     const displayString = displayOption(result, i);
-    const uniqueKey = displayString + '_' + i;
+    const uniqueKey = `${displayString}_${i}`;
     // TODO: needed ref? ref={uniqueKey}
     return (
       <TypeaheadOption

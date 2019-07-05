@@ -10,7 +10,12 @@ interface Props {
 }
 
 export default (props: Props) => {
-  const { typeaheadElement, onKeyDown, selectedOptions, removeTokenForValue } = props;
+  const {
+    typeaheadElement,
+    onKeyDown,
+    selectedOptions,
+    removeTokenForValue,
+  } = props;
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,21 +31,19 @@ export default (props: Props) => {
         if (!typeaheadElement)
           throw new Error('Expected typeahead element to exist');
         if (
-          typeaheadElement.selectionStart ===
-          typeaheadElement.selectionEnd &&
+          typeaheadElement.selectionStart === typeaheadElement.selectionEnd &&
           typeaheadElement.selectionStart === 0
         ) {
-          removeTokenForValue(
-            selectedOptions[selectedOptions.length - 1]
-          );
+          removeTokenForValue(selectedOptions[selectedOptions.length - 1]);
           event.preventDefault();
         }
-        onKeyDown && onKeyDown(event);
+        if (onKeyDown) {
+          onKeyDown(event);
+        }
       }
     },
-    [typeaheadElement, onKeyDown, selectedOptions, removeTokenForValue],
+    [typeaheadElement, onKeyDown, selectedOptions, removeTokenForValue]
   );
-
 
   return handleKeyDown;
 };

@@ -62,10 +62,16 @@ export default <T extends Option>(props: Props<T>) => {
       }
 
       if (option !== undefined) {
-        return handleOptionSelected(option, event);
+        handleOptionSelected(option, event);
       }
     },
-    [filteredOptions, handleOptionSelected]
+    [
+      filteredOptions,
+      handleOptionSelected,
+      entryValue,
+      hasCustomValue,
+      selection,
+    ]
   );
 
   const handleKeyDown = useCallback(
@@ -75,7 +81,10 @@ export default <T extends Option>(props: Props<T>) => {
       // Also skip if the user is pressing the shift key,
       // since none of our handlers are looking for shift
       if (!hasHint || event.shiftKey) {
-        return onKeyDown && onKeyDown(event);
+        if (onKeyDown) {
+          onKeyDown(event);
+        }
+        return;
       }
 
       const events: {
@@ -83,7 +92,8 @@ export default <T extends Option>(props: Props<T>) => {
       } = {};
       events[KeyEvent.DOM_VK_UP] = navUp;
       events[KeyEvent.DOM_VK_DOWN] = navDown;
-      events[KeyEvent.DOM_VK_RETURN] = events[KeyEvent.DOM_VK_ENTER] = onEnter;
+      events[KeyEvent.DOM_VK_RETURN] = onEnter;
+      events[KeyEvent.DOM_VK_ENTER] = onEnter;
       events[KeyEvent.DOM_VK_ESCAPE] = clearSelection;
       events[KeyEvent.DOM_VK_TAB] = onTab;
 
@@ -94,8 +104,8 @@ export default <T extends Option>(props: Props<T>) => {
           // Don't propagate the keystroke back to the DOM/browser
           event.preventDefault();
         }
-      } else {
-        return onKeyDown && onKeyDown(event);
+      } else if (onKeyDown) {
+        onKeyDown(event);
       }
     },
     [

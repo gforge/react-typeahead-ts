@@ -34,8 +34,8 @@ export interface Props<Opt extends Option>
     OptionsProps<Opt> {
   customClasses?: TokenCustomClasses;
   defaultSelected?: Opt[];
-  onTokenRemove?: (value: Opt) => any;
-  onTokenAdd?: (value: Opt) => any;
+  onTokenRemove?: (value: Opt) => void;
+  onTokenAdd?: (value: Opt) => void;
   renderAbove?: boolean;
 }
 

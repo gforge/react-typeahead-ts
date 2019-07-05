@@ -28,12 +28,13 @@ export default <T extends Option>(props: Props<T>) => {
         return;
       }
 
-      let newIndex =
-        selectionIndex === undefined
-          ? delta === 1
-            ? 0
-            : delta
-          : selectionIndex + delta;
+      let newIndex = selectionIndex;
+      if (newIndex === undefined) {
+        newIndex = delta === 1 ? 0 : delta;
+      } else {
+        newIndex += delta;
+      }
+
       let length = maxVisible
         ? filteredOptions.slice(0, maxVisible).length
         : filteredOptions.length;

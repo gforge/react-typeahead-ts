@@ -9,7 +9,7 @@ interface Props<Opt extends Option> {
   selection: string | number | undefined;
   maxVisible: number | undefined;
   handleOptionSelected: HandleOnOptionSelectArg;
-  displayOption: string | OptionToStrFn<any> | undefined;
+  displayOption: string | OptionToStrFn<Opt> | undefined;
   allowCustomValues: boolean | undefined;
   resultsTruncatedMessage: string | undefined;
   customClasses: CustomClasses | undefined;
@@ -68,4 +68,4 @@ const IncrementalSearchResults = <T extends Option>(props: Props<T>) => {
   );
 };
 
-export default React.memo(IncrementalSearchResults);
+export default IncrementalSearchResults;

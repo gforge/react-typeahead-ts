@@ -6,8 +6,8 @@ interface Props<Opt extends Option> {
   typeaheadElement: React.MutableRefObject<HTMLInputElement | undefined>;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   setSelected: (args: Opt[]) => void;
-  onTokenAdd?: (value: Opt) => any;
-  onTokenRemove?: (value: Opt) => any;
+  onTokenAdd?: (value: Opt) => void;
+  onTokenRemove?: (value: Opt) => void;
   getInputOptionToStringMapper: (arg: Opt) => string;
 }
 
@@ -38,10 +38,21 @@ export default <T extends Option>(props: Props<T>) => {
 
       selectedOptions.splice(index, 1);
       setSelected([...selectedOptions]);
-      onTokenRemove && onTokenRemove(value);
-      return;
+      if (onTokenRemove) {
+        onTokenRemove(value);
+      }
+
+      if (typeaheadElement.current) {
+        typeaheadElement.current.focus();
+      }
     },
-    [getSelectedIndex, setSelected, selectedOptions, onTokenRemove]
+    [
+      getSelectedIndex,
+      setSelected,
+      selectedOptions,
+      onTokenRemove,
+      typeaheadElement,
+    ]
   );
 
   const addTokenForValue = useCallback(
@@ -51,13 +62,22 @@ export default <T extends Option>(props: Props<T>) => {
       }
       setSelected([...selectedOptions, value]);
 
-      if (!typeaheadElement.current)
-        throw new Error('Expected typahead to be set');
+      if (onTokenAdd) {
+        onTokenAdd(value);
+      }
 
-      typeaheadElement.current.value = '';
-      onTokenAdd && onTokenAdd(value);
+      if (typeaheadElement.current) {
+        typeaheadElement.current.value = '';
+        typeaheadElement.current.focus();
+      }
     },
-    [getSelectedIndex, setSelected, selectedOptions, onTokenAdd]
+    [
+      getSelectedIndex,
+      setSelected,
+      selectedOptions,
+      typeaheadElement,
+      onTokenAdd,
+    ]
   );
 
   return {
