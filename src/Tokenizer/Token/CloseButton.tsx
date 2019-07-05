@@ -1,30 +1,28 @@
 import * as React from 'react';
 import { Option } from '../../types';
+import ButtonHref from '../../Components/ButtonHref';
 
 export interface Props<T extends Option> {
   className: string | undefined;
   object: T;
-  onRemove: (arg: any) => void;
+  onRemove: (arg: T) => void;
 }
 
 function CloseButton<T extends Option>(props: Props<T>) {
   const { onRemove, object, className = 'typeahead-token-close' } = props;
-  if (!onRemove) {
-    return null;
-  }
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      onRemove(object);
+      event.preventDefault();
+    },
+    [object, onRemove]
+  );
 
   return (
-    <a
-      className={className}
-      href="#"
-      onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
-        onRemove(object);
-        event.preventDefault();
-      }}
-    >
+    <ButtonHref className={className} onClick={handleClick}>
       &#x00d7;
-    </a>
+    </ButtonHref>
   );
 }
 
-export default React.memo(CloseButton);
+export default CloseButton;

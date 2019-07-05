@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { SelectorOptionSelector, Option } from '../types';
+import ButtonHref from '../Components/ButtonHref';
 
 export interface CustomClasses {
   listItem?: string;
@@ -23,7 +24,7 @@ const getClasses = ({
 }: {
   customClasses: { listAnchor?: string };
 }) => {
-  const classes: any = {
+  const classes: { [key: string]: boolean } = {
     'typeahead-option': true,
   };
   const { listAnchor } = customClasses;
@@ -59,7 +60,22 @@ const TypeaheadOption = <T extends Option>(props: Props<T>) => {
     [handleOptionSelected, result, customValue]
   );
 
-  const classes: any = {};
+  const onSpace = React.useCallback(
+    (event: React.KeyboardEvent<HTMLLIElement>) => {
+      if (event.key !== 'Space') {
+        return;
+      }
+
+      if (customValue) {
+        handleOptionSelected(customValue, event);
+      } else if (result) {
+        handleOptionSelected(result, event);
+      }
+    },
+    [handleOptionSelected, customValue, result]
+  );
+
+  const classes: { [key: string]: boolean } = {};
   const { listItem, hover: hoverClass = 'hover', customAdd } = customClasses;
   classes[hoverClass] = Boolean(hover);
   if (listItem) {
@@ -76,10 +92,17 @@ const TypeaheadOption = <T extends Option>(props: Props<T>) => {
   // onMouseDown is used here as a workaround of #205 and other
   // related tickets
   return (
-    <li className={classList} onClick={onClick} onMouseDown={onClick}>
-      <a href="javascript: void 0;" className={getClasses({ customClasses })}>
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <li
+      className={classList}
+      onClick={onClick}
+      onMouseDown={onClick}
+      onKeyDown={onSpace}
+    >
+      <ButtonHref className={getClasses({ customClasses })}>
         {children}
-      </a>
+      </ButtonHref>
     </li>
   );
 };
