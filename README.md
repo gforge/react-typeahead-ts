@@ -93,7 +93,7 @@ Basic typeahead input and results list.
 
 Type: React Component
 
-Typeahead component that allows for multiple options to be selected. The following properties are identical as for the `Typeahead`:
+Typeahead component that allows for multiple options to be selected. The following properties are identical as for the **Typeahead**:
 
 - `name`
 - `options`
@@ -130,37 +130,36 @@ The new additional arguments are:
 
 ### Specific props details
 
-#### The displayOption argument
+#### The searchOptions argument
 
-Type: `String` or `Function`
+Type: `(value: string, options: Option[]) => Option[]`
 
-A function to map an option onto a string for display in the list. Receives `(option, index)` where index is relative to the results list, not all the options. Can either return a string or a React component.
+A function to filter and/or sort the provided `options` based on the current input value. Compared to `filterOption` it allows you to sort the results any way you want.
 
-If provided as a string, it will interpret it as a field name and use that field from each option object.
+If not supplied, defaults to the `filterOption`.
+
+_Note:_ the function can be used to store other information besides the string in the internal state of the component.
+Make sure to use the `displayOption`, `inputDisplayOption`, and `formInputOption` props to extract/generate the correct format of data that each expects if you do this.
 
 #### The filterOption argument
 
-Type: `String` or `Function`
+Type: `String` or `(value: string, option: Option) => boolean`
 
 A function to filter the provided `options` based on the current input value. For each option, receives `(inputValue, option)`. If not supplied, defaults to [fuzzy string matching](https://github.com/mattyork/fuzzy).
 
 If provided as a string, it will interpret it as a field name and use that field from each option object.
 
-#### The searchOptions argument
+#### The displayOption argument
 
-Type: `Function`
+Type: `String` or `(option: Option) => string | number`
 
-A function to filter, map, and/or sort the provided `options` based on the current input value.
-Receives `(inputValue, options)`.
+A function to map an option onto a string for display in the list. Receives `(option, index)` where index is relative to the results list, not all the options. Can either return a string or a React component.
 
-If not supplied, defaults to [fuzzy string matching](https://github.com/mattyork/fuzzy).
-
-_Note:_ the function can be used to store other information besides the string in the internal state of the component.
-Make sure to use the `displayOption`, `inputDisplayOption`, and `formInputOption` props to extract/generate the correct format of data that each expects if you do this.
+If provided as a string, it will interpret it as a field name and use that field from each option object.
 
 #### The inputDisplayOption argument
 
-Type: `String` or `Function`
+Type: `String` or `(option: Option, index?: number) => string | number`
 
 A function that maps the internal state of the visible options into the value stored in the text value field of the visible input when an option is selected.
 
@@ -172,13 +171,13 @@ If no value is set, the input will be set using `displayOption` when an option i
 
 #### The formInputOption argument
 
-Type: `String` or `Function`
+Type: `String` or `(option: Option) => string | number`
 
-A function to map an option onto a string to include in HTML forms as a hidden field (see `props.name`). Receives `(option)` as arguments. Must return a string.
+A function to map an option onto a string to include in HTML forms as a hidden field (see `name`).
 
 If specified as a string, it will interpret it as a field name and use that field from each option object.
 
-If not specified, it will fall back onto the semantics described in `props.displayOption`.
+If not specified, it will fall back onto the semantics described in `displayOption`.
 
 #### The customClasses argument
 
