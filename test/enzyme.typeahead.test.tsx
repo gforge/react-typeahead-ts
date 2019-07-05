@@ -67,15 +67,10 @@ describe('TypeaheadTokenizer Component', () => {
 
       _.each(testplan, (expected, value) => {
         const results = simulateTextInput(testContext.component, value);
-        expect(results.find('.typeahead-option').length).toEqual(expected);
+        expect(results.find('button.typeahead-option').length).toEqual(
+          expected
+        );
       });
-    });
-
-    test('does not change the url hash when clicking on options', () => {
-      const results = simulateTextInput(testContext.component, 'o');
-      const first = results.find('.typeahead-option').first();
-      expect(first.prop('href')).not.toBeUndefined();
-      expect(first.prop('href')).not.toEqual('#');
     });
 
     describe('keyboard controls', () => {
@@ -184,12 +179,12 @@ describe('TypeaheadTokenizer Component', () => {
         let component = mount(<Typeahead options={BEATLES} maxVisible={1} />);
 
         simulateTextInput(component, 'o');
-        expect(component.find('a.typeahead-option').length).toEqual(1);
+        expect(component.find('button.typeahead-option').length).toEqual(1);
 
         component = mount(<Typeahead options={BEATLES} maxVisible={2} />);
 
         simulateTextInput(component, 'o');
-        expect(component.find('a.typeahead-option').length).toEqual(2);
+        expect(component.find('button.typeahead-option').length).toEqual(2);
       });
 
       // tslint:disable-next-line:max-line-length
