@@ -1,19 +1,23 @@
 import { useCallback } from 'react';
 import KeyEvent from '../../keyevent';
-import useNav from './useNav';
+import useNav, { Props as NavProps } from './useNav';
 import { HandleOnOptionSelectArg, Option } from '../../types';
 
 interface Props<Opt extends Option>
-  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'onKeyDown'> {
-  filteredOptions: Opt[];
-  selectionIndex: number | undefined;
-  setSelectionIndex: (args: number | undefined) => void;
+  extends Pick<React.InputHTMLAttributes<HTMLInputElement>, 'onKeyDown'>,
+    Pick<
+      NavProps<Opt>,
+      | 'hasHint'
+      | 'filteredOptions'
+      | 'maxVisible'
+      | 'hasCustomValue'
+      | 'entryValue'
+      | 'selectionIndex'
+      | 'setSelectionIndex'
+      | 'setShowOptions'
+    > {
   selected: boolean;
-  hasHint: boolean;
   handleOptionSelected: HandleOnOptionSelectArg;
-  maxVisible: number | undefined;
-  hasCustomValue: boolean;
-  entryValue: string;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -28,6 +32,7 @@ export default <T extends Option>(props: Props<T>) => {
     entryValue,
     selectionIndex,
     setSelectionIndex,
+    setShowOptions,
   } = props;
   const { navUp, navDown, clearSelection, selection } = useNav({
     hasHint,
@@ -37,6 +42,7 @@ export default <T extends Option>(props: Props<T>) => {
     entryValue,
     selectionIndex,
     setSelectionIndex,
+    setShowOptions,
   });
 
   const onEnter = useCallback(
@@ -84,6 +90,11 @@ export default <T extends Option>(props: Props<T>) => {
         if (onKeyDown) {
           onKeyDown(event);
         }
+        if (
+          [KeyEvent.DOM_VK_UP, KeyEvent.DOM_VK_DOWN].includes(event.keyCode)
+        ) {
+          setShowOptions(true);
+        }
         return;
       }
 
@@ -116,6 +127,7 @@ export default <T extends Option>(props: Props<T>) => {
       clearSelection,
       onTab,
       onKeyDown,
+      setShowOptions,
       selected,
     ]
   );

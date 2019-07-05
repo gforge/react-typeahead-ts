@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Option } from '../../types';
 
-interface Props<T extends Option> {
+export interface Props<T extends Option> {
   hasHint: boolean;
   filteredOptions: T[];
   hasCustomValue: boolean;
@@ -9,6 +9,7 @@ interface Props<T extends Option> {
   entryValue: string;
   selectionIndex: number | undefined;
   setSelectionIndex: (value: number | undefined) => void;
+  setShowOptions: (show: boolean) => void;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -20,11 +21,13 @@ export default <T extends Option>(props: Props<T>) => {
     entryValue,
     selectionIndex,
     setSelectionIndex,
+    setShowOptions,
   } = props;
 
   const nav = useCallback(
     (delta: number) => {
       if (!hasHint) {
+        setShowOptions(true);
         return;
       }
 
@@ -52,19 +55,22 @@ export default <T extends Option>(props: Props<T>) => {
     },
     [
       hasHint,
-      filteredOptions,
       selectionIndex,
-      setSelectionIndex,
       maxVisible,
+      filteredOptions,
       hasCustomValue,
+      setSelectionIndex,
+      setShowOptions,
     ]
   );
 
   const navDown = useCallback(() => nav(1), [nav]);
   const navUp = useCallback(() => nav(-1), [nav]);
-  const clearSelection = useCallback(() => setSelectionIndex(undefined), [
-    setSelectionIndex,
-  ]);
+  const clearSelection = useCallback(() => {
+    setSelectionIndex(undefined);
+    setShowOptions(false);
+  }, [setSelectionIndex, setShowOptions]);
+
   const selection = useMemo(() => {
     let index = selectionIndex;
     if (index === undefined) return undefined;

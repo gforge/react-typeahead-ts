@@ -11,6 +11,7 @@ import useShouldSkipSearch from './helpers/useShouldSkipSearch';
 import useSearch from './helpers/useSearch';
 import useHasCustomValue from './helpers/useHasCustomValue';
 import Accessor from '../accessor';
+import useShowOptions from './helpers/useShowOptions';
 
 export type AnyReactWithProps<Opt extends Option> =
   | React.Component<TypelistProps<Opt>>
@@ -40,7 +41,10 @@ export interface Props<Opt extends Option>
   textarea?: boolean;
   allowCustomValues?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  displayOption?: string | OptionToStrFn<Opt> | undefined;
+  displayOption?:
+    | string
+    | ((option: Opt, index?: number) => string | number)
+    | undefined;
   filterOption?: string | ((value: string, option: Opt) => boolean);
   inputDisplayOption?: string | OptionToStrFn<Opt> | undefined;
   formInputOption?: string | OptionToStrFn<Opt> | undefined;
@@ -105,11 +109,14 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
   const [isFocused, setIsFocused] = React.useState(false);
   const [showResults, setShowResults] = React.useState(false);
   const [selected, setSelected] = React.useState(false);
+  const { showOptions, setShowOptions } = useShowOptions({
+    showOptionsWhenEmpty,
+  });
 
   const { shouldSkipSearch } = useShouldSkipSearch({
     isFocused,
     selected,
-    showOptionsWhenEmpty,
+    showOptions,
   });
 
   const { filteredOptions } = useSearch({
@@ -180,6 +187,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     setIsFocused,
     setSelected,
     option2string,
+    setShowOptions,
   });
   const { hasHint } = useHint({ filteredOptions, hasCustomValue });
   const { handleKeyDown } = useOnKey({
@@ -193,6 +201,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     entryValue,
     selectionIndex,
     setSelectionIndex,
+    setShowOptions,
   });
 
   return (
@@ -232,11 +241,11 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
   );
 };
 
-interface MemoHelper {
+interface TypaheadMemoHelper {
   <T extends Option>(arg: Props<T>): JSX.Element;
 }
 
-// @ts-ignore - complains string != Option
-const MemoTypeahead: MemoHelper = React.memo(Typeahead);
+// @ts-ignore
+const MemoTypeahead: TypaheadMemoHelper = React.memo(Typeahead);
 
 export default MemoTypeahead;

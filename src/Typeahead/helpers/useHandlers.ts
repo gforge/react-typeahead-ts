@@ -22,6 +22,7 @@ interface Props<Opt extends Option> {
   onChange: React.InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearOnSelection: boolean;
   setShowResults: (show: boolean) => void;
+  setShowOptions: (show: boolean) => void;
   setSelected: (selected: boolean) => void;
   setIsFocused: (focused: boolean) => void;
   option2string: (value: Opt) => string | number;
@@ -46,6 +47,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     clearOnSelection,
     onOptionSelected,
     option2string,
+    setShowOptions,
   } = props;
 
   const onTextEntryUpdated = React.useCallback(
@@ -101,6 +103,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
         setSelection(formInputOptionString);
         setEntryValue(`${optionString}`);
         setShowResults(false);
+        setShowOptions(false);
         setSelectionIndex(undefined);
         inputElement.current.blur();
 
@@ -125,16 +128,17 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     },
     [
       setSelection,
+      setShowResults,
+      setSelected,
       inputElement,
       clearOnSelection,
       setEntryValue,
+      setShowOptions,
       setSelectionIndex,
       optionsProps,
       displayOption,
       inputDisplayOption,
       option2string,
-      setSelected,
-      setShowResults,
     ]
   );
 
@@ -146,6 +150,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     onTextEntryUpdated,
     setIsFocused,
     setShowResults,
+    setShowOptions,
   });
 
   return {

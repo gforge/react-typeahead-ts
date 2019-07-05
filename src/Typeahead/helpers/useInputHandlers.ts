@@ -9,6 +9,7 @@ interface Props
   onTextEntryUpdated: (value?: string | undefined) => void;
   setIsFocused: (selected: boolean) => void;
   setShowResults: (selected: boolean) => void;
+  setShowOptions: (show: boolean) => void;
 }
 
 export default (props: Props) => {
@@ -20,6 +21,7 @@ export default (props: Props) => {
     onBlur,
     setIsFocused,
     setShowResults,
+    setShowOptions,
   } = props;
 
   const handleChange = React.useCallback(
@@ -52,8 +54,9 @@ export default (props: Props) => {
       if (onBlur) {
         onBlur(event);
       }
+      setShowOptions(false);
     },
-    [onBlur, setIsFocused, onTextEntryUpdated]
+    [onBlur, setIsFocused, onTextEntryUpdated, setShowOptions]
   );
 
   return { handleBlur, handleFocus, handleChange };
