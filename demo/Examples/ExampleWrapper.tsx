@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Card, CardHeader, CardBody } from 'reactstrap';
-import Code from './Code';
+import Code from '../Code';
 
 export interface Props {
   title: React.ReactNode;
@@ -15,7 +15,7 @@ interface State {
 export default class Example extends React.PureComponent<Props, State> {
   state = { hasError: false };
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ hasError: true });
     console.warn(error, info);
   }
