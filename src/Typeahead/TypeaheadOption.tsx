@@ -41,7 +41,7 @@ const getClasses = ({
 const TypeaheadOption = <T extends Option>(props: Props<T>) => {
   const {
     customClasses = {},
-    hover = false,
+    hover,
     children,
     customValue,
     result,
@@ -77,7 +77,7 @@ const TypeaheadOption = <T extends Option>(props: Props<T>) => {
 
   const classes: { [key: string]: boolean } = {};
   const { listItem, hover: hoverClass = 'hover', customAdd } = customClasses;
-  classes[hoverClass] = Boolean(hover);
+  classes[hoverClass] = !!hover;
   if (listItem) {
     classes[listItem] = Boolean(listItem);
   }

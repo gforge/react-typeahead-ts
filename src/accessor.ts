@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { OptionToStrFn, Option, OptionsObject, SelectorType } from './types';
 
 export default class Accessor {
@@ -32,7 +33,7 @@ export default class Accessor {
       return prop as (opt: Option) => string;
     }
 
-    return function(input: Option) {
+    return function identityFunction(input: Option) {
       return input as string;
     };
   }
@@ -41,6 +42,7 @@ export default class Accessor {
     object: T,
     selector?: SelectorType<T>
   ): string | number | void;
+
   static valueForOption<T extends Option>(
     object: T,
     selector?: OptionToStrFn<OptionsObject> | string

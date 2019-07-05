@@ -31,23 +31,31 @@ body {
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-div.inputStyle  {
-  border: 1px solid #FAFAFF;
+div.inputStyle {
+  border: 1px solid #fafaff;
   padding: 10px;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
   border-radius: 5px;
 }
 
-.inputStyle ul > li.hover a {
+.inputStyle ul > li.hover {
   background-color: white;
   font-weight: bold;
 }
 
-ul > li.hover a {
-  background-color: white;
+ul > li {
+  list-style: none;
+}
+
+ul > li.hover {
+  background-color: #f3f3fa;
   font-weight: bold;
 }

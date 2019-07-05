@@ -68,6 +68,7 @@ const FormikExample = () => {
                     customClasses={{
                       results: 'list-group',
                       listItem: 'list-group-item'
+                      hover: 'active',
                     }}
                   />
                 )}
@@ -96,6 +97,7 @@ const FormikExample = () => {
                     customClasses={{
                       results: 'list-group',
                       listItem: 'list-group-item',
+                      hover: 'active',
                     }}
                   />
                 )}
@@ -134,6 +136,7 @@ const FormikExample = () => {
                       results: 'list-group',
                       listItem: 'list-group-item',
                       token: 'badge badge-primary',
+                      hover: 'active',
                     }}
                   />
                 );
@@ -168,6 +171,7 @@ const FormikExample = () => {
                         results: 'list-group',
                         listItem: 'list-group-item',
                         token: 'badge badge-primary',
+                        hover: 'active',
                       }}
                     />
                   );
