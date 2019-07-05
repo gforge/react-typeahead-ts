@@ -17,9 +17,8 @@
     "start": "cross-env NODE_ENV=development tsc-watch --project tsconfig.base.json  --onSuccess \"rollup -c\"",
     "prebuild": "rimraf dist",
     "build": "npm run compile",
-    "build:flow": "cp src/index.js.flow dist/index.js.flow",
     "compile": "tsc -p tsconfig.base.json  && cross-env NODE_ENV=production rollup -c && cross-env NODE_ENV=development rollup -c && rimraf compiled",
-    "prepare": "npm run build && npm run build:flow",
+    "prepare": "npm run build",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*' 'test/**/*' 'README.md'",
     "precommit": "lint-staged",
     "lint": "tslint -p .",
@@ -46,13 +45,13 @@
   },
   "homepage": "https://gforge.github.com/react-typeahead-ts",
   "dependencies": {
-    "@types/enzyme-adapter-react-16": "^1.0.5",
     "classnames": "^2.2.6",
     "fuzzy": "^0.1.3"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",
     "@types/enzyme": "^3.9.4",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jest": "^24.0.15",
     "@types/lodash": "^4.14.135",
     "@types/react": "^16.8.22",
