@@ -51,34 +51,13 @@ describe('Typeahead Component', () => {
 
   // Prev. tests moved (sanity, props - sections)
   describe('props', () => {
-    describe('inputDisplayOption', () => {
-      test('displays a different value in input field and in list display', () => {
-        const createObject = function(o: string) {
-          return { len: o.length, orig: o };
-        };
-
-        const component = TestUtils.renderIntoDocument(
-          <Typeahead
-            options={BEATLES.map(createObject)}
-            displayOption={o => `Score: ${o.len} ${o.orig}`}
-            inputDisplayOption={o => o.orig}
-          />
-        );
-
-        simulateTextInput(component, 'john');
-        // @ts-ignore - refs void?
-        const node = component.refs.entry;
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_TAB });
-
-        expect(node.value).toEqual('George');
-      });
     });
 
     describe('allowCustomValues', () => {
       beforeEach(() => {
         testContext.sinon = sinon.createSandbox();
         testContext.selectSpy = testContext.sinon.spy();
-        testContext.component = TestUtils.renderIntoDocument(
+        testContext.component = mount(
           <Typeahead
             options={BEATLES}
             allowCustomValues
@@ -95,7 +74,6 @@ describe('Typeahead Component', () => {
         const input = testContext.component.refs.entry;
         input.value = 'zz';
         TestUtils.Simulate.change(input);
-        // tslint:disable-next-line:max-line-length
         const results = TestUtils.scryRenderedComponentsWithType(
           testContext.component,
           TypeaheadOption
@@ -108,7 +86,6 @@ describe('Typeahead Component', () => {
         const input = testContext.component.refs.entry;
         input.value = 'ZZZ';
         TestUtils.Simulate.change(input);
-        // tslint:disable-next-line:max-line-length
         const results = TestUtils.scryRenderedComponentsWithType(
           testContext.component,
           TypeaheadOption
@@ -121,10 +98,10 @@ describe('Typeahead Component', () => {
         const results = simulateTextInput(testContext.component, 'o');
         const firstItem = ReactDOM.findDOMNode(results[0]).innerText;
         const node = testContext.component.refs.entry;
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_UP });
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
+        simulateKeyEvent(node, Keyevent.DOM_VK_DOWN);
+        simulateKeyEvent(node, Keyevent.DOM_VK_DOWN);
+        simulateKeyEvent(node, Keyevent.DOM_VK_UP);
+        simulateKeyEvent(node, Keyevent.DOM_VK_RETURN);
 
         expect(true).toEqual(testContext.selectSpy.called);
         expect(testContext.selectSpy.calledWith(firstItem)).toBeTruthy();
@@ -134,8 +111,8 @@ describe('Typeahead Component', () => {
         const input = testContext.component.refs.entry;
         input.value = 'ZZZ';
         TestUtils.Simulate.change(input);
-        TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_DOWN });
-        TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_RETURN });
+        simulateKeyEvent(input, Keyevent.DOM_VK_DOWN);
+        simulateKeyEvent(input, Keyevent.DOM_VK_RETURN);
         expect(true).toEqual(testContext.selectSpy.called);
         expect(testContext.selectSpy.calledWith(input.value)).toBeTruthy();
       });
@@ -149,7 +126,7 @@ describe('Typeahead Component', () => {
           testContext.component,
           TypeaheadOption
         );
-        TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_DOWN });
+        simulateKeyEvent(input, Keyevent.DOM_VK_DOWN);
         expect(true).toEqual(results[0].props.hover);
       });
     });
@@ -164,7 +141,7 @@ describe('Typeahead Component', () => {
           hover: 'topcoat-list__item-active',
         };
 
-        this.component = TestUtils.renderIntoDocument(
+        this.component = mount(
           <Typeahead options={BEATLES} customClasses={customClasses} />
         );
 
@@ -217,7 +194,7 @@ describe('Typeahead Component', () => {
         );
         const node = testContext.component.refs.entry;
 
-        TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
+        simulateKeyEvent(node, Keyevent.DOM_VK_DOWN);
 
         const listItem = typeaheadOptions[0];
         const domListItem = ReactDOM.findDOMNode(listItem);
@@ -230,7 +207,7 @@ describe('Typeahead Component', () => {
 
     describe('initialValue', () => {
       test('should perform an initial search if a default value is provided', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} initialValue="o" />
         );
 
@@ -244,7 +221,7 @@ describe('Typeahead Component', () => {
 
     describe('value', () => {
       test('should set input value', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} value="John" />
         );
 
@@ -255,7 +232,7 @@ describe('Typeahead Component', () => {
 
     describe('onKeyDown', () => {
       test('should bind to key events on the input', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead
             options={BEATLES}
             onKeyDown={function(e) {
@@ -271,7 +248,7 @@ describe('Typeahead Component', () => {
 
     describe('onKeyPress', () => {
       test('should bind to key events on the input', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead
             options={BEATLES}
             onKeyPress={e => expect(e.keyCode).toEqual(87)}
@@ -285,7 +262,7 @@ describe('Typeahead Component', () => {
 
     describe('onKeyUp', () => {
       test('should bind to key events on the input', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead
             options={BEATLES}
             onKeyUp={e => expect(e.keyCode).toEqual(87)}
@@ -299,7 +276,7 @@ describe('Typeahead Component', () => {
 
     describe('inputProps', () => {
       test('should forward props to the input element', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} inputProps={{ autoCorrect: 'off' }} />
         );
 
@@ -310,7 +287,7 @@ describe('Typeahead Component', () => {
 
     describe('defaultClassNames', () => {
       test('should remove default classNames when this prop is specified and false', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} defaultClassNames={false} />
         );
         simulateTextInput(component, 'o');
@@ -348,7 +325,7 @@ describe('Typeahead Component', () => {
 
       _.each(FN_TEST_PLANS, testplan => {
         test(`should filter with a custom function that ${testplan.name}`, () => {
-          const component = TestUtils.renderIntoDocument(
+          const component = mount(
             <Typeahead options={BEATLES} filterOption={testplan.fn} />
           );
 
@@ -366,7 +343,7 @@ describe('Typeahead Component', () => {
       };
 
       test('should filter using fuzzy matching on the provided field name', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead
             options={BEATLES_COMPLEX}
             filterOption="firstName"
@@ -424,7 +401,7 @@ describe('Typeahead Component', () => {
 
       _.each(FORM_INPUT_TEST_PLANS, testplan => {
         test(testplan.name, () => {
-          const component = TestUtils.renderIntoDocument(
+          const component = mount(
             // @ts-ignore
             <Typeahead
               {...testplan.props}
@@ -435,8 +412,8 @@ describe('Typeahead Component', () => {
           simulateTextInput(component, 'john');
 
           const node = component.refs.entry;
-          TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_DOWN });
-          TestUtils.Simulate.keyDown(node, { keyCode: Keyevent.DOM_VK_RETURN });
+          simulateKeyEvent(node, Keyevent.DOM_VK_DOWN);
+          simulateKeyEvent(node, Keyevent.DOM_VK_RETURN);
 
           expect(component.state.selection).toEqual(testplan.output);
         });
@@ -451,7 +428,7 @@ describe('Typeahead Component', () => {
       });
 
       beforeEach(() => {
-        testContext.component = TestUtils.renderIntoDocument(
+        testContext.component = mount(
           <Typeahead options={BEATLES} customListComponent={ListComponent} />
         );
       });
@@ -482,7 +459,7 @@ describe('Typeahead Component', () => {
         const input = testContext.component.refs.entry;
         input.value = 'o';
         TestUtils.Simulate.change(input);
-        TestUtils.Simulate.keyDown(input, { keyCode: Keyevent.DOM_VK_TAB });
+        simulateKeyEvent(input, Keyevent.DOM_VK_TAB);
         // tslint:disable-next-line:max-line-length
         const results = TestUtils.scryRenderedComponentsWithType(
           testContext.component,
@@ -494,7 +471,7 @@ describe('Typeahead Component', () => {
 
     describe('textarea', () => {
       test('should render a <textarea> input', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} textarea />
         );
 
@@ -503,7 +480,7 @@ describe('Typeahead Component', () => {
       });
 
       test('should render a <input> input', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} />
         );
 
@@ -514,7 +491,7 @@ describe('Typeahead Component', () => {
 
     describe('showOptionsWhenEmpty', () => {
       test('do not render options when value is empty by default', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} />
         );
 
@@ -526,7 +503,7 @@ describe('Typeahead Component', () => {
       });
 
       test('do not render options when value is empty when set to true and not focused', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} showOptionsWhenEmpty />
         );
 
@@ -538,7 +515,7 @@ describe('Typeahead Component', () => {
       });
 
       test('render options when value is empty when set to true and focused', () => {
-        const component = TestUtils.renderIntoDocument(
+        const component = mount(
           <Typeahead options={BEATLES} showOptionsWhenEmpty />
         );
 
