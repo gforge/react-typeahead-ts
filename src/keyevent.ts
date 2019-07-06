@@ -1,8 +1,19 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /**
  * PolyFills make me sad
  */
-// @ts-ignore
-const KeyEvent: { [propName: string]: number } = KeyEvent || {};
+const KeyEvent: {
+  [propName: string]: number;
+  DOM_VK_UP: number;
+  DOM_VK_DOWN: number;
+  DOM_VK_BACK_SPACE: number;
+  DOM_VK_RETURN: number;
+  DOM_VK_ENTER: number;
+  DOM_VK_ESCAPE: number;
+  DOM_VK_TAB: number;
+  // @ts-ignore
+} = KeyEvent || {};
+
 KeyEvent.DOM_VK_UP = KeyEvent.DOM_VK_UP || 38;
 KeyEvent.DOM_VK_DOWN = KeyEvent.DOM_VK_DOWN || 40;
 KeyEvent.DOM_VK_BACK_SPACE = KeyEvent.DOM_VK_BACK_SPACE || 8;

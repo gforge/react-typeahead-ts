@@ -5,7 +5,7 @@ interface Props<Opt extends Option> {
   allowCustomValues: boolean;
   entryValue: string;
   filteredOptions: Opt[];
-  option2string: (value: Opt) => string | number;
+  option2primitive: (value: Opt) => string | number;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -13,7 +13,7 @@ export default <T extends Option>(props: Props<T>) => {
     allowCustomValues,
     entryValue,
     filteredOptions,
-    option2string,
+    option2primitive,
   } = props;
 
   const hasCustomValue = React.useMemo(() => {
@@ -25,8 +25,8 @@ export default <T extends Option>(props: Props<T>) => {
       return false;
     }
 
-    return filteredOptions.map(option2string).indexOf(entryValue) < 0;
-  }, [allowCustomValues, entryValue, filteredOptions, option2string]);
+    return filteredOptions.map(option2primitive).indexOf(entryValue) < 0;
+  }, [allowCustomValues, entryValue, filteredOptions, option2primitive]);
 
   return { hasCustomValue };
 };

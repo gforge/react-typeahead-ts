@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`TypeaheadTokenizer Component basic tokenizer Basic mount 1`] = `"<div class=\\"typeahead-tokenizer\\"><div class=\\"typeahead\\"><input type=\\"text\\" class=\\"\\" value=\\"\\"></div></div>"`;
-
-exports[`TypeaheadTokenizer Component basic tokenizer Complex mount 1`] = `"<div class=\\"typeahead-tokenizer\\"><div class=\\"typeahead\\"><input type=\\"text\\" class=\\"\\" value=\\"\\"></div></div>"`;

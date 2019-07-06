@@ -7,8 +7,7 @@ import Keyevent from '../../src/keyevent';
 import simulateTextInput from '../helpers/simulateTextInput';
 import simulateKeyEvent from '../helpers/simulateKeyEvent';
 import getInput from '../helpers/getInput';
-
-const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
+import { BEATLES } from '../helpers/data';
 
 describe('Typeahead Component basic', () => {
   const testContext: {

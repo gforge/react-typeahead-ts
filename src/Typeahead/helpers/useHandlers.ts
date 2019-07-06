@@ -25,7 +25,7 @@ interface Props<Opt extends Option> {
   setShowOptions: (show: boolean) => void;
   setSelected: (selected: boolean) => void;
   setIsFocused: (focused: boolean) => void;
-  option2string: (value: Opt) => string | number;
+  option2primitive: (value: Opt) => string | number;
 }
 
 export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
@@ -46,7 +46,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
     setSelectionIndex,
     clearOnSelection,
     onOptionSelected,
-    option2string,
+    option2primitive,
     setShowOptions,
   } = props;
 
@@ -87,12 +87,12 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
           optionString = option as string;
           formInputOptionString = option as string;
         } else {
-          const displayOption2string = Accessor.generateOptionToStringFor(
+          const displayoption2primitive = Accessor.generateOptionToStringFor(
             displayOption || inputDisplayOption
           );
-          optionString = displayOption2string(option);
+          optionString = displayoption2primitive(option);
 
-          formInputOptionString = option2string(option as T);
+          formInputOptionString = option2primitive(option as T);
         }
         if (clearOnSelection) {
           setSelected(false);
@@ -108,7 +108,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
         inputElement.current.blur();
 
         const orgOption = optionsProps.options.find(
-          opt => option2string(opt) === formInputOptionString
+          opt => option2primitive(opt) === formInputOptionString
         );
         if (
           optionsProps.allowCustomValues === true &&
@@ -138,7 +138,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
       optionsProps,
       displayOption,
       inputDisplayOption,
-      option2string,
+      option2primitive,
     ]
   );
 

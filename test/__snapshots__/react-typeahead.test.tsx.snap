@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Main entry point exports a Tokenizer component that contains a Typeahead 1`] = `"<div class=\\"typeahead-tokenizer\\"><div class=\\"typeahead\\"><input type=\\"text\\" class=\\"\\" value=\\"\\"/></div></div>"`;

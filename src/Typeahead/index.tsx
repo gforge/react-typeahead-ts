@@ -119,12 +119,20 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     showOptions,
   });
 
+  const option2primitive = React.useMemo(() => {
+    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
+    return Accessor.generateOptionToStringFor(anyToStrFn) as ((
+      opt: T
+    ) => string | number);
+  }, [formInputOption, inputDisplayOption, displayOption]);
+
   const { filteredOptions } = useSearch({
     searchOptionsFunction,
     filterOption,
     shouldSkipSearch,
     entryValue,
     options,
+    option2primitive,
   });
 
   const setRef = React.useCallback(
@@ -152,18 +160,11 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     };
   }
 
-  const option2string = React.useMemo(() => {
-    const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
-    return Accessor.generateOptionToStringFor(anyToStrFn) as ((
-      opt: T
-    ) => string | number);
-  }, [formInputOption, inputDisplayOption, displayOption]);
-
   const { hasCustomValue } = useHasCustomValue({
     allowCustomValues: !!allowCustomValues,
     entryValue,
     filteredOptions,
-    option2string,
+    option2primitive,
   });
   const {
     handleChange,
@@ -186,7 +187,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     setShowResults,
     setIsFocused,
     setSelected,
-    option2string,
+    option2primitive,
     setShowOptions,
   });
   const { hasHint } = useHint({ filteredOptions, hasCustomValue });

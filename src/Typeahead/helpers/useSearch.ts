@@ -9,6 +9,7 @@ interface Props<Opt extends Option> {
   searchOptionsFunction: ((value: string, options: Opt[]) => Opt[]) | undefined;
   shouldSkipSearch: (value: string) => boolean;
   options: Opt[];
+  option2primitive: (opt: Opt) => string | number;
 }
 
 const useSearch = <T extends Option>(props: Props<T>) => {
@@ -18,6 +19,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
     shouldSkipSearch,
     entryValue,
     options,
+    option2primitive,
   } = props;
 
   const searchFunction = useMemo((): ((value: string, opt?: T[]) => T[]) => {
@@ -44,7 +46,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
       // @ts-ignore
       mapper = Accessor.generateAccessor(filterOption);
     } else {
-      mapper = Accessor.IDENTITY_FN;
+      mapper = (opt: T) => `${option2primitive(opt)}`;
     }
 
     return (value: string, opt?: T[]) => {
@@ -53,7 +55,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
         .filter(value, opt || options, fuzzyOpt)
         .map((res: { index: number }) => (opt || options)[res.index] as T);
     };
-  }, [filterOption, searchOptionsFunction, options]);
+  }, [searchOptionsFunction, filterOption, options, option2primitive]);
 
   const filteredOptions = useMemo((): T[] => {
     if (shouldSkipSearch(entryValue)) {

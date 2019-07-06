@@ -2,34 +2,9 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import Tokenizer from '../../src/Tokenizer';
 import Keyevent from '../../src/keyevent';
-import { Option } from '../../src/types';
 import simulateTextInput from '../helpers/simulateTextInput';
 import simulateKeyEvent from '../helpers/simulateKeyEvent';
-
-const BEATLES = ['John', 'Paul', 'George', 'Ringo'];
-
-const BEATLES_COMPLEX: Option[] = [
-  {
-    firstName: 'John',
-    lastName: 'Lennon',
-    nameWithTitle: 'John Winston Ono Lennon MBE',
-  },
-  {
-    firstName: 'Paul',
-    lastName: 'McCartney',
-    nameWithTitle: 'Sir James Paul McCartney MBE',
-  },
-  {
-    firstName: 'George',
-    lastName: 'Harrison',
-    nameWithTitle: 'George Harrison MBE',
-  },
-  {
-    firstName: 'Ringo',
-    lastName: 'Starr',
-    nameWithTitle: 'Richard Starkey Jr. MBE',
-  },
-];
+import { BEATLES, BEATLES_COMPLEX } from '../helpers/data';
 
 describe('TypeaheadTokenizer Component props', () => {
   describe('displayOption', () => {
@@ -56,13 +31,7 @@ describe('TypeaheadTokenizer Component props', () => {
         <Tokenizer
           options={BEATLES_COMPLEX}
           filterOption="firstName"
-          displayOption={(o, i) => {
-            // TODO: Fix the option string function
-            if (typeof o === 'object') {
-              return `${i} ${o.firstName} ${o.lastName}`;
-            }
-            return o;
-          }}
+          displayOption={(o, i) => `${i} ${o.firstName} ${o.lastName}`}
         />
       );
       const results = simulateTextInput(component, 'john');
@@ -123,12 +92,7 @@ describe('TypeaheadTokenizer Component props', () => {
           options={BEATLES_COMPLEX}
           filterOption="firstName"
           displayOption="nameWithTitle"
-          formInputOption={o => {
-            if (typeof o === 'object') {
-              return `${o.firstName} ${o.lastName}`;
-            }
-            return o;
-          }}
+          formInputOption={o => `${o.firstName} ${o.lastName}`}
         />
       );
       simulateTextInput(component, 'john');
