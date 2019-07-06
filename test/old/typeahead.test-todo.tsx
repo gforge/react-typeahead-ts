@@ -4,10 +4,10 @@ import sinon from 'sinon';
 import createReactClass from 'create-react-class';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
-import Typeahead from '../src/Typeahead';
-import TypeaheadOption from '../src/Typeahead/TypeaheadOption';
-import TypeaheadSelector from '../src/Typeahead/TypeaheadSelector';
-import Keyevent from '../src/keyevent';
+import Typeahead from '../../src/Typeahead';
+import TypeaheadOption from '../../src/Typeahead/TypeaheadOption';
+import TypeaheadSelector from '../../src/Typeahead/TypeaheadSelector';
+import Keyevent from '../../src/keyevent';
 
 function simulateTextInput(component, value) {
   const node = component.refs.entry;

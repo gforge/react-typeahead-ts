@@ -3,10 +3,10 @@ import _ from 'lodash';
 import sinon from 'sinon';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
-import TypeaheadOption from '../src/Typeahead/TypeaheadOption';
-import Tokenizer from '../src/Tokenizer';
-import Token from '../src/Tokenizer/Token';
-import Keyevent from '../src/keyevent';
+import TypeaheadOption from '../../src/Typeahead/TypeaheadOption';
+import Tokenizer from '../../src/Tokenizer';
+import Token from '../../src/Tokenizer/Token';
+import Keyevent from '../../src/keyevent';
 
 function simulateTextInput(component: Typeahead, value: string) {
   const node = component.inputElement;
