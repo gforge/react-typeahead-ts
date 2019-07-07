@@ -7,7 +7,7 @@ import pkg from './package.json';
 
 const shared = {
   input: `compiled/index.js`,
-  external: ['react', 'tslib', 'reactstrap'],
+  external: ['react', 'tslib'],
 };
 
 const commonJsResolver = commonjs({
