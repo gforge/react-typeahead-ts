@@ -1,22 +1,14 @@
 import filesize from 'rollup-plugin-filesize';
 import replace from 'rollup-plugin-replace';
 import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
 import sourceMaps from 'rollup-plugin-sourcemaps';
-import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
-import builtins from 'rollup-plugin-node-builtins';
 import pkg from './package.json';
 
 const shared = {
   input: `compiled/index.js`,
   external: ['react', 'tslib', 'reactstrap'],
 };
-
-const nodeResolver = nodeResolve({
-  jsnext: true,
-  main: true,
-});
 
 const commonJsResolver = commonjs({
   // non-CommonJS modules will be ignored, but you can also
@@ -36,7 +28,7 @@ const commonJsResolver = commonjs({
   sourceMap: true, // Default: true
 });
 
-const sharedPlugins = [json(), builtins(), commonJsResolver, nodeResolver];
+const sharedPlugins = [commonJsResolver];
 
 export default [
   Object.assign({}, shared, {
@@ -51,12 +43,12 @@ export default [
       exports: 'named',
       globals: {
         react: 'React',
-        'react-native': 'ReactNative',
         tslib: 'tslib',
-        reactstrap: 'reactstrap',
+        classnames: 'classNames',
+        fuzzy: 'fuzzy',
       },
     },
-
+    external: shared.external.concat(Object.keys(pkg.dependencies)),
     plugins: [
       ...sharedPlugins,
       replace({
@@ -85,12 +77,12 @@ export default [
     external: shared.external.concat(Object.keys(pkg.dependencies)),
     output: [
       {
-        file: 'dist/typeahead.es6.js',
+        file: pkg.module,
         format: 'es',
         sourcemap: true,
       },
       {
-        file: 'dist/typeahead.js',
+        file: pkg.main,
         format: 'cjs',
         sourcemap: true,
       },
