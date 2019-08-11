@@ -93,7 +93,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     resultsTruncatedMessage,
     showOptionsWhenEmpty,
     name,
-  } = props;
+  } = React.useMemo(() => props, [props]);
   // The options matching the entry value
 
   const inputElement = React.useRef<HTMLInputElement | undefined>();
@@ -242,11 +242,4 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
   );
 };
 
-interface TypaheadMemoHelper {
-  <T extends Option>(arg: Props<T>): JSX.Element;
-}
-
-// @ts-ignore
-const MemoTypeahead: TypaheadMemoHelper = React.memo(Typeahead);
-
-export default MemoTypeahead;
+export default Typeahead;

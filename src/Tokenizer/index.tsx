@@ -74,7 +74,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     searchOptions,
     renderAbove,
     name,
-  } = props;
+  } = React.useMemo(() => props, [props]);
 
   // Memo section
   // First section gets default values
@@ -157,9 +157,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
           name={name}
           selectedOptions={selected}
           token={customClasses.token}
-          // @ts-ignore
           formInputOption={formInputOption}
-          // @ts-ignore
           displayOption={displayOption}
           removeTokenForValue={removeTokenForValue}
         />
@@ -192,11 +190,4 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   );
 };
 
-interface MemoHelper {
-  <T extends Option>(arg: Props<T>): JSX.Element;
-}
-
-// @ts-ignore - complains string != Option
-const MemoTypeaheadTokenizer: MemoHelper = React.memo(TypeaheadTokenizer);
-
-export default MemoTypeaheadTokenizer;
+export default TypeaheadTokenizer;
