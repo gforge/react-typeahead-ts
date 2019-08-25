@@ -55,7 +55,7 @@ const FormikExample = () => {
                     filterOption="name"
                     displayOption="name"
                     formInputOption="id"
-                    showOptionsWhenEmpty={true}
+                    showOptionsWhenEmpty
                     onChange={() => {
                       setFieldTouched(name, true);
                     }}

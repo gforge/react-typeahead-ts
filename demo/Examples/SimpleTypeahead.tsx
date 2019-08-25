@@ -8,9 +8,15 @@ const SimpleExample = () => (
     code={`
         <Typeahead
           options={['John', 'Paul', 'George', 'Ringo']}
+          allowCustomValues
+          onOptionSelected={value => console.log(value, 'Simple typeahead')}
         />`}
   >
-    <Typeahead options={['John', 'Paul', 'George', 'Ringo']} />
+    <Typeahead
+      options={['John', 'Paul', 'George', 'Ringo']}
+      allowCustomValues
+      onOptionSelected={value => console.log(value, 'Simple typeahead')}
+    />
   </Wrapper>
 );
 

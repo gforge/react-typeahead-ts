@@ -58,8 +58,9 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
 
       setSelection('');
       setEntryValue(value);
+      setSelected(false);
     },
-    [inputElement, setSelection, setEntryValue]
+    [inputElement, setSelection, setEntryValue, setSelected]
   );
 
   const optionsProps: OptionsProps<T> = React.useMemo(

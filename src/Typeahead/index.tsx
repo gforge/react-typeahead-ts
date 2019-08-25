@@ -133,6 +133,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     entryValue,
     options,
     option2primitive,
+    allowCustomValues: !!allowCustomValues,
   });
 
   const setRef = React.useCallback(

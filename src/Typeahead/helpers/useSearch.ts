@@ -10,6 +10,7 @@ interface Props<Opt extends Option> {
   shouldSkipSearch: (value: string) => boolean;
   options: Opt[];
   option2primitive: (opt: Opt) => string | number;
+  allowCustomValues: boolean;
 }
 
 const useSearch = <T extends Option>(props: Props<T>) => {
@@ -20,6 +21,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
     entryValue,
     options,
     option2primitive,
+    allowCustomValues,
   } = props;
 
   const searchFunction = useMemo((): ((value: string, opt?: T[]) => T[]) => {
@@ -58,12 +60,23 @@ const useSearch = <T extends Option>(props: Props<T>) => {
   }, [searchOptionsFunction, filterOption, options, option2primitive]);
 
   const filteredOptions = useMemo((): T[] => {
-    if (shouldSkipSearch(entryValue)) {
-      return [];
+    let values: T[] = [];
+    if (!shouldSkipSearch(entryValue)) {
+      values = searchFunction(entryValue, options);
     }
 
-    return searchFunction(entryValue, options);
-  }, [entryValue, shouldSkipSearch, searchFunction, options]);
+    if (allowCustomValues && !values.find(v => v === entryValue)) {
+      values = [entryValue as any, ...values];
+    }
+
+    return values;
+  }, [
+    entryValue,
+    shouldSkipSearch,
+    searchFunction,
+    options,
+    allowCustomValues,
+  ]);
 
   return {
     filteredOptions,
