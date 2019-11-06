@@ -11,6 +11,7 @@ const KeyEvent: {
   DOM_VK_ENTER: number;
   DOM_VK_ESCAPE: number;
   DOM_VK_TAB: number;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
 } = KeyEvent || {};
 
