@@ -54,6 +54,7 @@ export interface Props<Opt extends Option>
   customListComponent?: AnyReactWithProps<Opt>;
   showOptionsWhenEmpty?: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
+  separateByComma?: boolean;
 }
 
 /**
@@ -93,6 +94,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     resultsTruncatedMessage,
     showOptionsWhenEmpty,
     name,
+    separateByComma,
   } = React.useMemo(() => props, [props]);
   // The options matching the entry value
 
