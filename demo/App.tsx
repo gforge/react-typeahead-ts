@@ -14,16 +14,16 @@ const App = () => (
       A simple typeahead (e.g. autocomplete) component
     </h1>
     <p className="App-intro">
-      {`This is a rewrite of the the `}
+      This is a rewrite of the the original&nbsp;
       <a href="https://github.com/fmoo/react-typeahead">react-typeahead</a>
-      {'.'}
+      &nbsp;package.
     </p>
     <p>
-      {`If you're not getting the same layout it is most likely due to lack of
-      proper css-styles. Check out the `}
+      If you&rsquo;re not getting the same layout it is most likely due to lack
+      of proper css-styles. Check out the&nbsp;
       <code>App.css</code>
-      {` in the demo section at GitHub to see how to set the
-      appropriate styles.`}
+      &nbsp;in the demo section at GitHub to see how to set the appropriate
+      styles.
     </p>
     <FormikExample />
     <br />
