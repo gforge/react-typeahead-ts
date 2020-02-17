@@ -37,6 +37,7 @@ export interface Props<Opt extends Option>
   onTokenRemove?: (value: Opt) => void;
   onTokenAdd?: (value: Opt) => void;
   renderAbove?: boolean;
+  separateByComma?: boolean;
 }
 
 /**
@@ -74,6 +75,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     searchOptions,
     renderAbove,
     name,
+    separateByComma,
   } = React.useMemo(() => props, [props]);
 
   // Memo section
@@ -173,6 +175,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
           onOptionSelected={addTokenForValue}
           onKeyDown={onKeyDown}
           clearOnSelection
+          separateByComma={separateByComma}
         />
       }
       {!renderAbove && (

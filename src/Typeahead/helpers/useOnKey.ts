@@ -18,6 +18,7 @@ interface Props<Opt extends Option>
     > {
   selected: boolean;
   handleOptionSelected: HandleOnOptionSelectArg;
+  separateByComma?: boolean;
 }
 
 export default <T extends Option>(props: Props<T>) => {
@@ -33,6 +34,7 @@ export default <T extends Option>(props: Props<T>) => {
     selectionIndex,
     setSelectionIndex,
     setShowOptions,
+    separateByComma,
   } = props;
   const { navUp, navDown, clearSelection, selection } = useNav({
     hasHint,
@@ -56,7 +58,7 @@ export default <T extends Option>(props: Props<T>) => {
     [onKeyDown, handleOptionSelected, selection]
   );
 
-  const onTab = useCallback(
+  const makeSelection = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       let option: T | undefined =
         selection || filteredOptions.length > 0
@@ -106,7 +108,11 @@ export default <T extends Option>(props: Props<T>) => {
       events[KeyEvent.DOM_VK_RETURN] = onEnter;
       events[KeyEvent.DOM_VK_ENTER] = onEnter;
       events[KeyEvent.DOM_VK_ESCAPE] = clearSelection;
-      events[KeyEvent.DOM_VK_TAB] = onTab;
+      events[KeyEvent.DOM_VK_TAB] = makeSelection;
+
+      if (separateByComma) {
+        events[KeyEvent.DOM_VK_COMMA] = makeSelection;
+      }
 
       const handler = events[event.keyCode];
       if (handler) {
@@ -125,10 +131,11 @@ export default <T extends Option>(props: Props<T>) => {
       navDown,
       onEnter,
       clearSelection,
-      onTab,
+      makeSelection,
       onKeyDown,
       setShowOptions,
       selected,
+      separateByComma,
     ]
   );
 

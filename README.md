@@ -88,6 +88,8 @@ Basic typeahead input and results list.
 | clearOnSelection        | `Boolean`              | Clear value after selecting. Primarily used with Tokenizer.                                                                                                                                    |
 | className               | `String`               | String with class name                                                                                                                                                                         |
 | innerRef                | `React reference`      | A `createRef` object                                                                                                                                                                           |
+| separateByComma         | `Boolean`              | Allows you to select an option using a comma.                                                                                                                                                  |
+
 
 ### Tokenizer(props)
 
