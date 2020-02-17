@@ -19,7 +19,7 @@ describe('Typeahead Component basic', () => {
 
   beforeEach(() => {
     testContext.component = mount(
-      <Typeahead options={BEATLES} className="test-class" />
+      <Typeahead options={BEATLES} className="test-class" separateByComma />
     );
   });
 
@@ -106,6 +106,25 @@ describe('Typeahead Component basic', () => {
       results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
       expect(getInput(results).prop('value')).toEqual('oz');
     });
+
+    test('when separateByComma = true, comma to choose first item', () => {
+      let results = simulateTextInput(testContext.component, 'o');
+      const first = results
+        .find('ul li')
+        .first()
+        .text();
+
+      results = simulateKeyEvent(results, Keyevent.DOM_VK_COMMA);
+      expect(getInput(results).prop('value')).toEqual(first);
+    });
+
+    test('when separateByComma = true, comma on no selection should not be undefined', () => {
+      let results = simulateTextInput(testContext.component, 'oz');
+      expect(results.find('ul li').length).toEqual(0);
+      results = simulateKeyEvent(results, Keyevent.DOM_VK_COMMA);
+      expect(getInput(results).prop('value')).toEqual('oz');
+    });
+
   });
 
   describe('mouse controls', () => {
