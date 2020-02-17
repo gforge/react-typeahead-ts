@@ -11,6 +11,7 @@ const KeyEvent: {
   DOM_VK_ENTER: number;
   DOM_VK_ESCAPE: number;
   DOM_VK_TAB: number;
+  DOM_VK_COMMA: number;
   // @ts-ignore
 } = KeyEvent || {};
 
@@ -21,5 +22,6 @@ KeyEvent.DOM_VK_RETURN = KeyEvent.DOM_VK_RETURN || 13;
 KeyEvent.DOM_VK_ENTER = KeyEvent.DOM_VK_ENTER || 14;
 KeyEvent.DOM_VK_ESCAPE = KeyEvent.DOM_VK_ESCAPE || 27;
 KeyEvent.DOM_VK_TAB = KeyEvent.DOM_VK_TAB || 9;
+KeyEvent.DOM_VK_COMMA = KeyEvent.DOM_VK_COMMA || 44;
 
 export default KeyEvent;
