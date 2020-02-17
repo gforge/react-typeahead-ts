@@ -206,6 +206,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     selectionIndex,
     setSelectionIndex,
     setShowOptions,
+    separateByComma,
   });
 
   return (
