@@ -77,7 +77,6 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     renderAbove,
     name,
     separateByComma,
-    tokenListClasses,
   } = React.useMemo(() => props, [props]);
 
   // Memo section
@@ -133,16 +132,6 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     return classNames(tokenizerClasses);
   }, [className, defaultClassNames]);
 
-  let allTokenListClasses = '';
-
-  if (tokenListClasses) {
-    allTokenListClasses = tokenListClasses.reduce(
-      (previousValue, currentValue) => {
-        return `${previousValue} ${currentValue}`;
-      }
-    );
-  }
-
   const args2Pass = {
     placeholder,
     disabled,
@@ -167,7 +156,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   return (
     <div className={tokenizerClassList}>
       {renderAbove && (
-        <div className={allTokenListClasses}>
+        <div className={customClasses.tokenList}>
           <Tokens
             name={name}
             selectedOptions={selected}
@@ -190,7 +179,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
         separateByComma={separateByComma}
       />
       {!renderAbove && (
-        <div className={allTokenListClasses}>
+        <div className={customClasses.tokenList}>
           <Tokens
             name={name}
             selectedOptions={selected}

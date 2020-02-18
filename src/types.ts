@@ -12,6 +12,7 @@ export interface CustomClasses {
 export interface TokenCustomClasses extends CustomClasses {
   token?: string;
   typeahead?: string;
+  tokenList?: string;
 }
 
 export type EventType =
