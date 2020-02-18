@@ -164,19 +164,17 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
           removeTokenForValue={removeTokenForValue}
         />
       )}
-      {
-        <Typeahead
-          innerRef={typeaheadElement}
-          className={classList}
-          {...args2Pass}
-          options={cleanOptions}
+      <Typeahead
+        innerRef={typeaheadElement}
+        className={classList}
+        {...args2Pass}
+        options={cleanOptions}
           // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
-          onOptionSelected={addTokenForValue}
-          onKeyDown={onKeyDown}
-          clearOnSelection
-          separateByComma={separateByComma}
-        />
-      }
+        onOptionSelected={addTokenForValue}
+        onKeyDown={onKeyDown}
+        clearOnSelection
+        separateByComma={separateByComma}
+      />
       {!renderAbove && (
         <Tokens
           name={name}
