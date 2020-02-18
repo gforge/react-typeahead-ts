@@ -38,6 +38,7 @@ export interface Props<Opt extends Option>
   onTokenAdd?: (value: Opt) => void;
   renderAbove?: boolean;
   separateByComma?: boolean;
+  tokenListClasses?: string[];
 }
 
 /**
@@ -131,6 +132,8 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     return classNames(tokenizerClasses);
   }, [className, defaultClassNames]);
 
+  const tokenListBaseClass = 'typeahead-token-list';
+
   const args2Pass = {
     placeholder,
     disabled,
@@ -155,39 +158,41 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   return (
     <div className={tokenizerClassList}>
       {renderAbove && (
-        <Tokens
-          name={name}
-          selectedOptions={selected}
-          token={customClasses.token}
-          formInputOption={formInputOption}
-          displayOption={displayOption}
-          removeTokenForValue={removeTokenForValue}
-        />
+        <div className={`${tokenListBaseClass} ${customClasses.tokenList}`}>
+          <Tokens
+            name={name}
+            selectedOptions={selected}
+            token={customClasses.token}
+            formInputOption={formInputOption}
+            displayOption={displayOption}
+            removeTokenForValue={removeTokenForValue}
+          />
+        </div>
       )}
-      {
-        <Typeahead
-          innerRef={typeaheadElement}
-          className={classList}
-          {...args2Pass}
-          options={cleanOptions}
-          // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
-          onOptionSelected={addTokenForValue}
-          onKeyDown={onKeyDown}
-          clearOnSelection
-          separateByComma={separateByComma}
-        />
-      }
+      <Typeahead
+        innerRef={typeaheadElement}
+        className={classList}
+        {...args2Pass}
+        options={cleanOptions}
+        // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
+        onOptionSelected={addTokenForValue}
+        onKeyDown={onKeyDown}
+        clearOnSelection
+        separateByComma={separateByComma}
+      />
       {!renderAbove && (
-        <Tokens
-          name={name}
-          selectedOptions={selected}
-          token={customClasses.token}
-          // @ts-ignore
-          formInputOption={formInputOption}
-          // @ts-ignore
-          displayOption={displayOption}
-          removeTokenForValue={removeTokenForValue}
-        />
+        <div className={`${tokenListBaseClass} ${customClasses.tokenList}`}>
+          <Tokens
+            name={name}
+            selectedOptions={selected}
+            token={customClasses.token}
+            // @ts-ignore
+            formInputOption={formInputOption}
+            // @ts-ignore
+            displayOption={displayOption}
+            removeTokenForValue={removeTokenForValue}
+          />
+        </div>
       )}
     </div>
   );
