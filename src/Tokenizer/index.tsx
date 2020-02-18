@@ -8,30 +8,30 @@ import useTokenManager from './helpers/useTokenManager';
 
 export interface Props<Opt extends Option>
   extends Pick<
-  TypeaheadProps<Opt>,
-  | 'onChange'
-  | 'className'
-  | 'onBlur'
-  | 'onFocus'
-  | 'onKeyPress'
-  | 'onKeyUp'
-  | 'onKeyDown'
-  | 'name'
-  | 'initialValue'
-  | 'disabled'
-  | 'placeholder'
-  | 'filterOption'
-  | 'searchOptions'
-  | 'displayOption'
-  | 'formInputOption'
-  | 'innerRef'
-  | 'defaultClassNames'
-  | 'showOptionsWhenEmpty'
-  | 'maxVisible'
-  | 'inputProps'
-  | 'resultsTruncatedMessage'
-  >,
-  OptionsProps<Opt> {
+      TypeaheadProps<Opt>,
+      | 'onChange'
+      | 'className'
+      | 'onBlur'
+      | 'onFocus'
+      | 'onKeyPress'
+      | 'onKeyUp'
+      | 'onKeyDown'
+      | 'name'
+      | 'initialValue'
+      | 'disabled'
+      | 'placeholder'
+      | 'filterOption'
+      | 'searchOptions'
+      | 'displayOption'
+      | 'formInputOption'
+      | 'innerRef'
+      | 'defaultClassNames'
+      | 'showOptionsWhenEmpty'
+      | 'maxVisible'
+      | 'inputProps'
+      | 'resultsTruncatedMessage'
+    >,
+    OptionsProps<Opt> {
   customClasses?: TokenCustomClasses;
   defaultSelected?: Opt[];
   onTokenRemove?: (value: Opt) => void;
@@ -132,6 +132,8 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     return classNames(tokenizerClasses);
   }, [className, defaultClassNames]);
 
+  const tokenListBaseClass = 'typeahead-token-list';
+
   const args2Pass = {
     placeholder,
     disabled,
@@ -156,7 +158,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   return (
     <div className={tokenizerClassList}>
       {renderAbove && (
-        <div className={customClasses.tokenList}>
+        <div className={`${tokenListBaseClass} ${customClasses.tokenList}`}>
           <Tokens
             name={name}
             selectedOptions={selected}
@@ -179,7 +181,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
         separateByComma={separateByComma}
       />
       {!renderAbove && (
-        <div className={customClasses.tokenList}>
+        <div className={`${tokenListBaseClass} ${customClasses.tokenList}`}>
           <Tokens
             name={name}
             selectedOptions={selected}
