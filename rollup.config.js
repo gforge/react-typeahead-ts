@@ -31,7 +31,8 @@ const commonJsResolver = commonjs({
 const sharedPlugins = [commonJsResolver];
 
 export default [
-  Object.assign({}, shared, {
+  {
+    ...shared,
     output: {
       name: 'react-typeahead-ts',
       format: 'umd',
@@ -71,9 +72,10 @@ export default [
           toplevel: false,
         }),
     ],
-  }),
+  },
 
-  Object.assign({}, shared, {
+  {
+    ...shared,
     external: shared.external.concat(Object.keys(pkg.dependencies)),
     output: [
       {
@@ -92,5 +94,5 @@ export default [
       sourceMaps(),
       process.env.NODE_ENV === 'production' && filesize(),
     ],
-  }),
+  },
 ];

@@ -43,6 +43,7 @@ export default class Accessor {
     selector?: SelectorType<T>
   ): string | number | void;
 
+  // eslint-disable-next-line no-dupe-class-members
   static valueForOption<T extends Option>(
     object: T,
     selector?: OptionToStrFn<OptionsObject> | string
