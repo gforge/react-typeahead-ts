@@ -8,36 +8,37 @@ import useTokenManager from './helpers/useTokenManager';
 
 export interface Props<Opt extends Option>
   extends Pick<
-      TypeaheadProps<Opt>,
-      | 'onChange'
-      | 'className'
-      | 'onBlur'
-      | 'onFocus'
-      | 'onKeyPress'
-      | 'onKeyUp'
-      | 'onKeyDown'
-      | 'name'
-      | 'initialValue'
-      | 'disabled'
-      | 'placeholder'
-      | 'filterOption'
-      | 'searchOptions'
-      | 'displayOption'
-      | 'formInputOption'
-      | 'innerRef'
-      | 'defaultClassNames'
-      | 'showOptionsWhenEmpty'
-      | 'maxVisible'
-      | 'inputProps'
-      | 'resultsTruncatedMessage'
-    >,
-    OptionsProps<Opt> {
+  TypeaheadProps<Opt>,
+  | 'onChange'
+  | 'className'
+  | 'onBlur'
+  | 'onFocus'
+  | 'onKeyPress'
+  | 'onKeyUp'
+  | 'onKeyDown'
+  | 'name'
+  | 'initialValue'
+  | 'disabled'
+  | 'placeholder'
+  | 'filterOption'
+  | 'searchOptions'
+  | 'displayOption'
+  | 'formInputOption'
+  | 'innerRef'
+  | 'defaultClassNames'
+  | 'showOptionsWhenEmpty'
+  | 'maxVisible'
+  | 'inputProps'
+  | 'resultsTruncatedMessage'
+  >,
+  OptionsProps<Opt> {
   customClasses?: TokenCustomClasses;
   defaultSelected?: Opt[];
   onTokenRemove?: (value: Opt) => void;
   onTokenAdd?: (value: Opt) => void;
   renderAbove?: boolean;
   separateByComma?: boolean;
+  tokenListClasses?: string[];
 }
 
 /**
@@ -76,6 +77,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     renderAbove,
     name,
     separateByComma,
+    tokenListClasses,
   } = React.useMemo(() => props, [props]);
 
   // Memo section
@@ -131,6 +133,16 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
     return classNames(tokenizerClasses);
   }, [className, defaultClassNames]);
 
+  let allTokenListClasses = '';
+
+  if (tokenListClasses) {
+    allTokenListClasses = tokenListClasses.reduce(
+      (previousValue, currentValue) => {
+        return `${previousValue} ${currentValue}`;
+      }
+    );
+  }
+
   const args2Pass = {
     placeholder,
     disabled,
@@ -155,37 +167,41 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
   return (
     <div className={tokenizerClassList}>
       {renderAbove && (
-        <Tokens
-          name={name}
-          selectedOptions={selected}
-          token={customClasses.token}
-          formInputOption={formInputOption}
-          displayOption={displayOption}
-          removeTokenForValue={removeTokenForValue}
-        />
+        <div className={allTokenListClasses}>
+          <Tokens
+            name={name}
+            selectedOptions={selected}
+            token={customClasses.token}
+            formInputOption={formInputOption}
+            displayOption={displayOption}
+            removeTokenForValue={removeTokenForValue}
+          />
+        </div>
       )}
       <Typeahead
         innerRef={typeaheadElement}
         className={classList}
         {...args2Pass}
         options={cleanOptions}
-          // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
+        // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
         onOptionSelected={addTokenForValue}
         onKeyDown={onKeyDown}
         clearOnSelection
         separateByComma={separateByComma}
       />
       {!renderAbove && (
-        <Tokens
-          name={name}
-          selectedOptions={selected}
-          token={customClasses.token}
-          // @ts-ignore
-          formInputOption={formInputOption}
-          // @ts-ignore
-          displayOption={displayOption}
-          removeTokenForValue={removeTokenForValue}
-        />
+        <div className={allTokenListClasses}>
+          <Tokens
+            name={name}
+            selectedOptions={selected}
+            token={customClasses.token}
+            // @ts-ignore
+            formInputOption={formInputOption}
+            // @ts-ignore
+            displayOption={displayOption}
+            removeTokenForValue={removeTokenForValue}
+          />
+        </div>
       )}
     </div>
   );
