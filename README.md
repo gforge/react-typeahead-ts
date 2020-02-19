@@ -185,7 +185,7 @@ If not specified, it will fall back onto the semantics described in `displayOpti
 
 Type: `Object`
 
-Allowed Keys: `input`, `results`, `listItem`, `listAnchor`, `hover`, `resultsTruncated`. For the **Tokenizer** you can also provide `token`, `typeahead`.
+Allowed Keys: `input`, `results`, `listItem`, `listAnchor`, `hover`, `resultsTruncated`. For the **Tokenizer** you can also provide `token`, `typeahead` and `tokenList`.
 
 An object containing custom class names for child elements. Useful for
 integrating with 3rd party UI kits.
