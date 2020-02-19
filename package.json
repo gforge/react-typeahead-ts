@@ -1,6 +1,6 @@
 {
   "name": "@gforge/react-typeahead-ts",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A typescript rewrite of the react-typehead npm package",
   "main": "dist/typeahead.js",
   "module": "dist/typeahead.es6.js",
