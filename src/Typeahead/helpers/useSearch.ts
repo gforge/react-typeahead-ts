@@ -45,6 +45,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mapper: (input: any) => string;
     if (typeof filterOption === 'string') {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       mapper = Accessor.generateAccessor(filterOption);
     } else {
@@ -66,6 +67,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
     }
 
     if (allowCustomValues && !values.find(v => v === entryValue)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       values = [entryValue as any, ...values];
     }
 

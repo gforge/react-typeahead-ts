@@ -137,6 +137,7 @@ describe('Typeahead Component props optionConverters', () => {
     _.each(FORM_INPUT_TEST_PLANS, testplan => {
       test(testplan.name, () => {
         const component = mount(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           <Typeahead
             {...testplan.props}

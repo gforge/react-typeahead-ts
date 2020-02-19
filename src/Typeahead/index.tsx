@@ -123,9 +123,9 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
 
   const option2primitive = React.useMemo(() => {
     const anyToStrFn = formInputOption || inputDisplayOption || displayOption;
-    return Accessor.generateOptionToStringFor(anyToStrFn) as ((
+    return Accessor.generateOptionToStringFor(anyToStrFn) as (
       opt: T
-    ) => string | number);
+    ) => string | number;
   }, [formInputOption, inputDisplayOption, displayOption]);
 
   const { filteredOptions } = useSearch({

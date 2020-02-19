@@ -21,8 +21,8 @@
     "prepare": "npm run build",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/**/*' 'test/**/*' 'README.md'",
     "precommit": "lint-staged",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --ext ts,tsx",
+    "lint:fix": "npm run lint --fix",
     "demo": "parcel serve ./demo/index.html --out-dir demo/dist",
     "build:demo": "parcel build demo/index.html --out-dir demo/dist --public-url=/react-typeahead-ts",
     "deploy": "npm run build:demo && gh-pages -d demo/dist",
@@ -114,6 +114,7 @@
   "prettier": {
     "trailingComma": "es5",
     "singleQuote": true,
-    "semi": true
+    "semi": true,
+    "print-width": 100
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import * as React from 'react';
 import { mount } from 'enzyme';
 import Typeahead from '../../src/Typeahead';

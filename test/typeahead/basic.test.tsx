@@ -124,7 +124,6 @@ describe('Typeahead Component basic', () => {
       results = simulateKeyEvent(results, Keyevent.DOM_VK_COMMA);
       expect(getInput(results).prop('value')).toEqual('oz');
     });
-
   });
 
   describe('mouse controls', () => {

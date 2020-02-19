@@ -59,3 +59,12 @@ ul > li.hover {
   background-color: #f3f3fa;
   font-weight: bold;
 }
+
+.customToken {
+  background-color: brown;
+  color: white;
+  width: 100px;
+  margin: auto;
+  border-radius: 5px;
+  margin-top: 5px;
+}

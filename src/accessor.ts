@@ -23,6 +23,7 @@ export default class Accessor {
   }
 
   static generateOptionToStringFor(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prop?: string | OptionToStrFn<any>
   ): (opt: Option) => string | number {
     if (typeof prop === 'string') {

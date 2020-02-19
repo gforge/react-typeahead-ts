@@ -3,3 +3,5 @@ node_modules/*
 dist/*
 demo/dist/*
 .cache/*
+jest.config.js
+rollup.config.js

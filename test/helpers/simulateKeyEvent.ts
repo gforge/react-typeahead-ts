@@ -6,7 +6,7 @@ import { Option } from '../../src/types';
 export default (
   mountedComponent: ReactWrapper<TProps<Option>>,
   code: string | number,
-  eventName: string = 'keyDown'
+  eventName = 'keyDown'
 ) => {
   const inputElement = getInput(mountedComponent);
 
