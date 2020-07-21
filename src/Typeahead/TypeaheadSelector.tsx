@@ -10,7 +10,7 @@ export interface Props<Opt extends Option> {
   customValue: string | undefined;
   selectionIndex: number | undefined;
   handleOptionSelected: SelectorOptionSelector<Opt | string>;
-  displayOption: (opt?: Opt, i?: number) => string;
+  displayOption: (opt: Opt, i?: number) => string | number;
   defaultClassNames: boolean | undefined;
   areResultsTruncated: boolean | undefined;
   resultsTruncatedMessage: string | undefined;
