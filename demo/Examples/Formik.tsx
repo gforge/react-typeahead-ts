@@ -89,6 +89,8 @@ const FormikExample = () => {
                     onChange={() => {
                       setFieldTouched(name, true);
                     }}
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
                     onOptionSelected={(value?: BeatleWithId) => {
                       console.log(value, 'value in onOptionSelected');
                       setFieldValue(name, value && value.id);
@@ -162,7 +164,7 @@ const FormikExample = () => {
                         console.log(value, 'value in Remove');
                         remove(
                           values.tokenizer_field.findIndex(
-                            id => id === value.id
+                            (id) => id === value.id
                           )
                         );
                       }}

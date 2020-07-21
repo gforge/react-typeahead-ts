@@ -60,41 +60,18 @@ describe('Typeahead Component basic', () => {
     test('navigation away + escape clears selection', () => {
       let results = simulateTextInput(testContext.component, 'o');
       results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
-      expect(
-        results
-          .find('ul li')
-          .first()
-          .hasClass('hover')
-      ).toBeTruthy();
+      expect(results.find('ul li').first().hasClass('hover')).toBeTruthy();
       results = simulateKeyEvent(results, Keyevent.DOM_VK_DOWN);
-      expect(
-        results
-          .find('ul li')
-          .first()
-          .hasClass('hover')
-      ).toBeFalsy();
+      expect(results.find('ul li').first().hasClass('hover')).toBeFalsy();
       results = simulateKeyEvent(results, Keyevent.DOM_VK_UP);
-      expect(
-        results
-          .find('ul li')
-          .first()
-          .hasClass('hover')
-      ).toBeTruthy();
+      expect(results.find('ul li').first().hasClass('hover')).toBeTruthy();
       results = simulateKeyEvent(results, Keyevent.DOM_VK_ESCAPE);
-      expect(
-        results
-          .find('ul li')
-          .first()
-          .hasClass('hover')
-      ).toBeFalsy();
+      expect(results.find('ul li').first().hasClass('hover')).toBeFalsy();
     });
 
     test('tab to choose first item', () => {
       let results = simulateTextInput(testContext.component, 'o');
-      const first = results
-        .find('ul li')
-        .first()
-        .text();
+      const first = results.find('ul li').first().text();
 
       results = simulateKeyEvent(results, Keyevent.DOM_VK_TAB);
       expect(getInput(results).prop('value')).toEqual(first);
@@ -109,10 +86,7 @@ describe('Typeahead Component basic', () => {
 
     test('when separateByComma = true, comma to choose first item', () => {
       let results = simulateTextInput(testContext.component, 'o');
-      const first = results
-        .find('ul li')
-        .first()
-        .text();
+      const first = results.find('ul li').first().text();
 
       results = simulateKeyEvent(results, Keyevent.DOM_VK_COMMA);
       expect(getInput(results).prop('value')).toEqual(first);

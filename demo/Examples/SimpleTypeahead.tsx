@@ -15,7 +15,7 @@ const SimpleExample = () => (
     <Typeahead
       options={['John', 'Paul', 'George', 'Ringo']}
       allowCustomValues
-      onOptionSelected={value => console.log(value, 'Simple typeahead')}
+      onOptionSelected={(value) => console.log(value, 'Simple typeahead')}
     />
   </Wrapper>
 );

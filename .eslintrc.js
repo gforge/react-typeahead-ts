@@ -16,13 +16,14 @@ module.exports = {
     jest: true,
   },
   rules: {
-    '@typescript-eslint/camelcase': ['error', { properties: 'never' }],
     '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/explicit-member-accessibility': 'off',
     'import/prefer-default-export': 0,
     'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
     'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
     'react/jsx-props-no-spreading': 0,
+    'react/require-default-props': 0,
   },
   settings: {
     react: {
@@ -36,6 +37,6 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    project: 'tsconfig.json',
+    project: 'tsconfig.eslint.json',
   },
 };

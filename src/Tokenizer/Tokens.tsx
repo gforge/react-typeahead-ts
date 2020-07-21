@@ -30,7 +30,7 @@ const Tokens = <T extends Option>(props: Props<T>) => {
 
   return (
     <>
-      {selectedOptions.map(option => {
+      {selectedOptions.map((option) => {
         const displayString = Accessor.valueForOption(option, displayOption);
         const value = Accessor.valueForOption(
           option,

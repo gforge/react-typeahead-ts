@@ -28,12 +28,9 @@ describe('Typeahead Component props maxVisible', () => {
     );
 
     simulateTextInput(component, 'o');
-    expect(
-      component
-        .find('ul li.results-truncated')
-        .last()
-        .text()
-    ).toEqual('Results truncated');
+    expect(component.find('ul li.results-truncated').last().text()).toEqual(
+      'Results truncated'
+    );
   });
 
   describe('displayOption', () => {

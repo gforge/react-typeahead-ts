@@ -174,7 +174,7 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
         className={classList}
         {...args2Pass}
         options={cleanOptions}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore - onOptionSelect is impossible to match in 3.5.2
         onOptionSelected={addTokenForValue}
         onKeyDown={onKeyDown}
@@ -187,10 +187,10 @@ const TypeaheadTokenizer = <T extends Option>(props: Props<T>) => {
             name={name}
             selectedOptions={selected}
             token={customClasses.token}
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             formInputOption={formInputOption}
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             displayOption={displayOption}
             removeTokenForValue={removeTokenForValue}

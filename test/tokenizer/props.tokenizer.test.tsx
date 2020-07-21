@@ -92,7 +92,7 @@ describe('TypeaheadTokenizer Component props', () => {
           options={BEATLES_COMPLEX}
           filterOption="firstName"
           displayOption="nameWithTitle"
-          formInputOption={o => `${o.firstName} ${o.lastName}`}
+          formInputOption={(o) => `${o.firstName} ${o.lastName}`}
         />
       );
       simulateTextInput(component, 'john');

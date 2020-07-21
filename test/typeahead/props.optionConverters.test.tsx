@@ -16,8 +16,8 @@ describe('Typeahead Component props optionConverters', () => {
         <Typeahead
           name="typeahead"
           options={BEATLES.map(createObject)}
-          displayOption={o => `Score: ${o.len} ${o.orig}`}
-          inputDisplayOption={o => o.orig}
+          displayOption={(o) => `Score: ${o.len} ${o.orig}`}
+          inputDisplayOption={(o) => o.orig}
         />
       );
 
@@ -54,7 +54,7 @@ describe('Typeahead Component props optionConverters', () => {
       },
     ];
 
-    _.each(FN_TEST_PLANS, testplan => {
+    _.each(FN_TEST_PLANS, (testplan) => {
       test(`should filter with a custom function that ${testplan.name}`, () => {
         const component = mount(
           <Typeahead options={BEATLES} filterOption={testplan.fn} />
@@ -134,10 +134,10 @@ describe('Typeahead Component props optionConverters', () => {
       },
     ];
 
-    _.each(FORM_INPUT_TEST_PLANS, testplan => {
+    _.each(FORM_INPUT_TEST_PLANS, (testplan) => {
       test(testplan.name, () => {
         const component = mount(
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           <Typeahead
             {...testplan.props}

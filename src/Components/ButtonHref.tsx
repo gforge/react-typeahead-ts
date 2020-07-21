@@ -1,14 +1,10 @@
 import * as React from 'react';
 
-interface Props extends React.HTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
 /**
  * A button that works as the href element in the original script
  * @param props See typescript
  */
-function ButtonHref(props: Props) {
+const ButtonHref = (props: React.HTMLAttributes<HTMLButtonElement>) => {
   const [hover, setHover] = React.useState(false);
   const { children, style, onMouseEnter, onMouseLeave, ...attributes } = props;
   const handleMouseEnter = React.useCallback(
@@ -51,6 +47,6 @@ function ButtonHref(props: Props) {
       {children}
     </button>
   );
-}
+};
 
 export default ButtonHref;

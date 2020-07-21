@@ -109,7 +109,7 @@ export default <T extends Option>(props: Props<T> & OptionsProps<T>) => {
         inputElement.current.blur();
 
         const orgOption = optionsProps.options.find(
-          opt => option2primitive(opt) === formInputOptionString
+          (opt) => option2primitive(opt) === formInputOptionString
         );
         if (
           optionsProps.allowCustomValues === true &&

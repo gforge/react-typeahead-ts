@@ -3,19 +3,20 @@ import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 const Code = (props: { children: string | undefined }) => {
   const { children: code } = props;
-  if (!code) return null;
   const [open, setOpen] = React.useState(false);
   const toggle = React.useCallback(() => setOpen(!open), [setOpen, open]);
   const formattedCode = React.useMemo(() => {
+    if (code === undefined) return undefined;
+
     let lines = code.split(/\n/);
-    const firstNonEmpty = lines.findIndex(l => l.search(/[^ ]/) >= 0);
-    if (firstNonEmpty < 0) return;
+    const firstNonEmpty = lines.findIndex((l) => l.search(/[^ ]/) >= 0);
+    if (firstNonEmpty < 0) return undefined;
     lines = lines.slice(firstNonEmpty);
 
     const indentation = lines[0].search(/[^ ]/);
     if (indentation <= 0) return lines.join('\n').trim();
 
-    lines = lines.map(line => {
+    lines = lines.map((line) => {
       const currInd = line.search(/[^ ]/);
       if (currInd < indentation) return line;
 
@@ -24,6 +25,7 @@ const Code = (props: { children: string | undefined }) => {
     return lines.join('\n').trim();
   }, [code]);
 
+  if (!code) return null;
   if (code.split('\n').length < 15) {
     return (
       <pre style={{ textAlign: 'left', paddingLeft: '2cm' }}>

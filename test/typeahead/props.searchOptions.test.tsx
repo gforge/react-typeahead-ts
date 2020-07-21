@@ -11,10 +11,10 @@ describe('Typeahead Component props searchOptions', () => {
       <Typeahead
         options={BEATLES}
         searchOptions={(value: string, opts: string[]) =>
-          opts.filter(o => o.match(RegExp(value, 'i')))
+          opts.filter((o) => o.match(RegExp(value, 'i')))
         }
-        displayOption={o => `Score: ${o.length} ${o}`}
-        inputDisplayOption={o => o}
+        displayOption={(o) => `Score: ${o.length} ${o}`}
+        inputDisplayOption={(o) => o}
       />
     );
 
@@ -27,9 +27,9 @@ describe('Typeahead Component props searchOptions', () => {
       <Typeahead
         options={BEATLES}
         searchOptions={(value, opts) =>
-          opts.sort().filter(o => o.match(RegExp(value, 'i')))
+          opts.sort().filter((o) => o.match(RegExp(value, 'i')))
         }
-        displayOption={o => `Score: ${o.length} ${o}`}
+        displayOption={(o) => `Score: ${o.length} ${o}`}
       />
     );
 

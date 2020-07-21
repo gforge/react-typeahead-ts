@@ -39,13 +39,15 @@ const useSearch = <T extends Option>(props: Props<T>) => {
 
     if (typeof filterOption === 'function') {
       return (value: string, opt?: T[]): T[] =>
-        (opt || options).filter(o => filterOption(value, o)).map(a => a as T);
+        (opt || options)
+          .filter((o) => filterOption(value, o))
+          .map((a) => a as T);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mapper: (input: any) => string;
     if (typeof filterOption === 'string') {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       mapper = Accessor.generateAccessor(filterOption);
     } else {
@@ -66,7 +68,7 @@ const useSearch = <T extends Option>(props: Props<T>) => {
       values = searchFunction(entryValue, options);
     }
 
-    if (allowCustomValues && !values.find(v => v === entryValue)) {
+    if (allowCustomValues && !values.find((v) => v === entryValue)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       values = [entryValue as any, ...values];
     }

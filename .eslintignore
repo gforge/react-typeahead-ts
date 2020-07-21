@@ -5,3 +5,5 @@ demo/dist/*
 .cache/*
 jest.config.js
 rollup.config.js
+demo/.eslintrc.js
+.eslintrc.js

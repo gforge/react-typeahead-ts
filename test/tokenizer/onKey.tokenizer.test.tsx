@@ -8,11 +8,11 @@ import { BEATLES, BEATLES_COMPLEX } from '../helpers/data';
 
 describe('TypeaheadTokenizer Component', () => {
   describe('onKeyDown', () => {
-    test('should bind to key events on the input', done => {
+    test('should bind to key events on the input', (done) => {
       const component = mount(
         <Tokenizer
           options={BEATLES}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             expect(e.keyCode).toEqual(87);
             done();
           }}
@@ -23,11 +23,11 @@ describe('TypeaheadTokenizer Component', () => {
   });
 
   describe('onKeyPress', () => {
-    test('should bind to key events on the input', done => {
+    test('should bind to key events on the input', (done) => {
       const component = mount(
         <Tokenizer
           options={BEATLES}
-          onKeyPress={e => {
+          onKeyPress={(e) => {
             expect(e.keyCode).toEqual(87);
             done();
           }}
@@ -39,11 +39,11 @@ describe('TypeaheadTokenizer Component', () => {
   });
 
   describe('onKeyUp', () => {
-    test('should bind to key events on the input', done => {
+    test('should bind to key events on the input', (done) => {
       const component = mount(
         <Tokenizer
           options={BEATLES}
-          onKeyUp={e => {
+          onKeyUp={(e) => {
             expect(e.keyCode).toEqual(87);
             done();
           }}
@@ -146,7 +146,7 @@ describe('TypeaheadTokenizer Component', () => {
             options={BEATLES_COMPLEX}
             filterOption="firstName"
             displayOption="nameWithTitle"
-            formInputOption={o => {
+            formInputOption={(o) => {
               if (typeof o === 'object') {
                 return `${o.firstName} ${o.lastName}`;
               }

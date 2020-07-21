@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import * as React from 'react';
 import './App.css';
 import {

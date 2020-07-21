@@ -13,7 +13,10 @@ interface State {
 }
 
 export default class Example extends React.PureComponent<Props, State> {
-  state = { hasError: false };
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({ hasError: true });

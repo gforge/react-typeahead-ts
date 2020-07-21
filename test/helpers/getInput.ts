@@ -4,7 +4,7 @@ import { Option } from '../../src/types';
 
 export default (component: ReactWrapper<TProps<Option>>) => {
   const controlComponent = component.findWhere(
-    n => n.type() === 'input' && n.props().type !== 'hidden'
+    (n) => n.type() === 'input' && n.props().type !== 'hidden'
   );
   if (controlComponent.length === 1) {
     return controlComponent.first();

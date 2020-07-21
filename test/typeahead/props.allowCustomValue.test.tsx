@@ -22,7 +22,7 @@ describe('Typeahead Component props allowCustomValue', () => {
 
     simulateTextInput(component, 'a');
     expect(false).toEqual(selectSpy.called);
-    expect(component.find('li').map(n => n.text())).toEqual(['a', 'Paul']);
+    expect(component.find('li').map((n) => n.text())).toEqual(['a', 'Paul']);
     simulateKeyEvent(component, Keyevent.DOM_VK_TAB);
 
     expect(component.find('input[type="text"]').props().value).toEqual('a');
@@ -47,7 +47,7 @@ describe('Typeahead Component props allowCustomValue when separateByComma = true
 
     simulateTextInput(component, 'a');
     expect(false).toEqual(selectSpy.called);
-    expect(component.find('li').map(n => n.text())).toEqual(['a', 'Paul']);
+    expect(component.find('li').map((n) => n.text())).toEqual(['a', 'Paul']);
     simulateKeyEvent(component, Keyevent.DOM_VK_COMMA);
 
     expect(component.find('input[type="text"]').props().value).toEqual('a');
