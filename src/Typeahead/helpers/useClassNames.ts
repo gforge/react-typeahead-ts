@@ -7,33 +7,63 @@ interface ClassName {
   [className: string]: boolean;
 }
 interface Props {
-  customClasses: CustomClasses | undefined;
-  className: string | undefined;
-  defaultClassNames: boolean | undefined;
+  customClasses?: CustomClasses;
+  className?: string;
+  defaultClassNames?: boolean;
+  hover?: boolean;
+  customValue?: string;
 }
 
 export default (props: Props) => {
-  const { className, defaultClassNames, customClasses } = props;
+  const {
+    className,
+    defaultClassNames,
+    customClasses,
+    hover,
+    customValue,
+  } = props;
 
-  return useMemo(() => {
-    const inputClasses: ClassName = {};
+  const inputClassNames = useMemo(() => {
+    const clss: ClassName = {};
     const { input } = customClasses || { input: undefined };
     if (input) {
-      inputClasses[input] = true;
+      clss[input] = true;
     }
-    const inputClassNames = classNames(inputClasses);
+    return classNames(clss);
+  }, [customClasses]);
 
-    const classes: { [className: string]: boolean } = {
+  const mainClassNames = useMemo(() => {
+    const clss: ClassName = {
       typeahead: !!defaultClassNames,
     };
     if (className) {
-      classes[className] = true;
+      clss[className] = true;
     }
-    const mainClassNames = classNames(classes);
 
-    return {
+    return classNames(clss);
+  }, [defaultClassNames, className]);
+
+  const optionClassNames = useMemo(() => {
+    const clss: ClassName = {};
+
+    const { listItem, hover: hoverClass, customAdd } = customClasses || {};
+    clss[hoverClass || 'hover'] = !!hover;
+    if (listItem) {
+      clss[listItem] = true;
+    }
+    if (customValue && customAdd) {
+      clss[customAdd] = true;
+    }
+
+    return classNames(clss);
+  }, [customClasses, hover, customValue]);
+
+  return useMemo(
+    () => ({
       mainClassNames,
       inputClassNames,
-    };
-  }, [className, defaultClassNames, customClasses]);
+      optionClassNames,
+    }),
+    [mainClassNames, inputClassNames, optionClassNames]
+  );
 };

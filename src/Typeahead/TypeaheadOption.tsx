@@ -2,6 +2,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { SelectorOptionSelector, Option } from '../types';
 import ButtonHref from '../Components/ButtonHref';
+import useClassNames from './helpers/useClassNames';
 
 export interface CustomClasses {
   listItem?: string;
@@ -75,18 +76,11 @@ const TypeaheadOption = <T extends Option>(props: Props<T>) => {
     [handleOptionSelected, customValue, result]
   );
 
-  const classes: { [key: string]: boolean } = {};
-  const { listItem, hover: hoverClass = 'hover', customAdd } = customClasses;
-  classes[hoverClass] = !!hover;
-  if (listItem) {
-    classes[listItem] = Boolean(listItem);
-  }
-
-  if (customValue && customAdd) {
-    classes[customAdd] = Boolean(customAdd);
-  }
-
-  const classList = classNames(classes);
+  const { optionClassNames } = useClassNames({
+    customClasses,
+    hover,
+    customValue,
+  });
 
   // For some reason onClick is not fired when clicked on an option
   // onMouseDown is used here as a workaround of #205 and other
@@ -95,7 +89,7 @@ const TypeaheadOption = <T extends Option>(props: Props<T>) => {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={classList}
+      className={optionClassNames}
       onClick={onClick}
       onMouseDown={onClick}
       onKeyDown={onSpace}
