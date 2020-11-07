@@ -16,7 +16,7 @@ import useShowOptions from './helpers/useShowOptions';
 export type AnyReactWithProps<Opt extends Option> =
   | React.Component<TypelistProps<Opt>>
   | React.PureComponent<TypelistProps<Opt>>
-  | React.SFC<TypelistProps<Opt>>;
+  | React.FunctionComponent<TypelistProps<Opt>>;
 
 export interface Props<Opt extends Option>
   extends Pick<
@@ -41,17 +41,14 @@ export interface Props<Opt extends Option>
   textarea?: boolean;
   allowCustomValues?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
-  displayOption?:
-    | string
-    | ((option: Opt, index?: number) => string | number)
-    | undefined;
+  displayOption?: string | ((option: Opt, index?: number) => string | number);
   filterOption?: string | ((value: string, option: Opt) => boolean);
   inputDisplayOption?: string | OptionToStrFn<Opt> | undefined;
   formInputOption?: string | OptionToStrFn<Opt> | undefined;
   searchOptions?: (value: string, option: Opt[]) => Opt[];
   defaultClassNames?: boolean;
   customClasses?: CustomClasses;
-  customListComponent?: AnyReactWithProps<Opt>;
+  customListComponent?: typeof IncrementalSearchResults;
   showOptionsWhenEmpty?: boolean;
   innerRef?: React.MutableRefObject<HTMLInputElement | undefined>;
   separateByComma?: boolean;
@@ -79,6 +76,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
     inputProps,
     disabled,
     customClasses = {},
+    customListComponent: ListComponent = IncrementalSearchResults,
     innerRef,
     placeholder,
     className,
@@ -227,7 +225,7 @@ const Typeahead = <T extends Option>(props: Props<T>) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
       />
-      <IncrementalSearchResults
+      <ListComponent
         showResults={showResults && !shouldSkipSearch(entryValue)}
         hasCustomValue={hasCustomValue}
         entryValue={entryValue}
